@@ -8,6 +8,8 @@ import Admin from './pages/Admin';
 import EditForm from './pages/EditForm';
 import EditChecklist from './pages/EditChecklist';
 import EditCategory from './pages/EditCategory';
+import Reports from './pages/Reports';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -22,6 +24,8 @@ export const PAGES = {
     "EditForm": EditForm,
     "EditChecklist": EditChecklist,
     "EditCategory": EditCategory,
+    "Reports": Reports,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
