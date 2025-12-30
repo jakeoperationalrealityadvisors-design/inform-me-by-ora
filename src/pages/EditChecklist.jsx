@@ -101,31 +101,31 @@ export default function EditChecklist() {
     
     if (checklistId && isLoading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+            <div className="min-h-screen bg-[#0a0e17] flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
             </div>
         );
     }
     
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-[#0a0e17]">
             {/* Header */}
-            <div className="bg-white border-b border-slate-100 sticky top-0 z-10">
+            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
                 <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link to={createPageUrl('Admin')}>
-                            <Button variant="ghost" size="icon" className="rounded-full">
+                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
                                 <ArrowLeft className="w-5 h-5" />
                             </Button>
                         </Link>
-                        <h1 className="text-lg font-semibold text-slate-900">
+                        <h1 className="text-lg font-semibold text-white">
                             {checklistId ? 'Edit Checklist' : 'New Checklist'}
                         </h1>
                     </div>
                     <Button 
                         onClick={handleSave}
                         disabled={!checklist.title.trim() || saveMutation.isPending}
-                        className="bg-slate-900 hover:bg-slate-800"
+                        className="bg-blue-600 hover:bg-blue-700"
                     >
                         {saveMutation.isPending ? (
                             <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -139,37 +139,37 @@ export default function EditChecklist() {
             
             <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
                 {/* Basic Info */}
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
-                    <h2 className="text-lg font-semibold text-slate-900">Basic Information</h2>
+                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-white">Basic Information</h2>
                     
                     <div>
-                        <Label>Checklist Title *</Label>
+                        <Label className="text-blue-100">Checklist Title *</Label>
                         <Input
                             value={checklist.title}
                             onChange={(e) => setChecklist(prev => ({ ...prev, title: e.target.value }))}
                             placeholder="Enter checklist title"
-                            className="mt-2"
+                            className="mt-2 bg-[#0a0e17] border-blue-900/20 text-white"
                         />
                     </div>
                     
                     <div>
-                        <Label>Description</Label>
+                        <Label className="text-blue-100">Description</Label>
                         <Textarea
                             value={checklist.description || ''}
                             onChange={(e) => setChecklist(prev => ({ ...prev, description: e.target.value }))}
                             placeholder="Enter checklist description"
-                            className="mt-2"
+                            className="mt-2 bg-[#0a0e17] border-blue-900/20 text-white"
                         />
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Label>Category</Label>
+                            <Label className="text-blue-100">Category</Label>
                             <Select
                                 value={checklist.category_id || ''}
                                 onValueChange={(value) => setChecklist(prev => ({ ...prev, category_id: value }))}
                             >
-                                <SelectTrigger className="mt-2">
+                                <SelectTrigger className="mt-2 bg-[#0a0e17] border-blue-900/20 text-white">
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -181,12 +181,12 @@ export default function EditChecklist() {
                         </div>
                         
                         <div>
-                            <Label>Status</Label>
+                            <Label className="text-blue-100">Status</Label>
                             <Select
                                 value={checklist.status || 'active'}
                                 onValueChange={(value) => setChecklist(prev => ({ ...prev, status: value }))}
                             >
-                                <SelectTrigger className="mt-2">
+                                <SelectTrigger className="mt-2 bg-[#0a0e17] border-blue-900/20 text-white">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -200,9 +200,9 @@ export default function EditChecklist() {
                 </div>
                 
                 {/* Items */}
-                <div className="bg-white rounded-2xl border border-slate-200 p-6">
+                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-6">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-semibold text-slate-900">Checklist Items</h2>
+                        <h2 className="text-lg font-semibold text-white">Checklist Items</h2>
                         <Button onClick={addItem} variant="outline" size="sm">
                             <Plus className="w-4 h-4 mr-2" />
                             Add Item
@@ -223,11 +223,11 @@ export default function EditChecklist() {
                                                         initial={{ opacity: 0, y: 10 }}
                                                         animate={{ opacity: 1, y: 0 }}
                                                         exit={{ opacity: 0, y: -10 }}
-                                                        className={`border border-slate-200 rounded-xl p-4 bg-white ${snapshot.isDragging ? 'shadow-lg' : ''}`}
+                                                        className={`border border-blue-900/20 rounded-xl p-4 bg-[#0a0e17] ${snapshot.isDragging ? 'shadow-lg' : ''}`}
                                                     >
                                                         <div className="flex items-start gap-3">
                                                             <div {...provided.dragHandleProps} className="mt-2 cursor-grab">
-                                                                <GripVertical className="w-5 h-5 text-slate-300" />
+                                                                <GripVertical className="w-5 h-5 text-blue-400/50" />
                                                             </div>
                                                             
                                                             <div className="flex-1 space-y-3">
@@ -235,6 +235,7 @@ export default function EditChecklist() {
                                                                     value={item.text}
                                                                     onChange={(e) => updateItem(index, { text: e.target.value })}
                                                                     placeholder="Checklist item text"
+                                                                    className="bg-[#0f1419] border-blue-900/20 text-white"
                                                                 />
                                                                 
                                                                 <div className="flex items-center gap-6">
@@ -243,14 +244,14 @@ export default function EditChecklist() {
                                                                             checked={item.required || false}
                                                                             onCheckedChange={(checked) => updateItem(index, { required: checked })}
                                                                         />
-                                                                        <Label className="text-sm">Required</Label>
+                                                                        <Label className="text-sm text-blue-100">Required</Label>
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
                                                                         <Switch
                                                                             checked={item.notes_enabled || false}
                                                                             onCheckedChange={(checked) => updateItem(index, { notes_enabled: checked })}
                                                                         />
-                                                                        <Label className="text-sm flex items-center gap-1">
+                                                                        <Label className="text-sm flex items-center gap-1 text-blue-100">
                                                                             <MessageSquare className="w-4 h-4" />
                                                                             Allow Notes
                                                                         </Label>
@@ -262,8 +263,9 @@ export default function EditChecklist() {
                                                                 variant="ghost"
                                                                 size="icon"
                                                                 onClick={() => removeItem(index)}
+                                                                className="hover:bg-blue-950/50"
                                                             >
-                                                                <Trash2 className="w-4 h-4 text-red-500" />
+                                                                <Trash2 className="w-4 h-4 text-red-400" />
                                                             </Button>
                                                         </div>
                                                     </motion.div>
@@ -278,7 +280,7 @@ export default function EditChecklist() {
                     </DragDropContext>
                     
                     {checklist.items.length === 0 && (
-                        <div className="text-center py-8 text-slate-500">
+                        <div className="text-center py-8 text-blue-400/60">
                             No items added yet. Click "Add Item" to start building your checklist.
                         </div>
                     )}
