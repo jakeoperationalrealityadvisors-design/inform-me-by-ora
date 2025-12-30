@@ -3,18 +3,25 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Plus, FileText, Folder, Search, Filter, Download, Trash2, Upload } from 'lucide-react';
+import { ArrowLeft, Plus, FileText, Folder, Search, Filter, Download, Trash2, Upload, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { motion } from 'framer-motion';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import { format } from 'date-fns';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 export default function Documents() {
     const [search, setSearch] = useState('');
     const [selectedFolder, setSelectedFolder] = useState(null);
     const [selectedTags, setSelectedTags] = useState([]);
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
+    const [sizeFilter, setSizeFilter] = useState('all');
+    const [uploaderFilter, setUploaderFilter] = useState('');
+    const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
     const { user } = useUserRole();
     
     const { data: documents = [], isLoading: docsLoading } = useQuery({
@@ -27,8 +34,9 @@ export default function Documents() {
         queryFn: () => base44.entities.DocumentFolder.list()
     });
     
-    // Get all unique tags
+    // Get all unique tags and uploaders
     const allTags = [...new Set(documents.flatMap(doc => doc.tags || []))];
+    const allUploaders = [...new Set(documents.map(doc => doc.uploaded_by_name || doc.created_by).filter(Boolean))];
     
     // Filter documents
     const filteredDocs = documents.filter(doc => {
@@ -38,7 +46,24 @@ export default function Documents() {
         const matchesFolder = !selectedFolder || doc.folder_id === selectedFolder;
         const matchesTags = selectedTags.length === 0 || 
             selectedTags.some(tag => doc.tags?.includes(tag));
-        return matchesSearch && matchesFolder && matchesTags;
+        
+        // Date filter
+        const docDate = new Date(doc.created_date);
+        const matchesDateFrom = !dateFrom || docDate >= new Date(dateFrom);
+        const matchesDateTo = !dateTo || docDate <= new Date(dateTo + 'T23:59:59');
+        
+        // Size filter
+        const docSizeMB = (doc.file_size || 0) / (1024 * 1024);
+        const matchesSize = sizeFilter === 'all' ||
+            (sizeFilter === 'small' && docSizeMB < 1) ||
+            (sizeFilter === 'medium' && docSizeMB >= 1 && docSizeMB < 10) ||
+            (sizeFilter === 'large' && docSizeMB >= 10);
+        
+        // Uploader filter
+        const matchesUploader = !uploaderFilter || 
+            (doc.uploaded_by_name || doc.created_by) === uploaderFilter;
+        
+        return matchesSearch && matchesFolder && matchesTags && matchesDateFrom && matchesDateTo && matchesSize && matchesUploader;
     });
     
     const getFolderName = (id) => folders.find(f => f.id === id)?.name || 'Uncategorized';
@@ -84,14 +109,107 @@ export default function Documents() {
                     </div>
                     
                     {/* Search */}
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <Input
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search documents..."
-                            className="pl-10"
-                        />
+                    <div className="space-y-3">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <Input
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Search documents..."
+                                className="pl-10"
+                            />
+                        </div>
+                        
+                        {/* Advanced Filters Toggle */}
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                            className="w-full gap-2"
+                        >
+                            <Filter className="w-4 h-4" />
+                            Advanced Filters
+                            {(dateFrom || dateTo || sizeFilter !== 'all' || uploaderFilter) && (
+                                <Badge className="ml-auto bg-blue-600 text-white">Active</Badge>
+                            )}
+                        </Button>
+                        
+                        {/* Advanced Filters Panel */}
+                        {showAdvancedFilters && (
+                            <div className="bg-slate-50 rounded-lg p-4 space-y-4 border border-slate-200">
+                                {/* Date Range */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <Label className="text-xs text-slate-600">From Date</Label>
+                                        <Input
+                                            type="date"
+                                            value={dateFrom}
+                                            onChange={(e) => setDateFrom(e.target.value)}
+                                            className="mt-1"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label className="text-xs text-slate-600">To Date</Label>
+                                        <Input
+                                            type="date"
+                                            value={dateTo}
+                                            onChange={(e) => setDateTo(e.target.value)}
+                                            className="mt-1"
+                                        />
+                                    </div>
+                                </div>
+                                
+                                {/* File Size */}
+                                <div>
+                                    <Label className="text-xs text-slate-600">File Size</Label>
+                                    <Select value={sizeFilter} onValueChange={setSizeFilter}>
+                                        <SelectTrigger className="mt-1">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Sizes</SelectItem>
+                                            <SelectItem value="small">Small (&lt; 1 MB)</SelectItem>
+                                            <SelectItem value="medium">Medium (1-10 MB)</SelectItem>
+                                            <SelectItem value="large">Large (&gt; 10 MB)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                
+                                {/* Uploader */}
+                                <div>
+                                    <Label className="text-xs text-slate-600">Uploaded By</Label>
+                                    <Select value={uploaderFilter} onValueChange={setUploaderFilter}>
+                                        <SelectTrigger className="mt-1">
+                                            <SelectValue placeholder="All uploaders" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value={null}>All Uploaders</SelectItem>
+                                            {allUploaders.map(uploader => (
+                                                <SelectItem key={uploader} value={uploader}>
+                                                    {uploader}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                
+                                {/* Clear Filters */}
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                        setDateFrom('');
+                                        setDateTo('');
+                                        setSizeFilter('all');
+                                        setUploaderFilter('');
+                                    }}
+                                    className="w-full gap-2"
+                                >
+                                    <X className="w-4 h-4" />
+                                    Clear All Filters
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
