@@ -10,6 +10,8 @@ import { Progress } from "@/components/ui/progress";
 import { format } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import CommentSection from '@/components/collaboration/CommentSection';
+import AssignmentPanel from '@/components/collaboration/AssignmentPanel';
 
 export default function ViewChecklistSubmission() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -37,6 +39,13 @@ export default function ViewChecklistSubmission() {
     const updateMutation = useMutation({
         mutationFn: ({ id, data }) => base44.entities.ChecklistSubmission.update(id, data),
         onSuccess: () => queryClient.invalidateQueries(['checklist-submission', submissionId])
+    });
+    
+    const updateAssignmentMutation = useMutation({
+        mutationFn: (updates) => base44.entities.ChecklistSubmission.update(submissionId, updates),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['checklist-submission', submissionId]);
+        }
     });
     
     const statusColors = {
@@ -190,6 +199,22 @@ export default function ViewChecklistSubmission() {
                             <p className="text-slate-400 text-center py-8">No items in checklist</p>
                         )}
                     </div>
+                </div>
+                
+                {/* Assignment Panel */}
+                <div>
+                    <AssignmentPanel 
+                        submission={submission}
+                        onUpdate={(updates) => updateAssignmentMutation.mutate(updates)}
+                    />
+                </div>
+                
+                {/* Comments */}
+                <div>
+                    <CommentSection 
+                        submissionId={submissionId}
+                        submissionType="checklist"
+                    />
                 </div>
             </div>
         </div>

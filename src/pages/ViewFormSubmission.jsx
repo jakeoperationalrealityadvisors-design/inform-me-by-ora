@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import CommentSection from '@/components/collaboration/CommentSection';
+import AssignmentPanel from '@/components/collaboration/AssignmentPanel';
 
 export default function ViewFormSubmission() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -35,6 +37,13 @@ export default function ViewFormSubmission() {
     const updateMutation = useMutation({
         mutationFn: ({ id, data }) => base44.entities.FormSubmission.update(id, data),
         onSuccess: () => queryClient.invalidateQueries(['form-submission', submissionId])
+    });
+    
+    const updateAssignmentMutation = useMutation({
+        mutationFn: (updates) => base44.entities.FormSubmission.update(submissionId, updates),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['form-submission', submissionId]);
+        }
     });
     
     const statusColors = {
@@ -190,6 +199,22 @@ export default function ViewFormSubmission() {
                             <p className="text-slate-400 text-center py-4">No responses recorded</p>
                         )}
                     </div>
+                </div>
+                
+                {/* Assignment Panel */}
+                <div>
+                    <AssignmentPanel 
+                        submission={submission}
+                        onUpdate={(updates) => updateAssignmentMutation.mutate(updates)}
+                    />
+                </div>
+                
+                {/* Comments */}
+                <div>
+                    <CommentSection 
+                        submissionId={submissionId}
+                        submissionType="form"
+                    />
                 </div>
             </div>
         </div>
