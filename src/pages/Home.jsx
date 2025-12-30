@@ -70,6 +70,11 @@ export default function Home() {
                             </div>
                         </div>
                         <div className="flex gap-2">
+                            <Link to={createPageUrl('Documents')}>
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
+                                    <FileText className="w-5 h-5" />
+                                </Button>
+                            </Link>
                             <Link to={createPageUrl('DailyTasks')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
                                     <Calendar className="w-5 h-5" />
