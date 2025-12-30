@@ -131,7 +131,8 @@ class PDFExporter {
             // Item text
             this.doc.setFontSize(10);
             this.doc.setFont(undefined, 'normal');
-            this.doc.setTextColor(isCompleted ? 100, 116, 139 : 0, 0, 0);
+            const textColor = isCompleted ? [100, 116, 139] : [0, 0, 0];
+            this.doc.setTextColor(...textColor);
             const text = `${index + 1}. ${item.text}`;
             const lines = this.doc.splitTextToSize(text, 150);
             this.doc.text(lines, this.margin + 8, this.currentY);
