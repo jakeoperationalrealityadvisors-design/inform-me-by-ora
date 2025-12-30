@@ -70,16 +70,16 @@ export default function FillChecklist() {
     
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+            <div className="min-h-screen bg-[#0a0e17] flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
             </div>
         );
     }
     
     if (!checklist) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
-                <p className="text-slate-500 mb-4">Checklist not found</p>
+            <div className="min-h-screen bg-[#0a0e17] flex flex-col items-center justify-center p-4">
+                <p className="text-blue-300 mb-4">Checklist not found</p>
                 <Link to={createPageUrl('Home')}>
                     <Button>Go Back</Button>
                 </Link>
@@ -89,18 +89,18 @@ export default function FillChecklist() {
     
     if (submitted) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+            <div className="min-h-screen bg-[#0a0e17] flex flex-col items-center justify-center p-4">
                 <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mb-6"
+                    className="w-20 h-20 rounded-full bg-blue-950/50 flex items-center justify-center mb-6 border border-blue-600/30"
                 >
-                    <CheckCircle className="w-10 h-10 text-emerald-600" />
+                    <CheckCircle className="w-10 h-10 text-blue-500" />
                 </motion.div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Submitted!</h2>
-                <p className="text-slate-500 mb-6">{progress}% completed</p>
+                <h2 className="text-2xl font-bold text-white mb-2">Submitted!</h2>
+                <p className="text-blue-300 mb-6">{progress}% completed</p>
                 <div className="flex gap-3">
-                    <Button variant="outline" onClick={() => {
+                    <Button variant="outline" className="border-blue-800 text-blue-300 hover:bg-blue-950/50" onClick={() => {
                         setCompletedItems([]);
                         setItemNotes({});
                         setSubmitterName('');
@@ -110,7 +110,7 @@ export default function FillChecklist() {
                         Start Fresh
                     </Button>
                     <Link to={createPageUrl('Home')}>
-                        <Button className="bg-slate-900 hover:bg-slate-800">Back to Home</Button>
+                        <Button className="bg-blue-600 hover:bg-blue-700">Back to Home</Button>
                     </Link>
                 </div>
             </div>
@@ -118,28 +118,28 @@ export default function FillChecklist() {
     }
     
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-[#0a0e17]">
             {/* Header */}
-            <div className="bg-white border-b border-slate-100 sticky top-0 z-10">
+            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
                 <div className="max-w-2xl mx-auto px-4 py-4">
                     <div className="flex items-center gap-4 mb-4">
                         <Link to={createPageUrl('Home')}>
-                            <Button variant="ghost" size="icon" className="rounded-full">
+                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
                                 <ArrowLeft className="w-5 h-5" />
                             </Button>
                         </Link>
                         <div className="flex-1">
-                            <h1 className="text-lg font-semibold text-slate-900">{checklist.title}</h1>
+                            <h1 className="text-lg font-semibold text-white">{checklist.title}</h1>
                             {checklist.description && (
-                                <p className="text-sm text-slate-500">{checklist.description}</p>
+                                <p className="text-sm text-blue-400">{checklist.description}</p>
                             )}
                         </div>
                     </div>
                     
                     {/* Progress */}
                     <div className="flex items-center gap-4">
-                        <Progress value={progress} className="h-2" />
-                        <span className="text-sm font-medium text-slate-600 whitespace-nowrap">
+                        <Progress value={progress} className="h-2 bg-blue-950/50" />
+                        <span className="text-sm font-medium text-blue-300 whitespace-nowrap">
                             {completedItems.length}/{checklist.items?.length || 0}
                         </span>
                     </div>
@@ -148,31 +148,31 @@ export default function FillChecklist() {
             
             <div className="max-w-2xl mx-auto px-4 py-6">
                 {/* Submitter Info */}
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-4 space-y-4">
+                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-6 mb-4 space-y-4">
                     <div>
-                        <Label className="text-slate-700 font-medium">
+                        <Label className="text-blue-100 font-medium">
                             Your Name <span className="text-red-500">*</span>
                         </Label>
                         <Input
                             value={submitterName}
                             onChange={(e) => setSubmitterName(e.target.value)}
                             placeholder="Enter your name"
-                            className="mt-2 bg-slate-50 border-slate-200 focus:bg-white"
+                            className="mt-2 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
                         />
                     </div>
                     <div>
-                        <Label className="text-slate-700 font-medium">Location / Site</Label>
+                        <Label className="text-blue-100 font-medium">Location / Site</Label>
                         <Input
                             value={location}
                             onChange={(e) => setLocation(e.target.value)}
                             placeholder="Enter location (optional)"
-                            className="mt-2 bg-slate-50 border-slate-200 focus:bg-white"
+                            className="mt-2 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
                         />
                     </div>
                 </div>
                 
                 {/* Checklist Items */}
-                <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 overflow-hidden">
                     <AnimatePresence>
                         {checklist.items?.map((item, idx) => {
                             const isCompleted = completedItems.includes(item.id);
@@ -185,8 +185,8 @@ export default function FillChecklist() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: idx * 0.03 }}
                                     className={cn(
-                                        "border-b border-slate-100 last:border-0",
-                                        isCompleted && "bg-emerald-50/50"
+                                        "border-b border-blue-900/20 last:border-0",
+                                        isCompleted && "bg-blue-950/30"
                                     )}
                                 >
                                     <div className="p-4 flex items-start gap-4">
@@ -198,18 +198,18 @@ export default function FillChecklist() {
                                                 <motion.div
                                                     initial={{ scale: 0 }}
                                                     animate={{ scale: 1 }}
-                                                    className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center"
+                                                    className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center"
                                                 >
                                                     <CheckCircle className="w-5 h-5 text-white" />
                                                 </motion.div>
                                             ) : (
-                                                <Circle className="w-6 h-6 text-slate-300" />
+                                                <Circle className="w-6 h-6 text-blue-700" />
                                             )}
                                         </button>
                                         <div className="flex-1">
                                             <p className={cn(
-                                                "text-slate-700",
-                                                isCompleted && "line-through text-slate-400"
+                                                "text-blue-100",
+                                                isCompleted && "line-through text-blue-400/50"
                                             )}>
                                                 {item.text}
                                                 {item.required && <span className="text-red-500 ml-1">*</span>}
@@ -217,7 +217,7 @@ export default function FillChecklist() {
                                             {item.notes_enabled && (
                                                 <button
                                                     onClick={() => setActiveNoteItem(showNotes ? null : item.id)}
-                                                    className="mt-2 text-sm text-slate-400 hover:text-slate-600 flex items-center gap-1"
+                                                    className="mt-2 text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1"
                                                 >
                                                     <MessageSquare className="w-4 h-4" />
                                                     {itemNotes[item.id] ? 'Edit note' : 'Add note'}
@@ -240,7 +240,7 @@ export default function FillChecklist() {
                                                     [item.id]: e.target.value
                                                 }))}
                                                 placeholder="Add a note..."
-                                                className="bg-slate-50 border-slate-200 focus:bg-white"
+                                                className="bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
                                             />
                                         </motion.div>
                                     )}
@@ -250,7 +250,7 @@ export default function FillChecklist() {
                     </AnimatePresence>
                     
                     {(!checklist.items || checklist.items.length === 0) && (
-                        <p className="text-slate-500 text-center py-8">No items in this checklist</p>
+                        <p className="text-blue-300/70 text-center py-8">No items in this checklist</p>
                     )}
                 </div>
                 
@@ -259,7 +259,7 @@ export default function FillChecklist() {
                     <Button
                         onClick={handleSubmit}
                         disabled={!submitterName.trim() || submitMutation.isPending}
-                        className="w-full h-14 text-lg rounded-2xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50"
+                        className="w-full h-14 text-lg rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 shadow-lg shadow-blue-600/30"
                     >
                         {submitMutation.isPending ? (
                             <Loader2 className="w-5 h-5 animate-spin mr-2" />
