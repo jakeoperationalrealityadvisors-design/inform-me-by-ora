@@ -97,16 +97,16 @@ export default function ViewFormSubmission() {
     
     if (subLoading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+            <div className="min-h-screen bg-[#0a0e17] flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
             </div>
         );
     }
     
     if (!submission) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
-                <p className="text-slate-500 mb-4">Submission not found</p>
+            <div className="min-h-screen bg-[#0a0e17] flex flex-col items-center justify-center p-4">
+                <p className="text-blue-400 mb-4">Submission not found</p>
                 <Link to={createPageUrl('Submissions')}>
                     <Button>Go Back</Button>
                 </Link>
@@ -115,18 +115,18 @@ export default function ViewFormSubmission() {
     }
     
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-[#0a0e17]">
             {/* Header */}
-            <div className="bg-white border-b border-slate-100 sticky top-0 z-10">
+            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
                 <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
                     <Link to={createPageUrl('Submissions')}>
-                        <Button variant="ghost" size="icon" className="rounded-full">
+                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                     </Link>
                     <div className="flex-1">
-                        <h1 className="text-lg font-semibold text-slate-900">{submission.form_title}</h1>
-                        <p className="text-sm text-slate-500">Form Submission</p>
+                        <h1 className="text-lg font-semibold text-white">{submission.form_title}</h1>
+                        <p className="text-sm text-blue-400">Form Submission</p>
                     </div>
                     <Badge className={statusColors[submission.status]}>
                         {submission.status}
@@ -136,40 +136,40 @@ export default function ViewFormSubmission() {
             
             <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
                 {/* Meta Info */}
-                <div className="bg-white rounded-2xl border border-slate-200 p-6">
+                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-6">
                     <div className="grid grid-cols-2 gap-4">
                         {submission.submitted_by_name && (
                             <div>
-                                <p className="text-sm text-slate-500 mb-1">Submitted By</p>
-                                <p className="font-medium flex items-center gap-2">
-                                    <User className="w-4 h-4 text-slate-400" />
+                                <p className="text-sm text-blue-400 mb-1">Submitted By</p>
+                                <p className="font-medium flex items-center gap-2 text-white">
+                                    <User className="w-4 h-4 text-blue-400/70" />
                                     {submission.submitted_by_name}
                                 </p>
                             </div>
                         )}
                         {submission.location && (
                             <div>
-                                <p className="text-sm text-slate-500 mb-1">Location</p>
-                                <p className="font-medium flex items-center gap-2">
-                                    <MapPin className="w-4 h-4 text-slate-400" />
+                                <p className="text-sm text-blue-400 mb-1">Location</p>
+                                <p className="font-medium flex items-center gap-2 text-white">
+                                    <MapPin className="w-4 h-4 text-blue-400/70" />
                                     {submission.location}
                                 </p>
                             </div>
                         )}
                         <div>
-                            <p className="text-sm text-slate-500 mb-1">Submitted</p>
-                            <p className="font-medium flex items-center gap-2">
-                                <Clock className="w-4 h-4 text-slate-400" />
+                            <p className="text-sm text-blue-400 mb-1">Submitted</p>
+                            <p className="font-medium flex items-center gap-2 text-white">
+                                <Clock className="w-4 h-4 text-blue-400/70" />
                                 {format(new Date(submission.created_date), 'MMM d, yyyy h:mm a')}
                             </p>
                         </div>
                         <div>
-                            <p className="text-sm text-slate-500 mb-1">Update Status</p>
+                            <p className="text-sm text-blue-400 mb-1">Update Status</p>
                             <Select
                                 value={submission.status}
                                 onValueChange={(value) => updateMutation.mutate({ id: submission.id, data: { status: value } })}
                             >
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className="w-full bg-[#0a0e17] border-blue-900/20 text-white">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -184,19 +184,19 @@ export default function ViewFormSubmission() {
                 </div>
                 
                 {/* Responses */}
-                <div className="bg-white rounded-2xl border border-slate-200 p-6">
-                    <h2 className="text-lg font-semibold text-slate-900 mb-4">Responses</h2>
+                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-6">
+                    <h2 className="text-lg font-semibold text-white mb-4">Responses</h2>
                     <div className="space-y-4">
                         {submission.responses && Object.entries(submission.responses).map(([fieldId, value]) => (
-                            <div key={fieldId} className="border-b border-slate-100 pb-4 last:border-0 last:pb-0">
-                                <p className="text-sm text-slate-500 mb-1">{getFieldLabel(fieldId)}</p>
-                                <div className="font-medium text-slate-900">
+                            <div key={fieldId} className="border-b border-blue-900/20 pb-4 last:border-0 last:pb-0">
+                                <p className="text-sm text-blue-400 mb-1">{getFieldLabel(fieldId)}</p>
+                                <div className="font-medium text-white">
                                     {renderValue(fieldId, value)}
                                 </div>
                             </div>
                         ))}
                         {(!submission.responses || Object.keys(submission.responses).length === 0) && (
-                            <p className="text-slate-400 text-center py-4">No responses recorded</p>
+                            <p className="text-blue-400/60 text-center py-4">No responses recorded</p>
                         )}
                     </div>
                 </div>

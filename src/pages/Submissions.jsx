@@ -65,9 +65,9 @@ export default function Submissions() {
     const isLoading = formsLoading || checklistsLoading;
     
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-[#0a0e17]">
             {/* Header */}
-            <div className="bg-white border-b border-slate-100 sticky top-0 z-10">
+            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
                 <div className="max-w-2xl mx-auto px-4 py-4">
                     <div className="flex items-center gap-4 mb-4">
                         <Link to={createPageUrl('Home')}>
@@ -76,8 +76,8 @@ export default function Submissions() {
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-xl font-bold text-slate-900">Submissions</h1>
-                            <p className="text-sm text-slate-500">View all submitted forms and checklists</p>
+                            <h1 className="text-xl font-bold text-white">Submissions</h1>
+                            <p className="text-sm text-blue-400">View all submitted forms and checklists</p>
                         </div>
                     </div>
                     
@@ -91,13 +91,13 @@ export default function Submissions() {
             
             <div className="max-w-2xl mx-auto px-4 py-6">
                 {/* Tab Switcher */}
-                <div className="flex gap-2 p-1 bg-slate-100 rounded-2xl mb-6">
+                <div className="flex gap-2 p-1 bg-[#0f1419] rounded-2xl mb-6">
                     <button
                         onClick={() => setActiveTab('forms')}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all ${
                             activeTab === 'forms' 
-                                ? 'bg-white text-slate-900 shadow-sm' 
-                                : 'text-slate-500 hover:text-slate-700'
+                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
+                                : 'text-blue-300 hover:text-white'
                         }`}
                     >
                         <FileText className="w-4 h-4" />
@@ -107,8 +107,8 @@ export default function Submissions() {
                         onClick={() => setActiveTab('checklists')}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all ${
                             activeTab === 'checklists' 
-                                ? 'bg-white text-slate-900 shadow-sm' 
-                                : 'text-slate-500 hover:text-slate-700'
+                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
+                                : 'text-blue-300 hover:text-white'
                         }`}
                     >
                         <CheckSquare className="w-4 h-4" />
@@ -120,9 +120,9 @@ export default function Submissions() {
                 {isLoading ? (
                     <div className="space-y-4">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="bg-white rounded-2xl border border-slate-200 p-5 animate-pulse">
-                                <div className="h-5 w-3/4 bg-slate-100 rounded mb-3" />
-                                <div className="h-4 w-1/2 bg-slate-50 rounded" />
+                            <div key={i} className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-5 animate-pulse">
+                                <div className="h-5 w-3/4 bg-blue-950 rounded mb-3" />
+                                <div className="h-4 w-1/2 bg-blue-950/50 rounded" />
                             </div>
                         ))}
                     </div>
@@ -137,16 +137,16 @@ export default function Submissions() {
                                     transition={{ delay: idx * 0.05 }}
                                 >
                                     <Link to={createPageUrl(`ViewFormSubmission?id=${sub.id}`)}>
-                                        <div className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-100 transition-all group">
+                                        <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-5 hover:border-blue-700/50 hover:shadow-lg hover:shadow-blue-900/20 transition-all group">
                                             <div className="flex items-start justify-between mb-3">
-                                                <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                                                <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
                                                     {sub.form_title}
                                                 </h3>
                                                 <Badge className={statusColors[sub.status]}>
                                                     {sub.status}
                                                 </Badge>
                                             </div>
-                                            <div className="flex flex-wrap gap-4 text-sm text-slate-500">
+                                            <div className="flex flex-wrap gap-4 text-sm text-blue-400/70">
                                                 {sub.submitted_by_name && (
                                                     <span className="flex items-center gap-1">
                                                         <User className="w-4 h-4" />
@@ -187,16 +187,16 @@ export default function Submissions() {
                                     transition={{ delay: idx * 0.05 }}
                                 >
                                     <Link to={createPageUrl(`ViewChecklistSubmission?id=${sub.id}`)}>
-                                        <div className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-100 transition-all group">
+                                        <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-5 hover:border-blue-700/50 hover:shadow-lg hover:shadow-blue-900/20 transition-all group">
                                             <div className="flex items-start justify-between mb-3">
-                                                <h3 className="font-semibold text-slate-900 group-hover:text-emerald-600 transition-colors">
+                                                <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
                                                     {sub.checklist_title}
                                                 </h3>
                                                 <Badge className={statusColors[sub.status]}>
                                                     {sub.completion_percentage}% complete
                                                 </Badge>
                                             </div>
-                                            <div className="flex flex-wrap gap-4 text-sm text-slate-500">
+                                            <div className="flex flex-wrap gap-4 text-sm text-blue-400/70">
                                                 {sub.submitted_by_name && (
                                                     <span className="flex items-center gap-1">
                                                         <User className="w-4 h-4" />
