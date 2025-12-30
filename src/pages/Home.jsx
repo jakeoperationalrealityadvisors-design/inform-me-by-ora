@@ -56,9 +56,18 @@ export default function Home() {
             <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
                 <div className="max-w-2xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Forms & Checklists</h1>
-                            <p className="text-sm text-slate-600">Access your documents anywhere</p>
+                        <div className="flex items-center gap-3">
+                            <img 
+                                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/a3d021289_file_000000005d3071f5ac3dbefae9155a78.png" 
+                                alt="Operational Reality Advisors"
+                                className="h-12"
+                            />
+                            <div>
+                                <h1 className="text-xl font-bold text-slate-900">
+                                    Operational<span className="text-[#1e90ff]">Reality</span>
+                                </h1>
+                                <p className="text-xs text-slate-600">Forms & Checklists</p>
+                            </div>
                         </div>
                         <div className="flex gap-2">
                             <Link to={createPageUrl('DailyTasks')}>
@@ -120,7 +129,7 @@ export default function Home() {
                         onClick={() => setActiveTab('forms')}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-sm transition-all ${
                             activeTab === 'forms' 
-                                ? 'bg-amber-500 text-white shadow-md' 
+                                ? 'bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white shadow-md' 
                                 : 'text-slate-600 hover:bg-slate-50'
                         }`}
                     >
@@ -131,7 +140,7 @@ export default function Home() {
                         onClick={() => setActiveTab('checklists')}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-sm transition-all ${
                             activeTab === 'checklists' 
-                                ? 'bg-blue-700 text-white shadow-md' 
+                                ? 'bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white shadow-md' 
                                 : 'text-slate-600 hover:bg-slate-50'
                         }`}
                     >

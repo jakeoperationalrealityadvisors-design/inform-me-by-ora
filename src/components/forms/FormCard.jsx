@@ -17,7 +17,7 @@ export default function FormCard({ form, category }) {
                 className="bg-white rounded-lg border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all overflow-hidden"
             >
                 {/* Header Banner */}
-                <div className="bg-gradient-to-r from-amber-600 to-amber-500 px-6 py-3">
+                <div className="bg-gradient-to-r from-[#1e90ff] to-[#0066cc] px-6 py-3">
                     <h3 className="font-bold text-white text-lg uppercase tracking-wide">
                         {form.title}
                     </h3>

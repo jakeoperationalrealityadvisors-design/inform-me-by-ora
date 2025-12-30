@@ -2,39 +2,46 @@ import React from 'react';
 
 export default function Layout({ children, currentPageName }) {
     return (
-        <div className="dark-theme">
+        <div className="ora-theme">
             <style>{`
                 :root {
-                    --background: 0 0% 5%;
-                    --foreground: 210 40% 98%;
-                    --card: 222 47% 11%;
-                    --card-foreground: 210 40% 98%;
-                    --popover: 222 47% 11%;
-                    --popover-foreground: 210 40% 98%;
-                    --primary: 217 91% 60%;
-                    --primary-foreground: 222 47% 11%;
-                    --secondary: 217 33% 17%;
-                    --secondary-foreground: 210 40% 98%;
-                    --muted: 217 33% 17%;
-                    --muted-foreground: 215 20% 65%;
-                    --accent: 217 91% 60%;
-                    --accent-foreground: 210 40% 98%;
+                    --ora-blue: #1e90ff;
+                    --ora-dark-blue: #0066cc;
+                    --ora-light-blue: #4da6ff;
+                    --background: 0 0% 100%;
+                    --foreground: 222 47% 11%;
+                    --card: 0 0% 100%;
+                    --card-foreground: 222 47% 11%;
+                    --popover: 0 0% 100%;
+                    --popover-foreground: 222 47% 11%;
+                    --primary: 210 100% 56%;
+                    --primary-foreground: 0 0% 100%;
+                    --secondary: 214 32% 91%;
+                    --secondary-foreground: 222 47% 11%;
+                    --muted: 214 32% 91%;
+                    --muted-foreground: 215 16% 47%;
+                    --accent: 210 100% 56%;
+                    --accent-foreground: 0 0% 100%;
                     --destructive: 0 84% 60%;
-                    --destructive-foreground: 210 40% 98%;
-                    --border: 217 33% 17%;
-                    --input: 217 33% 17%;
-                    --ring: 217 91% 60%;
-                    --radius: 1rem;
+                    --destructive-foreground: 0 0% 100%;
+                    --border: 214 32% 91%;
+                    --input: 214 32% 91%;
+                    --ring: 210 100% 56%;
+                    --radius: 0.5rem;
                 }
                 
                 body {
-                    background: #0a0e17;
-                    color: #e2e8f0;
+                    background: #f8fafc;
+                    color: #1e293b;
                 }
                 
-                .dark-theme {
+                .ora-theme {
                     min-height: 100vh;
-                    background: #0a0e17;
+                    background: #f8fafc;
+                }
+                
+                .ora-gradient {
+                    background: linear-gradient(135deg, #1e90ff 0%, #0066cc 100%);
                 }
             `}</style>
             {children}
