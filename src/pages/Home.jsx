@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users } from 'lucide-react';
+import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users, Calendar } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 import SearchBar from '@/components/common/SearchBar';
@@ -61,6 +61,11 @@ export default function Home() {
                             <p className="text-sm text-blue-400">Access your documents anywhere</p>
                         </div>
                         <div className="flex gap-2">
+                            <Link to={createPageUrl('DailyTasks')}>
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                    <Calendar className="w-5 h-5" />
+                                </Button>
+                            </Link>
                             <Link to={createPageUrl('MyTasks')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
                                     <ListTodo className="w-5 h-5" />
