@@ -13,6 +13,7 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import DailyTasks from './pages/DailyTasks';
+import ManageDailyTasks from './pages/ManageDailyTasks';
 import __Layout from './Layout.jsx';
 
 
@@ -32,6 +33,7 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewFormSubmission": ViewFormSubmission,
     "DailyTasks": DailyTasks,
+    "ManageDailyTasks": ManageDailyTasks,
 }
 
 export const pagesConfig = {
