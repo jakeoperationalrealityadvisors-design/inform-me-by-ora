@@ -67,16 +67,16 @@ export default function FillForm() {
     
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+            <div className="min-h-screen bg-[#0a0e17] flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
             </div>
         );
     }
     
     if (!form) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
-                <p className="text-slate-500 mb-4">Form not found</p>
+            <div className="min-h-screen bg-[#0a0e17] flex flex-col items-center justify-center p-4">
+                <p className="text-blue-300 mb-4">Form not found</p>
                 <Link to={createPageUrl('Home')}>
                     <Button>Go Back</Button>
                 </Link>
@@ -86,18 +86,18 @@ export default function FillForm() {
     
     if (submitted) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+            <div className="min-h-screen bg-[#0a0e17] flex flex-col items-center justify-center p-4">
                 <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mb-6"
+                    className="w-20 h-20 rounded-full bg-blue-950/50 flex items-center justify-center mb-6 border border-blue-600/30"
                 >
-                    <CheckCircle className="w-10 h-10 text-emerald-600" />
+                    <CheckCircle className="w-10 h-10 text-blue-500" />
                 </motion.div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Submitted!</h2>
-                <p className="text-slate-500 mb-6">Your form has been submitted successfully</p>
+                <h2 className="text-2xl font-bold text-white mb-2">Submitted!</h2>
+                <p className="text-blue-300 mb-6">Your form has been submitted successfully</p>
                 <div className="flex gap-3">
-                    <Button variant="outline" onClick={() => {
+                    <Button variant="outline" className="border-blue-800 text-blue-300 hover:bg-blue-950/50" onClick={() => {
                         setResponses({});
                         setSubmitterName('');
                         setLocation('');
@@ -106,7 +106,7 @@ export default function FillForm() {
                         Fill Another
                     </Button>
                     <Link to={createPageUrl('Home')}>
-                        <Button className="bg-slate-900 hover:bg-slate-800">Back to Home</Button>
+                        <Button className="bg-blue-600 hover:bg-blue-700">Back to Home</Button>
                     </Link>
                 </div>
             </div>
@@ -114,46 +114,46 @@ export default function FillForm() {
     }
     
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-[#0a0e17]">
             {/* Header */}
-            <div className="bg-white border-b border-slate-100 sticky top-0 z-10">
+            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
                 <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
                     <Link to={createPageUrl('Home')}>
-                        <Button variant="ghost" size="icon" className="rounded-full">
+                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                     </Link>
                     <div className="flex-1">
-                        <h1 className="text-lg font-semibold text-slate-900">{form.title}</h1>
+                        <h1 className="text-lg font-semibold text-white">{form.title}</h1>
                         {form.description && (
-                            <p className="text-sm text-slate-500">{form.description}</p>
+                            <p className="text-sm text-blue-400">{form.description}</p>
                         )}
                     </div>
                 </div>
             </div>
             
             <div className="max-w-2xl mx-auto px-4 py-6">
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
+                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-6 space-y-6">
                     {/* Submitter Info */}
-                    <div className="pb-6 border-b border-slate-100 space-y-4">
+                    <div className="pb-6 border-b border-blue-900/20 space-y-4">
                         <div>
-                            <Label className="text-slate-700 font-medium">
+                            <Label className="text-blue-100 font-medium">
                                 Your Name <span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 value={submitterName}
                                 onChange={(e) => setSubmitterName(e.target.value)}
                                 placeholder="Enter your name"
-                                className="mt-2 bg-slate-50 border-slate-200 focus:bg-white"
+                                className="mt-2 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
                             />
                         </div>
                         <div>
-                            <Label className="text-slate-700 font-medium">Location / Site</Label>
+                            <Label className="text-blue-100 font-medium">Location / Site</Label>
                             <Input
                                 value={location}
                                 onChange={(e) => setLocation(e.target.value)}
                                 placeholder="Enter location (optional)"
-                                className="mt-2 bg-slate-50 border-slate-200 focus:bg-white"
+                                className="mt-2 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
                             />
                         </div>
                     </div>
@@ -177,7 +177,7 @@ export default function FillForm() {
                     </AnimatePresence>
                     
                     {(!form.fields || form.fields.length === 0) && (
-                        <p className="text-slate-500 text-center py-8">No fields in this form</p>
+                        <p className="text-blue-300/70 text-center py-8">No fields in this form</p>
                     )}
                 </div>
                 
@@ -186,7 +186,7 @@ export default function FillForm() {
                     <Button
                         onClick={handleSubmit}
                         disabled={!validateForm() || submitMutation.isPending}
-                        className="w-full h-14 text-lg rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                        className="w-full h-14 text-lg rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 shadow-lg shadow-blue-600/30"
                     >
                         {submitMutation.isPending ? (
                             <Loader2 className="w-5 h-5 animate-spin mr-2" />

@@ -30,7 +30,7 @@ export default function DynamicField({ field, value, onChange }) {
                         value={value || ''}
                         onChange={(e) => onChange(e.target.value)}
                         placeholder={field.placeholder || ''}
-                        className="bg-slate-50 border-slate-200 focus:bg-white"
+                        className="bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
                     />
                 );
                 
@@ -40,7 +40,7 @@ export default function DynamicField({ field, value, onChange }) {
                         value={value || ''}
                         onChange={(e) => onChange(e.target.value)}
                         placeholder={field.placeholder || ''}
-                        className="bg-slate-50 border-slate-200 focus:bg-white min-h-[100px]"
+                        className="bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50 min-h-[100px]"
                     />
                 );
                 
@@ -51,7 +51,7 @@ export default function DynamicField({ field, value, onChange }) {
                         value={value || ''}
                         onChange={(e) => onChange(e.target.value)}
                         placeholder={field.placeholder || ''}
-                        className="bg-slate-50 border-slate-200 focus:bg-white"
+                        className="bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
                     />
                 );
                 
@@ -61,19 +61,19 @@ export default function DynamicField({ field, value, onChange }) {
                         type="date"
                         value={value || ''}
                         onChange={(e) => onChange(e.target.value)}
-                        className="bg-slate-50 border-slate-200 focus:bg-white"
+                        className="bg-black/30 border-blue-900/30 focus:bg-black/50 text-white"
                     />
                 );
                 
             case 'select':
                 return (
                     <Select value={value || ''} onValueChange={onChange}>
-                        <SelectTrigger className="bg-slate-50 border-slate-200">
+                        <SelectTrigger className="bg-black/30 border-blue-900/30 text-white">
                             <SelectValue placeholder={field.placeholder || 'Select...'} />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-[#0f1419] border-blue-900/30 text-white">
                             {field.options?.map(opt => (
-                                <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                                <SelectItem key={opt} value={opt} className="hover:bg-blue-950/50">{opt}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
@@ -85,9 +85,9 @@ export default function DynamicField({ field, value, onChange }) {
                         <Checkbox
                             checked={value || false}
                             onCheckedChange={onChange}
-                            className="w-5 h-5"
+                            className="w-5 h-5 border-blue-600"
                         />
-                        <span className="text-slate-600">Yes</span>
+                        <span className="text-blue-200">Yes</span>
                     </div>
                 );
                 
@@ -119,14 +119,14 @@ export default function DynamicField({ field, value, onChange }) {
                                 variant="outline"
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={uploading}
-                                className="w-full h-24 border-dashed border-2"
+                                className="w-full h-24 border-dashed border-2 border-blue-800/50 bg-black/20 hover:bg-black/30"
                             >
                                 {uploading ? (
-                                    <span className="text-slate-500">Uploading...</span>
+                                    <span className="text-blue-400">Uploading...</span>
                                 ) : (
                                     <div className="flex flex-col items-center gap-2">
-                                        <Camera className="w-6 h-6 text-slate-400" />
-                                        <span className="text-slate-500">Take or upload photo</span>
+                                        <Camera className="w-6 h-6 text-blue-500" />
+                                        <span className="text-blue-300">Take or upload photo</span>
                                     </div>
                                 )}
                             </Button>
@@ -136,14 +136,14 @@ export default function DynamicField({ field, value, onChange }) {
                 
             case 'signature':
                 return (
-                    <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center">
+                    <div className="border-2 border-dashed border-blue-800/50 rounded-xl p-4 text-center bg-black/20">
                         <Input
                             value={value || ''}
                             onChange={(e) => onChange(e.target.value)}
                             placeholder="Type your name as signature"
-                            className="text-center italic bg-transparent border-0 text-lg"
+                            className="text-center italic bg-transparent border-0 text-lg text-white placeholder:text-blue-400/50"
                         />
-                        <p className="text-xs text-slate-400 mt-2">Your typed name will serve as your signature</p>
+                        <p className="text-xs text-blue-400/70 mt-2">Your typed name will serve as your signature</p>
                     </div>
                 );
                 
@@ -152,7 +152,7 @@ export default function DynamicField({ field, value, onChange }) {
                     <Input
                         value={value || ''}
                         onChange={(e) => onChange(e.target.value)}
-                        className="bg-slate-50 border-slate-200 focus:bg-white"
+                        className="bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
                     />
                 );
         }
@@ -160,7 +160,7 @@ export default function DynamicField({ field, value, onChange }) {
     
     return (
         <div className="space-y-2">
-            <Label className="text-slate-700 font-medium">
+            <Label className="text-blue-100 font-medium">
                 {field.label}
                 {field.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
