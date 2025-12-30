@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import SearchBar from '@/components/common/SearchBar';
 import EmptyState from '@/components/common/EmptyState';
 import { useUserRole } from '@/components/auth/RoleGuard';
+import BulkExportDialog from '@/components/pdf/BulkExportDialog';
 
 export default function Submissions() {
     const [search, setSearch] = useState('');
@@ -90,6 +91,14 @@ export default function Submissions() {
             </div>
             
             <div className="max-w-2xl mx-auto px-4 py-6">
+                {/* Bulk Export */}
+                <div className="flex justify-end mb-4">
+                    <BulkExportDialog 
+                        submissions={activeTab === 'forms' ? filteredForms : filteredChecklists}
+                        type={activeTab === 'forms' ? 'form' : 'checklist'}
+                    />
+                </div>
+
                 {/* Tab Switcher */}
                 <div className="flex gap-2 p-1 bg-[#0f1419] rounded-2xl mb-6">
                     <button

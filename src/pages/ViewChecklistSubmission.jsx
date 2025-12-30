@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import CommentSection from '@/components/collaboration/CommentSection';
 import AssignmentPanel from '@/components/collaboration/AssignmentPanel';
+import ExportButton from '@/components/pdf/ExportButton';
 
 export default function ViewChecklistSubmission() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -88,9 +89,17 @@ export default function ViewChecklistSubmission() {
                             <h1 className="text-lg font-semibold text-white">{submission.checklist_title}</h1>
                             <p className="text-sm text-blue-400">Checklist Submission</p>
                         </div>
-                        <Badge className={statusColors[submission.status]}>
-                            {submission.status?.replace('_', ' ')}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                            <ExportButton 
+                                submission={submission}
+                                template={checklistTemplate}
+                                type="checklist"
+                                size="sm"
+                            />
+                            <Badge className={statusColors[submission.status]}>
+                                {submission.status?.replace('_', ' ')}
+                            </Badge>
+                        </div>
                     </div>
                     
                     {/* Progress */}

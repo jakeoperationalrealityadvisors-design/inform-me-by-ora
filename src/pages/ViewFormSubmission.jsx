@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import CommentSection from '@/components/collaboration/CommentSection';
 import AssignmentPanel from '@/components/collaboration/AssignmentPanel';
+import ExportButton from '@/components/pdf/ExportButton';
 
 export default function ViewFormSubmission() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -128,9 +129,17 @@ export default function ViewFormSubmission() {
                         <h1 className="text-lg font-semibold text-white">{submission.form_title}</h1>
                         <p className="text-sm text-blue-400">Form Submission</p>
                     </div>
-                    <Badge className={statusColors[submission.status]}>
-                        {submission.status}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                        <ExportButton 
+                            submission={submission}
+                            template={formTemplate}
+                            type="form"
+                            size="sm"
+                        />
+                        <Badge className={statusColors[submission.status]}>
+                            {submission.status}
+                        </Badge>
+                    </div>
                 </div>
             </div>
             
