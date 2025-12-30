@@ -5,6 +5,9 @@ import Submissions from './pages/Submissions';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import Admin from './pages/Admin';
+import EditForm from './pages/EditForm';
+import EditChecklist from './pages/EditChecklist';
+import EditCategory from './pages/EditCategory';
 
 
 export const PAGES = {
@@ -15,6 +18,9 @@ export const PAGES = {
     "ViewFormSubmission": ViewFormSubmission,
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "Admin": Admin,
+    "EditForm": EditForm,
+    "EditChecklist": EditChecklist,
+    "EditCategory": EditCategory,
 }
 
 export const pagesConfig = {
