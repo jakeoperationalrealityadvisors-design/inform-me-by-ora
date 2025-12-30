@@ -3,16 +3,21 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, FileText, CheckSquare, Calendar, AlertCircle, User } from 'lucide-react';
+import { ArrowLeft, FileText, CheckSquare, Calendar, AlertCircle, User, LayoutList, CalendarDays, ArrowUpDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format, isPast, isToday } from 'date-fns';
 import { motion } from 'framer-motion';
 import { useUserRole } from '@/components/auth/RoleGuard';
+import TaskCalendar from '@/components/tasks/TaskCalendar';
+import TaskReminderBadge from '@/components/tasks/TaskReminderBadge';
 
 export default function MyTasks() {
     const [filter, setFilter] = useState('all');
+    const [viewMode, setViewMode] = useState('list'); // 'list' or 'calendar'
+    const [sortBy, setSortBy] = useState('due_date'); // 'due_date', 'priority', 'status'
     const { user, canViewAll } = useUserRole();
     
     const { data: formTasks = [] } = useQuery({
@@ -38,16 +43,33 @@ export default function MyTasks() {
     });
     
     const filterTasks = (tasks) => {
+        let filtered = [...tasks];
+        
+        // Apply filter
         if (filter === 'overdue') {
-            return tasks.filter(t => t.due_date && isPast(new Date(t.due_date)) && !isToday(new Date(t.due_date)));
+            filtered = filtered.filter(t => t.due_date && isPast(new Date(t.due_date)) && !isToday(new Date(t.due_date)));
+        } else if (filter === 'today') {
+            filtered = filtered.filter(t => t.due_date && isToday(new Date(t.due_date)));
+        } else if (filter === 'upcoming') {
+            filtered = filtered.filter(t => t.due_date && !isPast(new Date(t.due_date)) && !isToday(new Date(t.due_date)));
         }
-        if (filter === 'today') {
-            return tasks.filter(t => t.due_date && isToday(new Date(t.due_date)));
-        }
-        if (filter === 'upcoming') {
-            return tasks.filter(t => t.due_date && !isPast(new Date(t.due_date)) && !isToday(new Date(t.due_date)));
-        }
-        return tasks;
+        
+        // Apply sorting
+        filtered.sort((a, b) => {
+            if (sortBy === 'due_date') {
+                if (!a.due_date) return 1;
+                if (!b.due_date) return -1;
+                return new Date(a.due_date) - new Date(b.due_date);
+            } else if (sortBy === 'priority') {
+                const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
+                return priorityOrder[a.priority || 'medium'] - priorityOrder[b.priority || 'medium'];
+            } else if (sortBy === 'status') {
+                return (a.status || '').localeCompare(b.status || '');
+            }
+            return 0;
+        });
+        
+        return filtered;
     };
     
     const filteredForms = filterTasks(formTasks);
@@ -85,35 +107,84 @@ export default function MyTasks() {
             </div>
             
             <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-                {/* Filter Buttons */}
-                <div className="flex gap-2 overflow-x-auto pb-2">
-                    {['all', 'overdue', 'today', 'upcoming'].map((f) => (
+                {/* Controls */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                    {/* View Toggle */}
+                    <div className="flex gap-2 p-1 bg-[#0f1419] rounded-lg border border-blue-900/20">
                         <Button
-                            key={f}
-                            onClick={() => setFilter(f)}
-                            variant={filter === f ? 'default' : 'outline'}
+                            onClick={() => setViewMode('list')}
+                            variant="ghost"
                             size="sm"
-                            className={filter === f 
-                                ? 'bg-blue-600 hover:bg-blue-700' 
-                                : 'border-blue-800 text-blue-300 hover:bg-blue-950/50'}
+                            className={viewMode === 'list' ? 'bg-blue-600 hover:bg-blue-700' : 'hover:bg-blue-950/50 text-blue-300'}
                         >
-                            {f.charAt(0).toUpperCase() + f.slice(1)}
+                            <LayoutList className="w-4 h-4 mr-2" />
+                            List
                         </Button>
-                    ))}
+                        <Button
+                            onClick={() => setViewMode('calendar')}
+                            variant="ghost"
+                            size="sm"
+                            className={viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : 'hover:bg-blue-950/50 text-blue-300'}
+                        >
+                            <CalendarDays className="w-4 h-4 mr-2" />
+                            Calendar
+                        </Button>
+                    </div>
+                    
+                    {/* Sort By */}
+                    {viewMode === 'list' && (
+                        <Select value={sortBy} onValueChange={setSortBy}>
+                            <SelectTrigger className="w-[180px] bg-[#0f1419] border-blue-900/20 text-white">
+                                <ArrowUpDown className="w-4 h-4 mr-2" />
+                                <SelectValue placeholder="Sort by" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="due_date">Due Date</SelectItem>
+                                <SelectItem value="priority">Priority</SelectItem>
+                                <SelectItem value="status">Status</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    )}
+                    
+                    {/* Filter Buttons */}
+                    {viewMode === 'list' && (
+                        <div className="flex gap-2 overflow-x-auto">
+                            {['all', 'overdue', 'today', 'upcoming'].map((f) => (
+                                <Button
+                                    key={f}
+                                    onClick={() => setFilter(f)}
+                                    variant={filter === f ? 'default' : 'outline'}
+                                    size="sm"
+                                    className={filter === f 
+                                        ? 'bg-blue-600 hover:bg-blue-700' 
+                                        : 'border-blue-800 text-blue-300 hover:bg-blue-950/50'}
+                                >
+                                    {f.charAt(0).toUpperCase() + f.slice(1)}
+                                </Button>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 
-                {/* Tabs */}
-                <Tabs defaultValue="forms">
-                    <TabsList className="w-full grid grid-cols-2">
-                        <TabsTrigger value="forms" className="gap-2">
-                            <FileText className="w-4 h-4" />
-                            Forms ({filteredForms.length})
-                        </TabsTrigger>
-                        <TabsTrigger value="checklists" className="gap-2">
-                            <CheckSquare className="w-4 h-4" />
-                            Checklists ({filteredChecklists.length})
-                        </TabsTrigger>
-                    </TabsList>
+                {/* Calendar View */}
+                {viewMode === 'calendar' ? (
+                    <TaskCalendar 
+                        formTasks={filteredForms}
+                        checklistTasks={filteredChecklists}
+                    />
+                ) : (
+                    /* List View */
+                    <Tabs defaultValue="forms">
+                        <TabsList className="w-full grid grid-cols-2">
+                            <TabsTrigger value="forms" className="gap-2">
+                                <FileText className="w-4 h-4" />
+                                Forms ({filteredForms.length})
+                            </TabsTrigger>
+                            <TabsTrigger value="checklists" className="gap-2">
+                                <CheckSquare className="w-4 h-4" />
+                                Checklists ({filteredChecklists.length})
+                            </TabsTrigger>
+                        </TabsList>
                     
                     <TabsContent value="forms" className="space-y-4 mt-4">
                         {filteredForms.length > 0 ? (
@@ -127,18 +198,28 @@ export default function MyTasks() {
                                     <Link to={createPageUrl(`ViewFormSubmission?id=${task.id}`)}>
                                         <div className="bg-[#0f1419] border border-blue-900/20 rounded-xl p-4 hover:border-blue-700/50 transition-all">
                                             <div className="flex items-start justify-between mb-3">
-                                                <h3 className="font-semibold text-white">{task.form_title}</h3>
-                                                <Badge className={priorityColors[task.priority || 'medium']}>
-                                                    {task.priority || 'medium'}
-                                                </Badge>
+                                                <div className="flex-1">
+                                                    <h3 className="font-semibold text-white mb-2">{task.form_title}</h3>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        <Badge className={priorityColors[task.priority || 'medium']}>
+                                                            {task.priority || 'medium'}
+                                                        </Badge>
+                                                        <TaskReminderBadge dueDate={task.due_date} />
+                                                    </div>
+                                                </div>
                                             </div>
                                             
-                                            <div className="flex flex-wrap gap-3 text-sm">
+                                            <div className="flex flex-wrap gap-3 text-sm text-blue-300">
                                                 {task.due_date && (
-                                                    <div className={`flex items-center gap-1 ${isOverdue(task.due_date) ? 'text-red-400' : 'text-blue-300'}`}>
+                                                    <div className="flex items-center gap-1">
                                                         <Calendar className="w-4 h-4" />
-                                                        Due {format(new Date(task.due_date), 'MMM d, yyyy')}
-                                                        {isOverdue(task.due_date) && <AlertCircle className="w-4 h-4" />}
+                                                        {format(new Date(task.due_date), 'MMM d, yyyy')}
+                                                    </div>
+                                                )}
+                                                {task.assigned_to_email && (
+                                                    <div className="flex items-center gap-1">
+                                                        <User className="w-4 h-4" />
+                                                        {task.assigned_to_email}
                                                     </div>
                                                 )}
                                                 {task.location && (
@@ -168,18 +249,31 @@ export default function MyTasks() {
                                     <Link to={createPageUrl(`ViewChecklistSubmission?id=${task.id}`)}>
                                         <div className="bg-[#0f1419] border border-blue-900/20 rounded-xl p-4 hover:border-blue-700/50 transition-all">
                                             <div className="flex items-start justify-between mb-3">
-                                                <h3 className="font-semibold text-white">{task.checklist_title}</h3>
-                                                <Badge className={priorityColors[task.priority || 'medium']}>
-                                                    {task.completion_percentage || 0}% complete
-                                                </Badge>
+                                                <div className="flex-1">
+                                                    <h3 className="font-semibold text-white mb-2">{task.checklist_title}</h3>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        <Badge className={priorityColors[task.priority || 'medium']}>
+                                                            {task.priority || 'medium'}
+                                                        </Badge>
+                                                        <Badge className="bg-blue-500/20 text-blue-400">
+                                                            {task.completion_percentage || 0}% complete
+                                                        </Badge>
+                                                        <TaskReminderBadge dueDate={task.due_date} />
+                                                    </div>
+                                                </div>
                                             </div>
                                             
-                                            <div className="flex flex-wrap gap-3 text-sm">
+                                            <div className="flex flex-wrap gap-3 text-sm text-blue-300">
                                                 {task.due_date && (
-                                                    <div className={`flex items-center gap-1 ${isOverdue(task.due_date) ? 'text-red-400' : 'text-blue-300'}`}>
+                                                    <div className="flex items-center gap-1">
                                                         <Calendar className="w-4 h-4" />
-                                                        Due {format(new Date(task.due_date), 'MMM d, yyyy')}
-                                                        {isOverdue(task.due_date) && <AlertCircle className="w-4 h-4" />}
+                                                        {format(new Date(task.due_date), 'MMM d, yyyy')}
+                                                    </div>
+                                                )}
+                                                {task.assigned_to_email && (
+                                                    <div className="flex items-center gap-1">
+                                                        <User className="w-4 h-4" />
+                                                        {task.assigned_to_email}
                                                     </div>
                                                 )}
                                                 {task.location && (
@@ -197,6 +291,7 @@ export default function MyTasks() {
                         )}
                     </TabsContent>
                 </Tabs>
+                )}
             </div>
         </div>
     );

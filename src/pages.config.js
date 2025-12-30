@@ -1,35 +1,35 @@
-import Home from './pages/Home';
-import FillForm from './pages/FillForm';
-import FillChecklist from './pages/FillChecklist';
-import Submissions from './pages/Submissions';
-import ViewFormSubmission from './pages/ViewFormSubmission';
-import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import Admin from './pages/Admin';
-import EditForm from './pages/EditForm';
-import EditChecklist from './pages/EditChecklist';
 import EditCategory from './pages/EditCategory';
+import EditChecklist from './pages/EditChecklist';
+import EditForm from './pages/EditForm';
+import FillChecklist from './pages/FillChecklist';
+import FillForm from './pages/FillForm';
+import Home from './pages/Home';
+import MyTasks from './pages/MyTasks';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
-import MyTasks from './pages/MyTasks';
+import Submissions from './pages/Submissions';
 import UserManagement from './pages/UserManagement';
+import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
+import ViewFormSubmission from './pages/ViewFormSubmission';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Home": Home,
-    "FillForm": FillForm,
-    "FillChecklist": FillChecklist,
-    "Submissions": Submissions,
-    "ViewFormSubmission": ViewFormSubmission,
-    "ViewChecklistSubmission": ViewChecklistSubmission,
     "Admin": Admin,
-    "EditForm": EditForm,
-    "EditChecklist": EditChecklist,
     "EditCategory": EditCategory,
+    "EditChecklist": EditChecklist,
+    "EditForm": EditForm,
+    "FillChecklist": FillChecklist,
+    "FillForm": FillForm,
+    "Home": Home,
+    "MyTasks": MyTasks,
     "Reports": Reports,
     "Settings": Settings,
-    "MyTasks": MyTasks,
+    "Submissions": Submissions,
     "UserManagement": UserManagement,
+    "ViewChecklistSubmission": ViewChecklistSubmission,
+    "ViewFormSubmission": ViewFormSubmission,
 }
 
 export const pagesConfig = {
