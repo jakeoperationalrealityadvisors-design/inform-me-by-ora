@@ -9,8 +9,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { format, subDays, startOfDay } from 'date-fns';
+import RoleGuard from '@/components/auth/RoleGuard';
 
 export default function Reports() {
+    return (
+        <RoleGuard allowedRoles={['admin', 'manager']}>
+            <ReportsContent />
+        </RoleGuard>
+    );
+}
+
+function ReportsContent() {
     const [timeRange, setTimeRange] = useState(7);
     
     const { data: formSubmissions = [] } = useQuery({

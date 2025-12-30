@@ -9,19 +9,18 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format, isPast, isToday } from 'date-fns';
 import { motion } from 'framer-motion';
+import { useUserRole } from '@/components/auth/RoleGuard';
 
 export default function MyTasks() {
     const [filter, setFilter] = useState('all');
-    
-    const { data: user } = useQuery({
-        queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
-    });
+    const { user, canViewAll } = useUserRole();
     
     const { data: formTasks = [] } = useQuery({
         queryKey: ['my-form-tasks'],
         queryFn: async () => {
             const all = await base44.entities.FormSubmission.list('-due_date');
+            // Managers and admins see all tasks, team members see only assigned
+            if (canViewAll) return all;
             return all.filter(f => f.assigned_to_email === user?.email);
         },
         enabled: !!user
@@ -31,6 +30,8 @@ export default function MyTasks() {
         queryKey: ['my-checklist-tasks'],
         queryFn: async () => {
             const all = await base44.entities.ChecklistSubmission.list('-due_date');
+            // Managers and admins see all tasks, team members see only assigned
+            if (canViewAll) return all;
             return all.filter(c => c.assigned_to_email === user?.email);
         },
         enabled: !!user
@@ -72,8 +73,12 @@ export default function MyTasks() {
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-xl font-bold text-white">My Tasks</h1>
-                            <p className="text-sm text-blue-400">Tasks assigned to you</p>
+                            <h1 className="text-xl font-bold text-white">
+                                {canViewAll ? 'Team Tasks' : 'My Tasks'}
+                            </h1>
+                            <p className="text-sm text-blue-400">
+                                {canViewAll ? 'All team tasks and assignments' : 'Tasks assigned to you'}
+                            </p>
                         </div>
                     </div>
                 </div>

@@ -10,19 +10,35 @@ import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import SearchBar from '@/components/common/SearchBar';
 import EmptyState from '@/components/common/EmptyState';
+import { useUserRole } from '@/components/auth/RoleGuard';
 
 export default function Submissions() {
     const [search, setSearch] = useState('');
     const [activeTab, setActiveTab] = useState('forms');
+    const { user, canViewAll } = useUserRole();
     
     const { data: formSubmissions = [], isLoading: formsLoading } = useQuery({
         queryKey: ['form-submissions'],
-        queryFn: () => base44.entities.FormSubmission.list('-created_date')
+        queryFn: async () => {
+            const all = await base44.entities.FormSubmission.list('-created_date');
+            // Team members only see their own submissions
+            if (!canViewAll) {
+                return all.filter(f => f.created_by === user?.email);
+            }
+            return all;
+        }
     });
     
     const { data: checklistSubmissions = [], isLoading: checklistsLoading } = useQuery({
         queryKey: ['checklist-submissions'],
-        queryFn: () => base44.entities.ChecklistSubmission.list('-created_date')
+        queryFn: async () => {
+            const all = await base44.entities.ChecklistSubmission.list('-created_date');
+            // Team members only see their own submissions
+            if (!canViewAll) {
+                return all.filter(c => c.created_by === user?.email);
+            }
+            return all;
+        }
     });
     
     const filteredForms = formSubmissions.filter(sub =>

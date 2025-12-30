@@ -7,9 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, User, AlertCircle } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
+import { useUserRole } from '@/components/auth/RoleGuard';
 
 export default function AssignmentPanel({ submission, onUpdate }) {
     const [isEditing, setIsEditing] = useState(false);
+    const { canManage } = useUserRole();
     const [assignee, setAssignee] = useState(submission.assigned_to_email || '');
     const [dueDate, setDueDate] = useState(submission.due_date || '');
     const [priority, setPriority] = useState(submission.priority || 'medium');
@@ -44,14 +46,16 @@ export default function AssignmentPanel({ submission, onUpdate }) {
             <div className="bg-[#0f1419] border border-blue-900/20 rounded-xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-white">Task Assignment</h3>
-                    <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setIsEditing(true)}
-                        className="border-blue-800 text-blue-300 hover:bg-blue-950/50"
-                    >
-                        Edit
-                    </Button>
+                    {canManage && (
+                        <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setIsEditing(true)}
+                            className="border-blue-800 text-blue-300 hover:bg-blue-950/50"
+                        >
+                            Edit
+                        </Button>
+                    )}
                 </div>
                 
                 <div className="space-y-2">
@@ -89,6 +93,10 @@ export default function AssignmentPanel({ submission, onUpdate }) {
                 </div>
             </div>
         );
+    }
+    
+    if (!canManage) {
+        return null; // Non-managers shouldn't see edit form
     }
     
     return (

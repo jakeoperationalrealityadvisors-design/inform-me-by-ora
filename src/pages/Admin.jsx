@@ -18,8 +18,17 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { motion } from 'framer-motion';
+import RoleGuard from '@/components/auth/RoleGuard';
 
 export default function Admin() {
+    return (
+        <RoleGuard allowedRoles={['admin']}>
+            <AdminContent />
+        </RoleGuard>
+    );
+}
+
+function AdminContent() {
     const queryClient = useQueryClient();
     const [deleteItem, setDeleteItem] = useState(null);
     

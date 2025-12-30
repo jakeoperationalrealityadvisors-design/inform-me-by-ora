@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo } from 'lucide-react';
+import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 import SearchBar from '@/components/common/SearchBar';
@@ -11,8 +11,10 @@ import FormCard from '@/components/forms/FormCard';
 import ChecklistCard from '@/components/forms/ChecklistCard';
 import CategoryFilter from '@/components/forms/CategoryFilter';
 import EmptyState from '@/components/common/EmptyState';
+import { useUserRole } from '@/components/auth/RoleGuard';
 
 export default function Home() {
+    const { isAdmin, canViewAll } = useUserRole();
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeTab, setActiveTab] = useState('forms');
@@ -64,16 +66,25 @@ export default function Home() {
                                     <ListTodo className="w-5 h-5" />
                                 </Button>
                             </Link>
-                            <Link to={createPageUrl('Reports')}>
-                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
-                                    <BarChart3 className="w-5 h-5" />
-                                </Button>
-                            </Link>
+                            {canViewAll && (
+                                <Link to={createPageUrl('Reports')}>
+                                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                        <BarChart3 className="w-5 h-5" />
+                                    </Button>
+                                </Link>
+                            )}
                             <Link to={createPageUrl('Submissions')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
                                     <History className="w-5 h-5" />
                                 </Button>
                             </Link>
+                            {isAdmin && (
+                                <Link to={createPageUrl('Admin')}>
+                                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                        <Shield className="w-5 h-5" />
+                                    </Button>
+                                </Link>
+                            )}
                             <Link to={createPageUrl('Settings')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
                                     <Settings className="w-5 h-5" />
