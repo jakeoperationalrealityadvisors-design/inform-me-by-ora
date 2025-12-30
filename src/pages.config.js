@@ -10,6 +10,7 @@ import EditChecklist from './pages/EditChecklist';
 import EditCategory from './pages/EditCategory';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import MyTasks from './pages/MyTasks';
 import __Layout from './Layout.jsx';
 
 
@@ -26,6 +27,7 @@ export const PAGES = {
     "EditCategory": EditCategory,
     "Reports": Reports,
     "Settings": Settings,
+    "MyTasks": MyTasks,
 }
 
 export const pagesConfig = {
