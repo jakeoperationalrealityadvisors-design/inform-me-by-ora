@@ -1,0 +1,192 @@
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import { FileText, CheckSquare, ClipboardList, History, Plus, Settings } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { motion } from 'framer-motion';
+import SearchBar from '@/components/common/SearchBar';
+import FormCard from '@/components/forms/FormCard';
+import ChecklistCard from '@/components/forms/ChecklistCard';
+import CategoryFilter from '@/components/forms/CategoryFilter';
+import EmptyState from '@/components/common/EmptyState';
+
+export default function Home() {
+    const [search, setSearch] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [activeTab, setActiveTab] = useState('forms');
+    
+    const { data: forms = [], isLoading: formsLoading } = useQuery({
+        queryKey: ['forms'],
+        queryFn: () => base44.entities.FormTemplate.filter({ status: 'active' })
+    });
+    
+    const { data: checklists = [], isLoading: checklistsLoading } = useQuery({
+        queryKey: ['checklists'],
+        queryFn: () => base44.entities.ChecklistTemplate.filter({ status: 'active' })
+    });
+    
+    const { data: categories = [] } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => base44.entities.Category.list()
+    });
+    
+    const getCategoryById = (id) => categories.find(c => c.id === id);
+    
+    const filteredForms = forms.filter(form => {
+        const matchesSearch = !search || form.title.toLowerCase().includes(search.toLowerCase());
+        const matchesCategory = !selectedCategory || form.category_id === selectedCategory;
+        return matchesSearch && matchesCategory;
+    });
+    
+    const filteredChecklists = checklists.filter(cl => {
+        const matchesSearch = !search || cl.title.toLowerCase().includes(search.toLowerCase());
+        const matchesCategory = !selectedCategory || cl.category_id === selectedCategory;
+        return matchesSearch && matchesCategory;
+    });
+    
+    const isLoading = formsLoading || checklistsLoading;
+    
+    return (
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+            {/* Header */}
+            <div className="bg-white border-b border-slate-100 sticky top-0 z-10">
+                <div className="max-w-2xl mx-auto px-4 py-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900">Forms & Checklists</h1>
+                            <p className="text-sm text-slate-500">Access your documents anywhere</p>
+                        </div>
+                        <div className="flex gap-2">
+                            <Link to={createPageUrl('Submissions')}>
+                                <Button variant="ghost" size="icon" className="rounded-full">
+                                    <History className="w-5 h-5" />
+                                </Button>
+                            </Link>
+                            <Link to={createPageUrl('Admin')}>
+                                <Button variant="ghost" size="icon" className="rounded-full">
+                                    <Settings className="w-5 h-5" />
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
+                    
+                    <SearchBar
+                        value={search}
+                        onChange={setSearch}
+                        placeholder="Search forms and checklists..."
+                    />
+                </div>
+            </div>
+            
+            <div className="max-w-2xl mx-auto px-4 py-6">
+                {/* Tab Switcher */}
+                <div className="flex gap-2 p-1 bg-slate-100 rounded-2xl mb-6">
+                    <button
+                        onClick={() => setActiveTab('forms')}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all ${
+                            activeTab === 'forms' 
+                                ? 'bg-white text-slate-900 shadow-sm' 
+                                : 'text-slate-500 hover:text-slate-700'
+                        }`}
+                    >
+                        <FileText className="w-4 h-4" />
+                        Forms ({forms.length})
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('checklists')}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all ${
+                            activeTab === 'checklists' 
+                                ? 'bg-white text-slate-900 shadow-sm' 
+                                : 'text-slate-500 hover:text-slate-700'
+                        }`}
+                    >
+                        <CheckSquare className="w-4 h-4" />
+                        Checklists ({checklists.length})
+                    </button>
+                </div>
+                
+                {/* Category Filter */}
+                {categories.length > 0 && (
+                    <div className="mb-6">
+                        <CategoryFilter
+                            categories={categories}
+                            selected={selectedCategory}
+                            onSelect={setSelectedCategory}
+                        />
+                    </div>
+                )}
+                
+                {/* Content */}
+                {isLoading ? (
+                    <div className="grid gap-4">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className="bg-white rounded-2xl border border-slate-200 p-5 animate-pulse">
+                                <div className="w-12 h-12 rounded-xl bg-slate-100 mb-4" />
+                                <div className="h-5 w-3/4 bg-slate-100 rounded mb-2" />
+                                <div className="h-4 w-1/2 bg-slate-50 rounded" />
+                            </div>
+                        ))}
+                    </div>
+                ) : activeTab === 'forms' ? (
+                    filteredForms.length > 0 ? (
+                        <motion.div 
+                            className="grid gap-4"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                        >
+                            {filteredForms.map((form, idx) => (
+                                <motion.div
+                                    key={form.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: idx * 0.05 }}
+                                >
+                                    <FormCard 
+                                        form={form} 
+                                        category={getCategoryById(form.category_id)}
+                                    />
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    ) : (
+                        <EmptyState
+                            icon={FileText}
+                            title="No forms found"
+                            description={search ? "Try adjusting your search" : "Forms will appear here once created"}
+                        />
+                    )
+                ) : (
+                    filteredChecklists.length > 0 ? (
+                        <motion.div 
+                            className="grid gap-4"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                        >
+                            {filteredChecklists.map((checklist, idx) => (
+                                <motion.div
+                                    key={checklist.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: idx * 0.05 }}
+                                >
+                                    <ChecklistCard 
+                                        checklist={checklist}
+                                        category={getCategoryById(checklist.category_id)}
+                                    />
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    ) : (
+                        <EmptyState
+                            icon={CheckSquare}
+                            title="No checklists found"
+                            description={search ? "Try adjusting your search" : "Checklists will appear here once created"}
+                        />
+                    )
+                )}
+            </div>
+        </div>
+    );
+}
