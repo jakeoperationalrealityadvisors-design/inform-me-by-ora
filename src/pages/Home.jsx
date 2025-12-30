@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield } from 'lucide-react';
+import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 import SearchBar from '@/components/common/SearchBar';
@@ -79,11 +79,18 @@ export default function Home() {
                                 </Button>
                             </Link>
                             {isAdmin && (
-                                <Link to={createPageUrl('Admin')}>
-                                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
-                                        <Shield className="w-5 h-5" />
-                                    </Button>
-                                </Link>
+                                <>
+                                    <Link to={createPageUrl('Admin')}>
+                                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                            <Shield className="w-5 h-5" />
+                                        </Button>
+                                    </Link>
+                                    <Link to={createPageUrl('UserManagement')}>
+                                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                            <Users className="w-5 h-5" />
+                                        </Button>
+                                    </Link>
+                                </>
                             )}
                             <Link to={createPageUrl('Settings')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
