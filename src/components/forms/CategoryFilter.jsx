@@ -12,8 +12,8 @@ export default function CategoryFilter({ categories, selected, onSelect }) {
                 className={cn(
                     "rounded-full px-4 whitespace-nowrap transition-all",
                     !selected 
-                        ? "bg-slate-900 text-white hover:bg-slate-800" 
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/30" 
+                        : "bg-[#0f1419] text-blue-300 hover:bg-blue-950/50 border border-blue-900/30"
                 )}
             >
                 All
@@ -27,8 +27,8 @@ export default function CategoryFilter({ categories, selected, onSelect }) {
                     className={cn(
                         "rounded-full px-4 whitespace-nowrap transition-all",
                         selected === cat.id 
-                            ? "bg-slate-900 text-white hover:bg-slate-800" 
-                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                            ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/30" 
+                            : "bg-[#0f1419] text-blue-300 hover:bg-blue-950/50 border border-blue-900/30"
                     )}
                 >
                     {cat.name}

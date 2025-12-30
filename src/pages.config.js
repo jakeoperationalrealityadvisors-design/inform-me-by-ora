@@ -8,6 +8,7 @@ import Admin from './pages/Admin';
 import EditForm from './pages/EditForm';
 import EditChecklist from './pages/EditChecklist';
 import EditCategory from './pages/EditCategory';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -26,4 +27,5 @@ export const PAGES = {
 export const pagesConfig = {
     mainPage: "Home",
     Pages: PAGES,
+    Layout: __Layout,
 };
