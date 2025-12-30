@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Save, Plus, Trash2, GripVertical, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, GripVertical, Loader2, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from 'framer-motion';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { SuggestFieldsButton, AutoCategorizeButton, GenerateExamplesButton } from '@/components/ai/AIFormHelper';
+import ExampleSubmissionsDialog from '@/components/ai/ExampleSubmissionsDialog';
+import { toast } from 'sonner';
 
 const FIELD_TYPES = [
     { value: 'text', label: 'Text Input' },
@@ -37,6 +40,9 @@ export default function EditForm() {
         status: 'active',
         fields: []
     });
+    
+    const [exampleSubmissions, setExampleSubmissions] = useState([]);
+    const [showExamples, setShowExamples] = useState(false);
     
     const { data: existingForm, isLoading } = useQuery({
         queryKey: ['edit-form', formId],
@@ -112,6 +118,19 @@ export default function EditForm() {
         saveMutation.mutate(form);
     };
     
+    const handleFieldsSuggested = (fields) => {
+        setForm(prev => ({ ...prev, fields: [...prev.fields, ...fields] }));
+    };
+    
+    const handleCategorySelected = (categoryId) => {
+        setForm(prev => ({ ...prev, category_id: categoryId }));
+    };
+    
+    const handleExamplesGenerated = (submissions) => {
+        setExampleSubmissions(submissions);
+        setShowExamples(true);
+    };
+    
     if (formId && isLoading) {
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -156,12 +175,23 @@ export default function EditForm() {
                     <h2 className="text-lg font-semibold text-slate-900">Basic Information</h2>
                     
                     <div>
-                        <Label>Form Title *</Label>
+                        <div className="flex items-center justify-between mb-2">
+                            <Label>Form Title *</Label>
+                            <div className="flex gap-2">
+                                <SuggestFieldsButton 
+                                    formTitle={form.title}
+                                    onFieldsSuggested={handleFieldsSuggested}
+                                />
+                                <GenerateExamplesButton
+                                    form={form}
+                                    onExamplesGenerated={handleExamplesGenerated}
+                                />
+                            </div>
+                        </div>
                         <Input
                             value={form.title}
                             onChange={(e) => setForm(prev => ({ ...prev, title: e.target.value }))}
                             placeholder="Enter form title"
-                            className="mt-2"
                         />
                     </div>
                     
@@ -177,12 +207,20 @@ export default function EditForm() {
                     
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Label>Category</Label>
+                            <div className="flex items-center justify-between mb-2">
+                                <Label>Category</Label>
+                                <AutoCategorizeButton
+                                    formTitle={form.title}
+                                    formDescription={form.description}
+                                    categories={categories}
+                                    onCategorySelected={handleCategorySelected}
+                                />
+                            </div>
                             <Select
                                 value={form.category_id || ''}
                                 onValueChange={(value) => setForm(prev => ({ ...prev, category_id: value }))}
                             >
-                                <SelectTrigger className="mt-2">
+                                <SelectTrigger>
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -316,6 +354,12 @@ export default function EditForm() {
                     )}
                 </div>
             </div>
+            
+            <ExampleSubmissionsDialog
+                open={showExamples}
+                onOpenChange={setShowExamples}
+                submissions={exampleSubmissions}
+            />
         </div>
     );
 }
