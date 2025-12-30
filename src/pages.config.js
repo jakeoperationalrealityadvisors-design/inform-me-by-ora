@@ -15,6 +15,9 @@ import ViewFormSubmission from './pages/ViewFormSubmission';
 import DailyTasks from './pages/DailyTasks';
 import ManageDailyTasks from './pages/ManageDailyTasks';
 import Documents from './pages/Documents';
+import UploadDocument from './pages/UploadDocument';
+import ViewDocument from './pages/ViewDocument';
+import ManageFolders from './pages/ManageFolders';
 import __Layout from './Layout.jsx';
 
 
@@ -36,6 +39,9 @@ export const PAGES = {
     "DailyTasks": DailyTasks,
     "ManageDailyTasks": ManageDailyTasks,
     "Documents": Documents,
+    "UploadDocument": UploadDocument,
+    "ViewDocument": ViewDocument,
+    "ManageFolders": ManageFolders,
 }
 
 export const pagesConfig = {
