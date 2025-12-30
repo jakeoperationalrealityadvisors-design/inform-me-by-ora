@@ -114,8 +114,10 @@ class PDFExporter {
             const isCompleted = completedIds.includes(item.id);
             
             // Checkbox
-            this.doc.setDrawColor(isCompleted ? 34, 197, 94 : 203, 213, 225);
-            this.doc.setFillColor(isCompleted ? 34, 197, 94 : 255, 255, 255);
+            const drawColor = isCompleted ? [34, 197, 94] : [203, 213, 225];
+            const fillColor = isCompleted ? [34, 197, 94] : [255, 255, 255];
+            this.doc.setDrawColor(...drawColor);
+            this.doc.setFillColor(...fillColor);
             this.doc.rect(this.margin, this.currentY - 3, 5, 5, isCompleted ? 'FD' : 'D');
             
             if (isCompleted) {
