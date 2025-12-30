@@ -162,7 +162,7 @@ export default function EditChecklist() {
                         />
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                         <div>
                             <Label className="text-blue-100">Category</Label>
                             <Select
@@ -193,6 +193,23 @@ export default function EditChecklist() {
                                     <SelectItem value="draft">Draft</SelectItem>
                                     <SelectItem value="active">Active</SelectItem>
                                     <SelectItem value="archived">Archived</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        
+                        <div>
+                            <Label className="text-blue-100">Recurrence</Label>
+                            <Select
+                                value={checklist.recurrence || 'none'}
+                                onValueChange={(value) => setChecklist(prev => ({ ...prev, recurrence: value }))}
+                            >
+                                <SelectTrigger className="mt-2 bg-[#0a0e17] border-blue-900/20 text-white">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="none">None</SelectItem>
+                                    <SelectItem value="daily">Daily</SelectItem>
+                                    <SelectItem value="weekly">Weekly</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
