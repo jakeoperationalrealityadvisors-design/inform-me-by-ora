@@ -51,54 +51,54 @@ export default function Home() {
     const isLoading = formsLoading || checklistsLoading;
     
     return (
-        <div className="min-h-screen bg-[#0a0e17]">
+        <div className="min-h-screen bg-slate-100">
             {/* Header */}
-            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
+            <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
                 <div className="max-w-2xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between mb-4">
                         <div>
-                            <h1 className="text-2xl font-bold text-white">Forms & Checklists</h1>
-                            <p className="text-sm text-blue-400">Access your documents anywhere</p>
+                            <h1 className="text-2xl font-bold text-slate-900">Forms & Checklists</h1>
+                            <p className="text-sm text-slate-600">Access your documents anywhere</p>
                         </div>
                         <div className="flex gap-2">
                             <Link to={createPageUrl('DailyTasks')}>
-                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
                                     <Calendar className="w-5 h-5" />
                                 </Button>
                             </Link>
                             <Link to={createPageUrl('MyTasks')}>
-                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
                                     <ListTodo className="w-5 h-5" />
                                 </Button>
                             </Link>
                             {canViewAll && (
                                 <Link to={createPageUrl('Reports')}>
-                                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
                                         <BarChart3 className="w-5 h-5" />
                                     </Button>
                                 </Link>
                             )}
                             <Link to={createPageUrl('Submissions')}>
-                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
                                     <History className="w-5 h-5" />
                                 </Button>
                             </Link>
                             {isAdmin && (
                                 <>
                                     <Link to={createPageUrl('Admin')}>
-                                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
                                             <Shield className="w-5 h-5" />
                                         </Button>
                                     </Link>
                                     <Link to={createPageUrl('UserManagement')}>
-                                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
                                             <Users className="w-5 h-5" />
                                         </Button>
                                     </Link>
                                 </>
                             )}
                             <Link to={createPageUrl('Settings')}>
-                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
                                     <Settings className="w-5 h-5" />
                                 </Button>
                             </Link>
@@ -115,13 +115,13 @@ export default function Home() {
             
             <div className="max-w-2xl mx-auto px-4 py-6">
                 {/* Tab Switcher */}
-                <div className="flex gap-2 p-1 bg-[#0f1419] rounded-2xl mb-6">
+                <div className="flex gap-2 p-1 bg-white rounded-xl mb-6 border border-slate-200 shadow-sm">
                     <button
                         onClick={() => setActiveTab('forms')}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all ${
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-sm transition-all ${
                             activeTab === 'forms' 
-                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
-                                : 'text-blue-300 hover:text-white'
+                                ? 'bg-amber-500 text-white shadow-md' 
+                                : 'text-slate-600 hover:bg-slate-50'
                         }`}
                     >
                         <FileText className="w-4 h-4" />
@@ -129,10 +129,10 @@ export default function Home() {
                     </button>
                     <button
                         onClick={() => setActiveTab('checklists')}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all ${
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-sm transition-all ${
                             activeTab === 'checklists' 
-                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
-                                : 'text-blue-300 hover:text-white'
+                                ? 'bg-blue-700 text-white shadow-md' 
+                                : 'text-slate-600 hover:bg-slate-50'
                         }`}
                     >
                         <CheckSquare className="w-4 h-4" />
@@ -155,10 +155,10 @@ export default function Home() {
                 {isLoading ? (
                     <div className="grid gap-4">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-5 animate-pulse">
-                                <div className="w-12 h-12 rounded-xl bg-blue-950 mb-4" />
-                                <div className="h-5 w-3/4 bg-blue-950 rounded mb-2" />
-                                <div className="h-4 w-1/2 bg-blue-950/50 rounded" />
+                            <div key={i} className="bg-white rounded-lg border border-slate-200 p-5 animate-pulse shadow-lg">
+                                <div className="h-10 bg-slate-200 rounded mb-4" />
+                                <div className="h-5 w-3/4 bg-slate-200 rounded mb-2" />
+                                <div className="h-4 w-1/2 bg-slate-100 rounded" />
                             </div>
                         ))}
                     </div>
