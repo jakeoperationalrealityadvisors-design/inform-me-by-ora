@@ -41,6 +41,26 @@ export default function CreateTask() {
     const createMutation = useMutation({
         mutationFn: (data) => base44.entities.Task.create(data),
         onSuccess: async (task) => {
+            await logActivity({
+                action_type: 'task_created',
+                entity_type: 'task',
+                entity_id: task.id,
+                entity_title: task.title,
+                description: `Created task: ${task.title}`,
+                metadata: { assigned_to: task.assigned_to_email, priority: task.priority }
+            });
+            
+            // Trigger automations for task creation
+            await base44.functions.invoke('executeAutomations', {
+                trigger_type: 'task_created',
+                trigger_data: {
+                    task_id: task.id,
+                    title: task.title,
+                    priority: task.priority,
+                    assigned_to_email: task.assigned_to_email
+                }
+            });
+            
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             
             // Send notification to assigned user
