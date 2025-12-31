@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users, Calendar, FolderOpen } from 'lucide-react';
+import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users, Calendar, FolderOpen, LayoutGrid, LayoutList } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 import SearchBar from '@/components/common/SearchBar';
@@ -33,6 +33,7 @@ export default function Home() {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeTab, setActiveTab] = useState('forms');
     const [showGlobalSearch, setShowGlobalSearch] = useState(false);
+    const [viewMode, setViewMode] = useState('list'); // 'list' or 'grid'
     
     // Redirect to onboarding if no organization
     React.useEffect(() => {
@@ -216,16 +217,40 @@ export default function Home() {
                     </button>
                 </div>
                 
-                {/* Category Filter */}
-                {categories.length > 0 && (
-                    <div className="mb-4 sm:mb-6">
-                        <CategoryFilter
-                            categories={categories}
-                            selected={selectedCategory}
-                            onSelect={setSelectedCategory}
-                        />
+                {/* View Mode Toggle & Category Filter */}
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    {categories.length > 0 && (
+                        <div className="flex-1">
+                            <CategoryFilter
+                                categories={categories}
+                                selected={selectedCategory}
+                                onSelect={setSelectedCategory}
+                            />
+                        </div>
+                    )}
+                    <div className="flex gap-1 bg-[#0a0e17] rounded-lg border border-blue-900/30 p-1">
+                        <button
+                            onClick={() => setViewMode('list')}
+                            className={`p-2 rounded transition-colors ${
+                                viewMode === 'list' 
+                                    ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black' 
+                                    : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
+                            }`}
+                        >
+                            <LayoutList className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => setViewMode('grid')}
+                            className={`p-2 rounded transition-colors ${
+                                viewMode === 'grid' 
+                                    ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black' 
+                                    : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
+                            }`}
+                        >
+                            <LayoutGrid className="w-4 h-4" />
+                        </button>
                     </div>
-                )}
+                </div>
                 
                 {/* Content */}
                 {isLoading ? (
@@ -240,12 +265,13 @@ export default function Home() {
                     </div>
                 ) : activeTab === 'forms' ? (
                     filteredForms.length > 0 ? (
-                        <div className="grid gap-3 sm:gap-4">
+                        <div className={viewMode === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4" : "grid gap-3 sm:gap-4"}>
                             {filteredForms.map((form) => (
                                 <SwipeActions key={form.id}>
                                     <FormCard 
                                         form={form} 
                                         category={getCategoryById(form.category_id)}
+                                        viewMode={viewMode}
                                     />
                                 </SwipeActions>
                             ))}
@@ -259,12 +285,13 @@ export default function Home() {
                     )
                 ) : (
                     filteredChecklists.length > 0 ? (
-                        <div className="grid gap-3 sm:gap-4">
+                        <div className={viewMode === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4" : "grid gap-3 sm:gap-4"}>
                             {filteredChecklists.map((checklist) => (
                                 <SwipeActions key={checklist.id}>
                                     <ChecklistCard 
                                         checklist={checklist}
                                         category={getCategoryById(checklist.category_id)}
+                                        viewMode={viewMode}
                                     />
                                 </SwipeActions>
                             ))}

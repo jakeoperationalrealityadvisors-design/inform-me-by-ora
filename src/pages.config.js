@@ -25,6 +25,9 @@ import Messages from './pages/Messages';
 import MyTasks from './pages/MyTasks';
 import NetworkOnboarding from './pages/NetworkOnboarding';
 import OrganizationSettings from './pages/OrganizationSettings';
+import PublicChecklist from './pages/PublicChecklist';
+import PublicForm from './pages/PublicForm';
+import PublicSubmission from './pages/PublicSubmission';
 import Reports from './pages/Reports';
 import RoleManagement from './pages/RoleManagement';
 import Settings from './pages/Settings';
@@ -35,9 +38,6 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import PublicForm from './pages/PublicForm';
-import PublicChecklist from './pages/PublicChecklist';
-import PublicSubmission from './pages/PublicSubmission';
 import __Layout from './Layout.jsx';
 
 
@@ -69,6 +69,9 @@ export const PAGES = {
     "MyTasks": MyTasks,
     "NetworkOnboarding": NetworkOnboarding,
     "OrganizationSettings": OrganizationSettings,
+    "PublicChecklist": PublicChecklist,
+    "PublicForm": PublicForm,
+    "PublicSubmission": PublicSubmission,
     "Reports": Reports,
     "RoleManagement": RoleManagement,
     "Settings": Settings,
@@ -79,9 +82,6 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "PublicForm": PublicForm,
-    "PublicChecklist": PublicChecklist,
-    "PublicSubmission": PublicSubmission,
 }
 
 export const pagesConfig = {
