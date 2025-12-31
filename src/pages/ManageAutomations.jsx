@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Plus, Zap, Trash2, Edit, Power } from 'lucide-react';
+import { ArrowLeft, Plus, Zap, Trash2, Edit, Power, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -95,12 +95,20 @@ function ManageAutomationsContent() {
                             </div>
                         </div>
                         {canCreateAutomations && (
-                            <Link to={createPageUrl('EditAutomation')}>
-                                <Button className="bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white gap-2">
-                                    <Plus className="w-4 h-4" />
-                                    New Rule
-                                </Button>
-                            </Link>
+                            <div className="flex gap-2">
+                                <Link to={createPageUrl('AutomationOptimizer')}>
+                                    <Button variant="outline" className="border-purple-600 text-purple-600 gap-2">
+                                        <Sparkles className="w-4 h-4" />
+                                        Optimize
+                                    </Button>
+                                </Link>
+                                <Link to={createPageUrl('EditAutomation')}>
+                                    <Button className="bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white gap-2">
+                                        <Plus className="w-4 h-4" />
+                                        New Rule
+                                    </Button>
+                                </Link>
+                            </div>
                         )}
                     </div>
                 </div>
