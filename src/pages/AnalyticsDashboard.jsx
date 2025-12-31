@@ -168,7 +168,7 @@ function AnalyticsDashboardContent() {
                         </div>
                         <div className="flex items-center gap-2">
                             <CustomDashboardBuilder onConfigChange={setDashboardConfig} />
-                        <div className="flex gap-2">
+                            <div className="flex gap-2">
                             <Button 
                                 onClick={() => setShowFilters(!showFilters)} 
                                 variant="outline" 
