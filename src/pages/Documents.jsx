@@ -324,73 +324,73 @@ export default function Documents() {
                                     >
                                         <div className="bg-white rounded-lg border border-slate-200 p-5 hover:border-blue-400 hover:shadow-lg transition-all group">
                                             <div className="flex items-start justify-between gap-3">
-                                                    <div className="flex items-start gap-4 flex-1">
-                                                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#1e90ff] to-[#0066cc] flex items-center justify-center flex-shrink-0">
-                                                            <FileText className="w-6 h-6 text-white" />
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <h3 className="font-semibold text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">
-                                                                {doc.title}
-                                                            </h3>
-                                                            {doc.description && (
-                                                                <p className="text-sm text-slate-600 mb-2 line-clamp-1">
-                                                                    {doc.description}
-                                                                </p>
-                                                            )}
-                                                            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                                                                <span>{doc.file_name}</span>
-                                                                <span>•</span>
-                                                                <span>{formatFileSize(doc.file_size)}</span>
-                                                                <span>•</span>
-                                                                <span>v{doc.version || 1}</span>
-                                                                {doc.folder_id && (
-                                                                    <>
-                                                                        <span>•</span>
-                                                                        <span className="flex items-center gap-1">
-                                                                            <Folder className="w-3 h-3" />
-                                                                            {getFolderName(doc.folder_id)}
-                                                                        </span>
-                                                                    </>
-                                                                )}
-                                                            </div>
-                                                            {doc.tags && doc.tags.length > 0 && (
-                                                                <div className="flex flex-wrap gap-2 mt-2">
-                                                                    {doc.tags.map(tag => (
-                                                                        <Badge key={tag} className="bg-slate-100 text-slate-600 text-xs">
-                                                                            {tag}
-                                                                        </Badge>
-                                                                    ))}
-                                                                </div>
-                                                            )}
-                                                        </div>
+                                                <div className="flex items-start gap-4 flex-1">
+                                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#1e90ff] to-[#0066cc] flex items-center justify-center flex-shrink-0">
+                                                        <FileText className="w-6 h-6 text-white" />
                                                     </div>
-                                                    <div className="flex flex-col gap-2 items-end shrink-0">
-                                                        <div className="text-xs text-slate-400">
-                                                            {format(new Date(doc.created_date), 'MMM d, yyyy')}
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="font-semibold text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">
+                                                            {doc.title}
+                                                        </h3>
+                                                        {doc.description && (
+                                                            <p className="text-sm text-slate-600 mb-2 line-clamp-1">
+                                                                {doc.description}
+                                                            </p>
+                                                        )}
+                                                        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+                                                            <span>{doc.file_name}</span>
+                                                            <span>•</span>
+                                                            <span>{formatFileSize(doc.file_size)}</span>
+                                                            <span>•</span>
+                                                            <span>v{doc.version || 1}</span>
+                                                            {doc.folder_id && (
+                                                                <>
+                                                                    <span>•</span>
+                                                                    <span className="flex items-center gap-1">
+                                                                        <Folder className="w-3 h-3" />
+                                                                        {getFolderName(doc.folder_id)}
+                                                                    </span>
+                                                                </>
+                                                            )}
                                                         </div>
-                                                        <div className="flex gap-2">
-                                                            <Button 
-                                                                size="sm" 
-                                                                variant="outline"
-                                                                onClick={(e) => {
-                                                                    e.preventDefault();
-                                                                    setSelectedDoc(doc);
-                                                                    setShowAI(true);
-                                                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                                                }}
-                                                                className="border-[#FF8C00]/30 text-[#FF8C00] hover:bg-[#FF8C00]/10 h-7"
-                                                            >
-                                                                <Sparkles className="w-3 h-3" />
+                                                        {doc.tags && doc.tags.length > 0 && (
+                                                            <div className="flex flex-wrap gap-2 mt-2">
+                                                                {doc.tags.map(tag => (
+                                                                    <Badge key={tag} className="bg-slate-100 text-slate-600 text-xs">
+                                                                        {tag}
+                                                                    </Badge>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col gap-2 items-end shrink-0">
+                                                    <div className="text-xs text-slate-400">
+                                                        {format(new Date(doc.created_date), 'MMM d, yyyy')}
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <Button 
+                                                            size="sm" 
+                                                            variant="outline"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                setSelectedDoc(doc);
+                                                                setShowAI(true);
+                                                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                            }}
+                                                            className="border-[#FF8C00]/30 text-[#FF8C00] hover:bg-[#FF8C00]/10 h-7"
+                                                        >
+                                                            <Sparkles className="w-3 h-3" />
+                                                        </Button>
+                                                        <Link to={createPageUrl(`ViewDocument?id=${doc.id}`)}>
+                                                            <Button size="sm" variant="outline" className="h-7">
+                                                                View
                                                             </Button>
-                                                            <Link to={createPageUrl(`ViewDocument?id=${doc.id}`)}>
-                                                                <Button size="sm" variant="outline" className="h-7">
-                                                                    View
-                                                                </Button>
-                                                            </Link>
-                                                        </div>
+                                                        </Link>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
                                     </motion.div>
                                 ))}
                             </div>
