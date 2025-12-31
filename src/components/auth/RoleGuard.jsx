@@ -20,6 +20,7 @@ export function useUserRole() {
     const isLoading = userLoading || roleLoading;
     const isAdmin = user?.role === 'admin';
     const isManager = user?.team_role === 'manager';
+    const isEmployee = user?.account_type === 'employee';
     const isTeamMember = !isAdmin && !isManager;
     
     // Permission checks with custom role support
@@ -72,6 +73,7 @@ export function useUserRole() {
         isAdmin,
         isManager,
         isTeamMember,
+        isEmployee,
         canManage: isAdmin || isManager,
         canViewAll: isAdmin || hasPermission('submissions.view_all'),
         // Forms
