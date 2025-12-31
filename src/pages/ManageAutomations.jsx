@@ -125,9 +125,9 @@ function ManageAutomationsContent() {
                             <h3 className="text-lg font-medium text-slate-900 mb-2">No automation rules yet</h3>
                             <p className="text-slate-600 mb-4">Create your first automation to streamline workflows</p>
                             <Link to={createPageUrl('EditAutomation')}>
-                                <Button className="bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white">
-                                    <Plus className="w-4 h-4 mr-2" />
-                                    Create Automation
+                                <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+                                    <Sparkles className="w-4 h-4 mr-2" />
+                                    Create with AI
                                 </Button>
                             </Link>
                         </CardContent>

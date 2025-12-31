@@ -24,6 +24,7 @@ import SaveAsTemplateDialog from '@/components/automation/SaveAsTemplateDialog';
 import VersionHistoryDialog from '@/components/automation/VersionHistoryDialog';
 import ShareAutomationDialog from '@/components/automation/ShareAutomationDialog';
 import AutomationAnalytics from '@/components/automation/AutomationAnalytics';
+import WorkflowGenerator from '@/components/automation/WorkflowGenerator';
 
 function EditAutomationContent() {
     const navigate = useNavigate();
@@ -191,6 +192,19 @@ function EditAutomationContent() {
             ...templateData
         }));
     };
+    
+    const handleGeneratedWorkflow = (workflowData) => {
+        setFormData(prev => ({
+            ...prev,
+            name: workflowData.name || prev.name,
+            description: workflowData.description || prev.description,
+            trigger_type: workflowData.trigger_type || prev.trigger_type,
+            trigger_config: workflowData.trigger_config || prev.trigger_config,
+            condition_logic: workflowData.condition_logic || prev.condition_logic,
+            actions: workflowData.actions || prev.actions
+        }));
+        toast.success('AI-generated workflow applied! Review and adjust as needed.');
+    };
 
     return (
         <div className="min-h-screen bg-slate-100">
@@ -289,6 +303,13 @@ function EditAutomationContent() {
 
                 {viewMode === 'builder' && (
                     <>
+                {/* AI Workflow Generator - Only for new rules */}
+                {!ruleId && (
+                    <div className="mb-6">
+                        <WorkflowGenerator onGenerate={handleGeneratedWorkflow} />
+                    </div>
+                )}
+
                 {/* Analytics - Only for existing rules */}
                 {ruleId && (
                     <div className="mb-6">
