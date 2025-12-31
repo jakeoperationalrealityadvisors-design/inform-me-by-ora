@@ -21,67 +21,67 @@ import CategorySidebar from '@/components/navigation/CategorySidebar';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 
 export default function Home() {
-    const { isAdmin, canViewAll } = useUserRole();
-    const { t } = useLanguage();
-    const [search, setSearch] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [activeTab, setActiveTab] = useState('forms');
-    const [showGlobalSearch, setShowGlobalSearch] = useState(false);
-    
-    const { data: forms = [], isLoading: formsLoading } = useQuery({
-        queryKey: ['forms'],
-        queryFn: () => base44.entities.FormTemplate.filter({ status: 'active' }),
-        staleTime: 30000
-    });
-    
-    const { data: checklists = [], isLoading: checklistsLoading } = useQuery({
-        queryKey: ['checklists'],
-        queryFn: () => base44.entities.ChecklistTemplate.filter({ status: 'active' }),
-        staleTime: 30000
-    });
-    
-    const { data: categories = [] } = useQuery({
-        queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list(),
-        staleTime: 60000
-    });
-    
-    const getCategoryById = (id) => categories.find(c => c.id === id);
-    
-    const filteredForms = React.useMemo(() => forms.filter(form => {
-        const matchesSearch = !search || form.title.toLowerCase().includes(search.toLowerCase());
-        const matchesCategory = !selectedCategory || form.category_id === selectedCategory;
-        return matchesSearch && matchesCategory;
-    }), [forms, search, selectedCategory]);
-    
-    const filteredChecklists = React.useMemo(() => checklists.filter(cl => {
-        const matchesSearch = !search || cl.title.toLowerCase().includes(search.toLowerCase());
-        const matchesCategory = !selectedCategory || cl.category_id === selectedCategory;
-        return matchesSearch && matchesCategory;
-    }), [checklists, search, selectedCategory]);
-    
-    const isLoading = formsLoading || checklistsLoading;
-    
-    return (
-        <div className="min-h-screen bg-slate-100 dark:bg-black transition-colors">
+  const { isAdmin, canViewAll } = useUserRole();
+  const { t } = useLanguage();
+  const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [activeTab, setActiveTab] = useState('forms');
+  const [showGlobalSearch, setShowGlobalSearch] = useState(false);
+
+  const { data: forms = [], isLoading: formsLoading } = useQuery({
+    queryKey: ['forms'],
+    queryFn: () => base44.entities.FormTemplate.filter({ status: 'active' }),
+    staleTime: 30000
+  });
+
+  const { data: checklists = [], isLoading: checklistsLoading } = useQuery({
+    queryKey: ['checklists'],
+    queryFn: () => base44.entities.ChecklistTemplate.filter({ status: 'active' }),
+    staleTime: 30000
+  });
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => base44.entities.Category.list(),
+    staleTime: 60000
+  });
+
+  const getCategoryById = (id) => categories.find((c) => c.id === id);
+
+  const filteredForms = React.useMemo(() => forms.filter((form) => {
+    const matchesSearch = !search || form.title.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = !selectedCategory || form.category_id === selectedCategory;
+    return matchesSearch && matchesCategory;
+  }), [forms, search, selectedCategory]);
+
+  const filteredChecklists = React.useMemo(() => checklists.filter((cl) => {
+    const matchesSearch = !search || cl.title.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = !selectedCategory || cl.category_id === selectedCategory;
+    return matchesSearch && matchesCategory;
+  }), [checklists, search, selectedCategory]);
+
+  const isLoading = formsLoading || checklistsLoading;
+
+  return (
+    <div className="min-h-screen bg-slate-100 dark:bg-[#0a0e17] transition-colors">
             {/* Header */}
-            <div className="bg-white dark:bg-[#0a0a0a] border-b border-slate-200 dark:border-[#1a1a1a] sticky top-0 z-10 shadow-sm transition-colors">
+            <div className="bg-slate-400 text-slate-50 rounded-[10px] dark:bg-[#0a0a0a] border-b border-slate-200 dark:border-[#1a1a1a] sticky top-0 z-10 shadow-sm transition-colors">
                 <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
                         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                            <img 
-                                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png" 
-                                alt="InForm Me - Operational Reality Advisors"
-                                className="h-8 sm:h-12 flex-shrink-0 rounded-lg"
-                            />
+                            <img
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png"
+                alt="InForm Me - Operational Reality Advisors"
+                className="h-8 sm:h-12 flex-shrink-0 rounded-lg" />
+
                             <div className="min-w-0">
-                                <h1 className="text-sm sm:text-xl font-bold text-slate-900 dark:text-white truncate">
+                                <h1 className="text-orange-400 text-sm font-bold sm:text-xl dark:text-white truncate">
                                     {t('home.title')}
                                 </h1>
-                                <p className="text-xs text-slate-600 dark:text-slate-400 hidden sm:block">{t('home.subtitle')}</p>
+                                <p className="text-slate-50 text-xs dark:text-slate-400 hidden sm:block">{t('home.subtitle')}</p>
                             </div>
                         </div>
-                        <div className="flex gap-1 sm:gap-2 flex-shrink-0">
+                        <div className="bg-slate-100 flex gap-1 sm:gap-2 flex-shrink-0">
                             <NotificationBell />
                             <ThemeToggle />
                             <LanguageSwitcher />
@@ -100,14 +100,14 @@ export default function Home() {
                     
                     <div className="relative">
                         <SearchBar
-                            value={search}
-                            onChange={setSearch}
-                            placeholder={t('home.searchPlaceholder')}
-                        />
+              value={search}
+              onChange={setSearch}
+              placeholder={t('home.searchPlaceholder')} />
+
                         <button
-                            onClick={() => setShowGlobalSearch(true)}
-                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded hover:bg-blue-50"
-                        >
+              onClick={() => setShowGlobalSearch(true)}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded hover:bg-blue-50">
+
                             Advanced
                         </button>
                     </div>
@@ -118,124 +118,124 @@ export default function Home() {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* Sidebar - Desktop Only */}
                     <div className="hidden lg:block lg:col-span-1">
-                        <CategorySidebar 
-                            selectedCategory={selectedCategory}
-                            onSelectCategory={setSelectedCategory}
-                        />
+                        <CategorySidebar
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory} />
+
                     </div>
 
                     {/* Main Content */}
                     <div className="lg:col-span-3">
                 {/* Tab Switcher */}
-                <div className="flex gap-2 p-1 bg-white dark:bg-[#0a0a0a] rounded-xl mb-4 sm:mb-6 border border-slate-200 dark:border-[#1a1a1a] shadow-sm transition-colors">
+                <div className="flex gap-2 p-1 bg-white dark:bg-[#0f1419] rounded-xl mb-4 sm:mb-6 border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
                     <button
-                        onClick={() => setActiveTab('forms')}
-                        className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all ${
-                            activeTab === 'forms' 
-                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E90FF] text-white shadow-md shadow-orange-500/20' 
-                                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-                        }`}
-                    >
+                onClick={() => setActiveTab('forms')}
+                className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all ${
+                activeTab === 'forms' ?
+                'bg-gradient-to-r from-[#FF8C00] to-[#1E90FF] text-white shadow-md shadow-orange-500/20' :
+                'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'}`
+                }>
+
                         <FileText className="w-4 h-4" />
                         <span className="hidden xs:inline">{t('common.forms')}</span> ({forms.length})
                     </button>
                     <button
-                        onClick={() => setActiveTab('checklists')}
-                        className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all ${
-                            activeTab === 'checklists' 
-                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E90FF] text-white shadow-md shadow-orange-500/20' 
-                                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-                        }`}
-                    >
-                        <CheckSquare className="w-4 h-4" />
+                onClick={() => setActiveTab('checklists')} className="bg-zinc-800 text-slate-600 py-2.5 text-xs font-medium rounded-lg flex-1 flex items-center justify-center gap-1.5 sm:gap-2 sm:py-3 sm:text-sm transition-all dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+
+
+
+
+
+
+                        <CheckSquare className="text-zinc-50 lucide lucide-square-check-big w-4 h-4" />
                         <span className="hidden xs:inline">{t('common.checklists')}</span> ({checklists.length})
                     </button>
                 </div>
                 
                 {/* Category Filter */}
-                {categories.length > 0 && (
-                    <div className="mb-4 sm:mb-6">
+                {categories.length > 0 &&
+            <div className="mb-4 sm:mb-6">
                         <CategoryFilter
-                            categories={categories}
-                            selected={selectedCategory}
-                            onSelect={setSelectedCategory}
-                        />
+                categories={categories}
+                selected={selectedCategory}
+                onSelect={setSelectedCategory} />
+
                     </div>
-                )}
+            }
                 
                 {/* Content */}
-                {isLoading ? (
-                    <div className="grid gap-3 sm:gap-4">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="bg-white dark:bg-[#0a0a0a] rounded-lg border border-slate-200 dark:border-[#1a1a1a] p-4 sm:p-5 animate-pulse shadow-lg transition-colors">
-                                <div className="h-8 sm:h-10 bg-slate-200 dark:bg-[#1a1a1a] rounded mb-3 sm:mb-4" />
-                                <div className="h-4 sm:h-5 w-3/4 bg-slate-200 dark:bg-[#1a1a1a] rounded mb-2" />
-                                <div className="h-3 sm:h-4 w-1/2 bg-slate-100 dark:bg-[#151515] rounded" />
+                {isLoading ?
+            <div className="grid gap-3 sm:gap-4">
+                        {[1, 2, 3].map((i) =>
+              <div key={i} className="bg-white dark:bg-[#0f1419] rounded-lg border border-slate-200 dark:border-slate-800 p-4 sm:p-5 animate-pulse shadow-lg transition-colors">
+                                <div className="h-8 sm:h-10 bg-slate-200 dark:bg-slate-700 rounded mb-3 sm:mb-4" />
+                                <div className="h-4 sm:h-5 w-3/4 bg-slate-200 dark:bg-slate-700 rounded mb-2" />
+                                <div className="h-3 sm:h-4 w-1/2 bg-slate-100 dark:bg-slate-800 rounded" />
                             </div>
-                        ))}
-                    </div>
-                ) : activeTab === 'forms' ? (
-                    filteredForms.length > 0 ? (
-                        <motion.div 
-                            className="grid gap-3 sm:gap-4"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                        >
-                            {filteredForms.map((form, idx) => (
-                                <motion.div
-                                    key={form.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: idx * 0.05 }}
-                                >
-                                    <FormCard 
-                                        form={form} 
-                                        category={getCategoryById(form.category_id)}
-                                    />
+              )}
+                    </div> :
+            activeTab === 'forms' ?
+            filteredForms.length > 0 ?
+            <motion.div
+              className="grid gap-3 sm:gap-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}>
+
+                            {filteredForms.map((form, idx) =>
+              <motion.div
+                key={form.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}>
+
+                                    <FormCard
+                  form={form}
+                  category={getCategoryById(form.category_id)} />
+
                                 </motion.div>
-                            ))}
-                        </motion.div>
-                    ) : (
-                        <EmptyState
-                            icon={FileText}
-                            title={t('home.noFormsFound')}
-                            description={search ? t('home.tryAdjusting') : "Forms will appear here once created"}
-                        />
-                    )
-                ) : (
-                    filteredChecklists.length > 0 ? (
-                        <motion.div 
-                            className="grid gap-3 sm:gap-4"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                        >
-                            {filteredChecklists.map((checklist, idx) => (
-                                <motion.div
-                                    key={checklist.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: idx * 0.05 }}
-                                >
-                                    <ChecklistCard 
-                                        checklist={checklist}
-                                        category={getCategoryById(checklist.category_id)}
-                                    />
+              )}
+                        </motion.div> :
+
+            <EmptyState
+              icon={FileText}
+              title={t('home.noFormsFound')}
+              description={search ? t('home.tryAdjusting') : "Forms will appear here once created"} /> :
+
+
+
+            filteredChecklists.length > 0 ?
+            <motion.div
+              className="grid gap-3 sm:gap-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}>
+
+                            {filteredChecklists.map((checklist, idx) =>
+              <motion.div
+                key={checklist.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}>
+
+                                    <ChecklistCard
+                  checklist={checklist}
+                  category={getCategoryById(checklist.category_id)} />
+
                                 </motion.div>
-                            ))}
-                        </motion.div>
-                    ) : (
-                        <EmptyState
-                            icon={CheckSquare}
-                            title={t('home.noChecklistsFound')}
-                            description={search ? t('home.tryAdjusting') : "Checklists will appear here once created"}
-                        />
-                    )
-                    )}
+              )}
+                        </motion.div> :
+
+            <EmptyState
+              icon={CheckSquare}
+              title={t('home.noChecklistsFound')}
+              description={search ? t('home.tryAdjusting') : "Checklists will appear here once created"} />
+
+
+            }
                     </div>
                     </div>
                     </div>
                     <GlobalSearch open={showGlobalSearch} onOpenChange={setShowGlobalSearch} />
                     <BottomNav />
-                    </div>
-                    );
-                    }
+                    </div>);
+
+}
