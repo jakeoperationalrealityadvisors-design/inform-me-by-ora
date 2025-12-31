@@ -32,6 +32,8 @@ import NetworkOnboarding from './pages/NetworkOnboarding';
 import OrganizationSettings from './pages/OrganizationSettings';
 import CustomerPortal from './pages/CustomerPortal';
 import AutomationOptimizer from './pages/AutomationOptimizer';
+import AIWorkflowBuilder from './pages/AIWorkflowBuilder';
+import Messages from './pages/Messages';
 import __Layout from './Layout.jsx';
 
 
@@ -70,6 +72,8 @@ export const PAGES = {
     "OrganizationSettings": OrganizationSettings,
     "CustomerPortal": CustomerPortal,
     "AutomationOptimizer": AutomationOptimizer,
+    "AIWorkflowBuilder": AIWorkflowBuilder,
+    "Messages": Messages,
 }
 
 export const pagesConfig = {

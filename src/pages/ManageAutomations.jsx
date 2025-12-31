@@ -96,6 +96,12 @@ function ManageAutomationsContent() {
                         </div>
                         {canCreateAutomations && (
                             <div className="flex gap-2">
+                                <Link to={createPageUrl('AIWorkflowBuilder')}>
+                                    <Button variant="outline" className="border-green-600 text-green-600 gap-2">
+                                        <Sparkles className="w-4 h-4" />
+                                        AI Builder
+                                    </Button>
+                                </Link>
                                 <Link to={createPageUrl('AutomationOptimizer')}>
                                     <Button variant="outline" className="border-purple-600 text-purple-600 gap-2">
                                         <Sparkles className="w-4 h-4" />
