@@ -12,6 +12,7 @@ import ChecklistCard from '@/components/forms/ChecklistCard';
 import CategoryFilter from '@/components/forms/CategoryFilter';
 import EmptyState from '@/components/common/EmptyState';
 import { useUserRole } from '@/components/auth/RoleGuard';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 export default function Home() {
     const { isAdmin, canViewAll } = useUserRole();
@@ -73,6 +74,7 @@ export default function Home() {
                             </div>
                         </div>
                         <div className="flex gap-2">
+                            <NotificationBell />
                             <Link to={createPageUrl('Documents')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
                                     <FolderOpen className="w-5 h-5" />

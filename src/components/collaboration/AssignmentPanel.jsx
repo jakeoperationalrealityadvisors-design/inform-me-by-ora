@@ -37,7 +37,21 @@ export default function AssignmentPanel({ submission, onUpdate, submissionType =
             try {
                 const assignedUser = users.find(u => u.email === assignee);
                 const taskTitle = submission.form_title || submission.checklist_title || 'Task';
+                const linkPage = submissionType === 'form' ? 'ViewFormSubmission' : 'ViewChecklistSubmission';
+                const linkParams = `?id=${submission.id}`;
                 
+                // Create in-app notification
+                await base44.entities.Notification.create({
+                    user_email: assignee,
+                    title: 'New Task Assigned',
+                    message: `You've been assigned: ${taskTitle}`,
+                    type: 'task_assigned',
+                    link_page: linkPage,
+                    link_params: linkParams,
+                    read: false
+                });
+                
+                // Send email notification
                 await base44.integrations.Core.SendEmail({
                     to: assignee,
                     subject: `New Task Assigned: ${taskTitle}`,
