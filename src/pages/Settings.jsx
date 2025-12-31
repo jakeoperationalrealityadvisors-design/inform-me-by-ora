@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import NotificationPreferences from '@/components/notifications/NotificationPreferences';
+import { toast } from 'sonner';
 
 export default function Settings() {
     const queryClient = useQueryClient();
@@ -33,6 +34,17 @@ export default function Settings() {
             }
         }
         setCacheSize(Math.round(total / 1024));
+    };
+    
+    const hasUnsavedChanges = technicalLevel !== user?.technical_level;
+    
+    const applyChanges = async () => {
+        await base44.auth.updateMe({ 
+            technical_level: technicalLevel,
+            preferred_tutorial_style: technicalLevel === 'expert' ? 'none' : 'tooltips'
+        });
+        queryClient.invalidateQueries(['current-user']);
+        toast.success('Settings saved successfully');
     };
     
     const toggleOfflineMode = async () => {
@@ -102,14 +114,7 @@ export default function Settings() {
                         ].map((level) => (
                             <button
                                 key={level.value}
-                                onClick={async () => {
-                                    setTechnicalLevel(level.value);
-                                    await base44.auth.updateMe({ 
-                                        technical_level: level.value,
-                                        preferred_tutorial_style: level.value === 'expert' ? 'none' : 'tooltips'
-                                    });
-                                    queryClient.invalidateQueries(['current-user']);
-                                }}
+                                onClick={() => setTechnicalLevel(level.value)}
                                 className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all text-left ${
                                     technicalLevel === level.value
                                         ? 'border-[#FF8C00] bg-gradient-to-r from-orange-950/30 to-blue-950/30'
@@ -126,6 +131,15 @@ export default function Settings() {
                                 )}
                             </button>
                         ))}
+
+                        {hasUnsavedChanges && (
+                            <Button
+                                onClick={applyChanges}
+                                className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] h-12 text-base font-semibold"
+                            >
+                                Apply Changes
+                            </Button>
+                        )}
                     </CardContent>
                 </Card>
 
