@@ -24,8 +24,19 @@ export default function NetworkOnboarding() {
     const [orgName, setOrgName] = useState('');
     const [contactEmail, setContactEmail] = useState('');
     
-    // Technical level
+    // Age and technical level
+    const [age, setAge] = useState('');
     const [technicalLevel, setTechnicalLevel] = useState('intermediate');
+    
+    // Auto-calculate technical level based on age
+    const calculateTechnicalLevel = (ageValue) => {
+        const numAge = parseInt(ageValue);
+        if (numAge >= 70) return 'senior';
+        if (numAge >= 60) return 'simple';
+        if (numAge >= 50) return 'beginner';
+        if (numAge >= 40) return 'intermediate';
+        return 'expert';
+    };
     
     const paths = [
         {
@@ -121,6 +132,7 @@ export default function NetworkOnboarding() {
                 organization_id: org.id,
                 team_role: 'member',
                 onboarding_completed: true,
+                age: parseInt(age),
                 technical_level: technicalLevel,
                 preferred_tutorial_style: technicalLevel === 'expert' ? 'none' : 'tooltips'
             });
@@ -164,6 +176,7 @@ export default function NetworkOnboarding() {
                 organization_id: org.id,
                 team_role: 'owner',
                 onboarding_completed: true,
+                age: parseInt(age),
                 technical_level: technicalLevel,
                 preferred_tutorial_style: technicalLevel === 'expert' ? 'none' : 'tooltips'
             });
@@ -279,36 +292,61 @@ export default function NetworkOnboarding() {
                         <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center">
                             <TrendingUp className="w-8 h-8 text-white" />
                         </div>
-                        <CardTitle className="text-2xl">How comfortable are you with apps?</CardTitle>
+                        <CardTitle className="text-2xl">What's your age?</CardTitle>
                         <CardDescription className="text-base">
-                            Be honest! This helps us show you the right amount of help. You can always change it later.
+                            We'll automatically adjust the app to be easier or more advanced based on your age. You can always customize it later.
                         </CardDescription>
                     </CardHeader>
                     
                     <CardContent className="space-y-6">
-                        <RadioGroup value={technicalLevel} onValueChange={setTechnicalLevel}>
-                            <div className="space-y-3">
-                                {technicalLevels.map((level) => (
-                                    <label
-                                        key={level.value}
-                                        className={`group flex items-start gap-4 p-5 rounded-xl border-2 cursor-pointer transition-all ${
-                                            technicalLevel === level.value
-                                                ? 'border-[#FF8C00] bg-gradient-to-br from-orange-50 to-blue-50 shadow-md'
-                                                : 'border-slate-200 hover:border-slate-300 bg-white hover:shadow-sm'
-                                        }`}
-                                    >
-                                        <RadioGroupItem value={level.value} className="mt-1" />
-                                        <div className="flex-1">
-                                           <div className="flex items-center gap-3 mb-2">
-                                               <div className="text-3xl">{level.emoji}</div>
-                                               <div className="font-bold text-xl text-slate-900">{level.label}</div>
-                                           </div>
-                                           <div className="text-base text-slate-700 leading-relaxed">{level.desc}</div>
-                                        </div>
-                                    </label>
-                                ))}
+                        <div className="space-y-4">
+                            <div className="text-center">
+                                <Label htmlFor="age" className="text-lg">Your Age</Label>
+                                <Input
+                                    id="age"
+                                    type="number"
+                                    value={age}
+                                    onChange={(e) => {
+                                        setAge(e.target.value);
+                                        if (e.target.value) {
+                                            setTechnicalLevel(calculateTechnicalLevel(e.target.value));
+                                        }
+                                    }}
+                                    placeholder="Enter your age"
+                                    className="text-center text-3xl h-20 mt-2 font-bold"
+                                    min="18"
+                                    max="120"
+                                />
                             </div>
-                        </RadioGroup>
+                            
+                            {age && (
+                                <div className="bg-gradient-to-r from-orange-50 to-blue-50 border-2 border-orange-300 rounded-xl p-6 animate-in fade-in slide-in-from-bottom-4">
+                                    <div className="text-center">
+                                        <div className="text-5xl mb-3">
+                                            {technicalLevel === 'senior' && '👴'}
+                                            {technicalLevel === 'simple' && '🌟'}
+                                            {technicalLevel === 'beginner' && '📚'}
+                                            {technicalLevel === 'intermediate' && '💡'}
+                                            {technicalLevel === 'expert' && '⚡'}
+                                        </div>
+                                        <p className="font-bold text-xl text-slate-900 mb-2">
+                                            {technicalLevel === 'senior' && 'Extra Large & Simple Mode'}
+                                            {technicalLevel === 'simple' && 'Simple & Easy Mode'}
+                                            {technicalLevel === 'beginner' && 'Guided Mode'}
+                                            {technicalLevel === 'intermediate' && 'Standard Mode'}
+                                            {technicalLevel === 'expert' && 'Advanced Mode'}
+                                        </p>
+                                        <p className="text-slate-700">
+                                            {technicalLevel === 'senior' && 'Very large buttons, plain language, one step at a time'}
+                                            {technicalLevel === 'simple' && 'Large buttons, simple words, step-by-step help'}
+                                            {technicalLevel === 'beginner' && 'Clear instructions and helpful tips'}
+                                            {technicalLevel === 'intermediate' && 'Streamlined interface with essential features'}
+                                            {technicalLevel === 'expert' && 'Full access to all advanced features'}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         
                         <div className="flex gap-3">
                             <Button
@@ -320,7 +358,8 @@ export default function NetworkOnboarding() {
                             </Button>
                             <Button
                                 onClick={() => setStep('network')}
-                                className="flex-1 h-12 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-base font-semibold"
+                                disabled={!age}
+                                className="flex-1 h-12 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-base font-semibold disabled:opacity-50"
                             >
                                 Final Step: Connect →
                             </Button>
