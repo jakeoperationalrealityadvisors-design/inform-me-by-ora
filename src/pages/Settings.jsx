@@ -163,20 +163,25 @@ export default function Settings() {
                     </Card>
                 )}
                 
-                {/* Organization Settings */}
+                {/* Customer Portal */}
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>
                         <CardTitle className="text-white flex items-center gap-2">
                             <Building2 className="w-5 h-5 text-[#FF8C00]" />
-                            Organization
+                            Customer Portal
                         </CardTitle>
                         <CardDescription className="text-blue-400">
-                            Manage your network, members, and invite code
+                            Manage subscription, billing, and view analytics
                         </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <Link to={createPageUrl('OrganizationSettings')}>
+                    <CardContent className="space-y-2">
+                        <Link to={createPageUrl('CustomerPortal')}>
                             <Button variant="outline" className="w-full border-blue-900/30 text-blue-300 hover:bg-blue-950/50">
+                                Open Customer Portal
+                            </Button>
+                        </Link>
+                        <Link to={createPageUrl('OrganizationSettings')}>
+                            <Button variant="ghost" className="w-full text-blue-400 hover:bg-blue-950/30 text-sm">
                                 Organization Settings
                             </Button>
                         </Link>

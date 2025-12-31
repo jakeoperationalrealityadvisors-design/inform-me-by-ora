@@ -30,6 +30,7 @@ import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import NetworkOnboarding from './pages/NetworkOnboarding';
 import OrganizationSettings from './pages/OrganizationSettings';
+import CustomerPortal from './pages/CustomerPortal';
 import __Layout from './Layout.jsx';
 
 
@@ -66,6 +67,7 @@ export const PAGES = {
     "ViewFormSubmission": ViewFormSubmission,
     "NetworkOnboarding": NetworkOnboarding,
     "OrganizationSettings": OrganizationSettings,
+    "CustomerPortal": CustomerPortal,
 }
 
 export const pagesConfig = {
