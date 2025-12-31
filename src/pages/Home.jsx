@@ -16,6 +16,7 @@ import NotificationBell from '@/components/notifications/NotificationBell';
 import BottomNav from '@/components/navigation/BottomNav';
 import { useLanguage } from '@/components/language/LanguageContext';
 import LanguageSwitcher from '@/components/language/LanguageSwitcher';
+import GlobalSearch from '@/components/search/GlobalSearch';
 
 export default function Home() {
     const { isAdmin, canViewAll } = useUserRole();
@@ -23,6 +24,7 @@ export default function Home() {
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeTab, setActiveTab] = useState('forms');
+    const [showGlobalSearch, setShowGlobalSearch] = useState(false);
     
     const { data: forms = [], isLoading: formsLoading } = useQuery({
         queryKey: ['forms'],
@@ -93,11 +95,19 @@ export default function Home() {
                         </div>
                     </div>
                     
-                    <SearchBar
-                        value={search}
-                        onChange={setSearch}
-                        placeholder={t('home.searchPlaceholder')}
-                    />
+                    <div className="relative">
+                        <SearchBar
+                            value={search}
+                            onChange={setSearch}
+                            placeholder={t('home.searchPlaceholder')}
+                        />
+                        <button
+                            onClick={() => setShowGlobalSearch(true)}
+                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded hover:bg-blue-50"
+                        >
+                            Advanced
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -208,6 +218,7 @@ export default function Home() {
                     )
                     )}
                     </div>
+                    <GlobalSearch open={showGlobalSearch} onOpenChange={setShowGlobalSearch} />
                     <BottomNav />
                     </div>
                     );
