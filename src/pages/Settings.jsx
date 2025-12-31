@@ -225,6 +225,28 @@ export default function Settings() {
                         </CardContent>
                     </Card>
                 )}
+
+                {/* External Integrations */}
+                {canManage && (
+                    <Card className="bg-[#0f1419] border-blue-900/20">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <Zap className="w-5 h-5 text-purple-500" />
+                                External Integrations
+                            </CardTitle>
+                            <CardDescription className="text-blue-400">
+                                Connect to external services via REST, GraphQL, WebSocket, and more
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link to={createPageUrl('Integrations')}>
+                                <Button variant="outline" className="w-full border-purple-900/30 text-purple-300 hover:bg-purple-950/50">
+                                    Manage Integrations
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                )}
                 
                 {/* Customer Portal */}
                 <Card className="bg-[#0f1419] border-blue-900/20">

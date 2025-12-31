@@ -2,6 +2,8 @@ import React from 'react';
 import { base44 } from '@/api/base44Client';
 import { LanguageProvider } from './components/language/LanguageContext';
 import { ThemeProvider } from './components/theme/ThemeContext';
+import { WebSocketProvider } from './components/connections/WebSocketProvider';
+import { ConnectionManager } from './components/connections/ConnectionManager';
 import OfflineIndicator from './components/mobile/OfflineIndicator';
 import InstallPWA from './components/mobile/InstallPWA';
 import SyncIndicator from './components/mobile/SyncManager';
@@ -39,10 +41,12 @@ export default function Layout({ children, currentPageName }) {
     return (
         <ThemeProvider>
             <LanguageProvider>
-                <OfflineIndicator />
-                <InstallPWA />
-                <SyncIndicator />
-                <div className="ora-theme" data-senior-mode={seniorMode}>
+                <ConnectionManager>
+                    <WebSocketProvider>
+                        <OfflineIndicator />
+                        <InstallPWA />
+                        <SyncIndicator />
+                        <div className="ora-theme" data-senior-mode={seniorMode}>
                     <style>{`
                         /* Dark Mode (Default) */
                         :root[data-theme="dark"],
@@ -142,9 +146,11 @@ export default function Layout({ children, currentPageName }) {
                             background: linear-gradient(135deg, var(--ora-blue) 0%, var(--ora-blue-dark) 100%);
                         }
                     `}</style>
-                    {children}
-                    <MobileNav />
-                </div>
+                        {children}
+                        <MobileNav />
+                    </div>
+                    </WebSocketProvider>
+                </ConnectionManager>
             </LanguageProvider>
         </ThemeProvider>
     );
