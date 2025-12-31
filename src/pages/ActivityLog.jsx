@@ -50,6 +50,12 @@ const ACTION_COLORS = {
 
 function ActivityLogContent() {
     const [search, setSearch] = useState('');
+    const [dateRange, setDateRange] = useState({
+        from: subDays(new Date(), 30),
+        to: new Date()
+    });
+    const [selectedUser, setSelectedUser] = useState('all');
+    const [selectedAction, setSelectedAction] = useState('all');
     const [actionType, setActionType] = useState('all');
     const [dateRange, setDateRange] = useState('7'); // days
     const [userFilter, setUserFilter] = useState('all');
