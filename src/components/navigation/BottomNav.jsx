@@ -10,6 +10,27 @@ export default function BottomNav() {
     const location = useLocation();
     const { canViewAll } = useUserRole();
     const { t } = useLanguage();
+    const [isVisible, setIsVisible] = React.useState(true);
+    const [lastScrollY, setLastScrollY] = React.useState(0);
+    
+    React.useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            
+            if (currentScrollY < 10) {
+                setIsVisible(true);
+            } else if (currentScrollY > lastScrollY && currentScrollY > 80) {
+                setIsVisible(false);
+            } else if (currentScrollY < lastScrollY) {
+                setIsVisible(true);
+            }
+            
+            setLastScrollY(currentScrollY);
+        };
+        
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [lastScrollY]);
     
     const isActive = (pageName) => {
         return location.pathname.includes(pageName);
@@ -24,7 +45,10 @@ export default function BottomNav() {
     ];
     
     return (
-        <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 safe-area-inset-bottom">
+        <div className={cn(
+            "sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 safe-area-inset-bottom transition-transform duration-300",
+            isVisible ? "translate-y-0" : "translate-y-full"
+        )}>
             <div className="flex justify-around items-center h-16 px-2">
                 {navItems.map((item) => {
                     const Icon = item.icon;
