@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users, Calendar, FolderOpen, LayoutGrid, LayoutList, Scan } from 'lucide-react';
+import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users, Calendar, FolderOpen, LayoutGrid, LayoutList, Scan, MoreVertical, Menu } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 import SearchBar from '@/components/common/SearchBar';
@@ -136,7 +136,7 @@ export default function Home() {
                         <h1 className="text-2xl sm:text-xl font-bold text-[#FF8C00]">
                             {isSeniorMode ? 'My Forms' : 'InForm Me'}
                         </h1>
-                        <div className="flex gap-2 sm:gap-2">
+                        <div className="flex gap-2">
                             <NotificationBell />
                             {canCreateForms && (
                                 <Link to={createPageUrl('CreateForm')}>
@@ -145,6 +145,53 @@ export default function Home() {
                                     </Button>
                                 </Link>
                             )}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="rounded-full text-[#FF8C00] h-11 w-11 sm:h-10 sm:w-10">
+                                        <MoreVertical className="w-6 h-6 sm:w-5 sm:h-5" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-56">
+                                    <DropdownMenuItem asChild>
+                                        <Link to={createPageUrl('Scanner')} className="flex items-center gap-2 cursor-pointer">
+                                            <Scan className="w-4 h-4" />
+                                            Scanner
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link to={createPageUrl('Documents')} className="flex items-center gap-2 cursor-pointer">
+                                            <FolderOpen className="w-4 h-4" />
+                                            Documents
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link to={createPageUrl('MyTasks')} className="flex items-center gap-2 cursor-pointer">
+                                            <ListTodo className="w-4 h-4" />
+                                            My Tasks
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link to={createPageUrl('Submissions')} className="flex items-center gap-2 cursor-pointer">
+                                            <ClipboardList className="w-4 h-4" />
+                                            Submissions
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    {canViewAll && (
+                                        <DropdownMenuItem asChild>
+                                            <Link to={createPageUrl('Reports')} className="flex items-center gap-2 cursor-pointer">
+                                                <BarChart3 className="w-4 h-4" />
+                                                Reports
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
+                                    <DropdownMenuItem asChild>
+                                        <Link to={createPageUrl('Settings')} className="flex items-center gap-2 cursor-pointer">
+                                            <Settings className="w-4 h-4" />
+                                            Settings
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
                     
@@ -162,12 +209,12 @@ export default function Home() {
                         </button>
                     </div>
                     
-                    {/* Mobile Category Dropdown */}
-                    <div className="lg:hidden mt-3">
+                    {/* Category Dropdown - All Devices */}
+                    <div className="mt-3">
                         <select
                             value={selectedCategory || ''}
                             onChange={(e) => setSelectedCategory(e.target.value || null)}
-                            className="w-full bg-[#0f1419] text-white border border-blue-900/30 rounded-lg px-4 py-3 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-[#FF8C00]"
+                            className="w-full bg-[#0f1419] text-white border border-blue-900/30 rounded-lg px-4 py-3 text-lg sm:text-base font-medium focus:outline-none focus:ring-2 focus:ring-[#FF8C00]"
                         >
                             <option value="">All Categories</option>
                             {categories.map(cat => (
@@ -179,18 +226,9 @@ export default function Home() {
                 </div>
 
                 <PullToRefresh onRefresh={handleRefresh}>
-                <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-20 sm:pb-6">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    {/* Sidebar - Desktop Only */}
-                    <div className="hidden lg:block lg:col-span-1">
-                        <CategorySidebar 
-                            selectedCategory={selectedCategory}
-                            onSelectCategory={setSelectedCategory}
-                        />
-                    </div>
-
+                <div className="max-w-5xl mx-auto px-4 py-6 pb-20 sm:pb-6">
                     {/* Main Content */}
-                    <div className="lg:col-span-3">
+                    <div>
                 {/* Tab Switcher */}
                 <div className="flex gap-3 sm:gap-2 mb-6">
                     <button
@@ -271,7 +309,6 @@ export default function Home() {
                         />
                     )
                     )}
-                    </div>
                     </div>
                     </div>
                     </PullToRefresh>
