@@ -20,6 +20,8 @@ import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import Calendar from './pages/Calendar';
 import TikTokDashboard from './pages/TikTokDashboard';
+import ManageAutomations from './pages/ManageAutomations';
+import EditAutomation from './pages/EditAutomation';
 import __Layout from './Layout.jsx';
 
 
@@ -46,6 +48,8 @@ export const PAGES = {
     "ViewFormSubmission": ViewFormSubmission,
     "Calendar": Calendar,
     "TikTokDashboard": TikTokDashboard,
+    "ManageAutomations": ManageAutomations,
+    "EditAutomation": EditAutomation,
 }
 
 export const pagesConfig = {
