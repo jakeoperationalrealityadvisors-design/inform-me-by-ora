@@ -21,32 +21,35 @@ export default function Home() {
     
     const { data: forms = [], isLoading: formsLoading } = useQuery({
         queryKey: ['forms'],
-        queryFn: () => base44.entities.FormTemplate.filter({ status: 'active' })
+        queryFn: () => base44.entities.FormTemplate.filter({ status: 'active' }),
+        staleTime: 30000
     });
     
     const { data: checklists = [], isLoading: checklistsLoading } = useQuery({
         queryKey: ['checklists'],
-        queryFn: () => base44.entities.ChecklistTemplate.filter({ status: 'active' })
+        queryFn: () => base44.entities.ChecklistTemplate.filter({ status: 'active' }),
+        staleTime: 30000
     });
     
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list()
+        queryFn: () => base44.entities.Category.list(),
+        staleTime: 60000
     });
     
     const getCategoryById = (id) => categories.find(c => c.id === id);
     
-    const filteredForms = forms.filter(form => {
+    const filteredForms = React.useMemo(() => forms.filter(form => {
         const matchesSearch = !search || form.title.toLowerCase().includes(search.toLowerCase());
         const matchesCategory = !selectedCategory || form.category_id === selectedCategory;
         return matchesSearch && matchesCategory;
-    });
+    }), [forms, search, selectedCategory]);
     
-    const filteredChecklists = checklists.filter(cl => {
+    const filteredChecklists = React.useMemo(() => checklists.filter(cl => {
         const matchesSearch = !search || cl.title.toLowerCase().includes(search.toLowerCase());
         const matchesCategory = !selectedCategory || cl.category_id === selectedCategory;
         return matchesSearch && matchesCategory;
-    });
+    }), [checklists, search, selectedCategory]);
     
     const isLoading = formsLoading || checklistsLoading;
     
@@ -64,9 +67,9 @@ export default function Home() {
                             />
                             <div>
                                 <h1 className="text-xl font-bold text-slate-900">
-                                    Operational<span className="text-[#1e90ff]">Reality</span>
+                                    Inform Me by <span className="text-[#1e90ff]">ORA</span>
                                 </h1>
-                                <p className="text-xs text-slate-600">Forms & Checklists</p>
+                                <p className="text-xs text-slate-600">Operational Reality Advisors</p>
                             </div>
                         </div>
                         <div className="flex gap-2">

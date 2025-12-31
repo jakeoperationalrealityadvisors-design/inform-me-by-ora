@@ -26,20 +26,28 @@ export default function Documents() {
     
     const { data: documents = [], isLoading: docsLoading } = useQuery({
         queryKey: ['documents'],
-        queryFn: () => base44.entities.Document.filter({ status: 'active' }, '-created_date')
+        queryFn: () => base44.entities.Document.filter({ status: 'active' }, '-created_date'),
+        staleTime: 30000
     });
     
     const { data: folders = [] } = useQuery({
         queryKey: ['document-folders'],
-        queryFn: () => base44.entities.DocumentFolder.list()
+        queryFn: () => base44.entities.DocumentFolder.list(),
+        staleTime: 60000
     });
     
-    // Get all unique tags and uploaders
-    const allTags = [...new Set(documents.flatMap(doc => doc.tags || []))];
-    const allUploaders = [...new Set(documents.map(doc => doc.uploaded_by_name || doc.created_by).filter(Boolean))];
+    // Memoize unique tags and uploaders
+    const allTags = React.useMemo(() => 
+        [...new Set(documents.flatMap(doc => doc.tags || []))], 
+        [documents]
+    );
+    const allUploaders = React.useMemo(() => 
+        [...new Set(documents.map(doc => doc.uploaded_by_name || doc.created_by).filter(Boolean))], 
+        [documents]
+    );
     
-    // Filter documents
-    const filteredDocs = documents.filter(doc => {
+    // Memoize filtered documents
+    const filteredDocs = React.useMemo(() => documents.filter(doc => {
         const matchesSearch = !search || 
             doc.title.toLowerCase().includes(search.toLowerCase()) ||
             doc.description?.toLowerCase().includes(search.toLowerCase());
@@ -64,7 +72,7 @@ export default function Documents() {
             (doc.uploaded_by_name || doc.created_by) === uploaderFilter;
         
         return matchesSearch && matchesFolder && matchesTags && matchesDateFrom && matchesDateTo && matchesSize && matchesUploader;
-    });
+    }), [documents, search, selectedFolder, selectedTags, dateFrom, dateTo, sizeFilter, uploaderFilter]);
     
     const getFolderName = (id) => folders.find(f => f.id === id)?.name || 'Uncategorized';
     

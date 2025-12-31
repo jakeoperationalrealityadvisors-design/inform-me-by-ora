@@ -19,27 +19,27 @@ export default function Submissions() {
     const { user, canViewAll } = useUserRole();
     
     const { data: formSubmissions = [], isLoading: formsLoading } = useQuery({
-        queryKey: ['form-submissions'],
+        queryKey: ['form-submissions', canViewAll, user?.email],
         queryFn: async () => {
             const all = await base44.entities.FormSubmission.list('-created_date');
-            // Team members only see their own submissions
             if (!canViewAll) {
                 return all.filter(f => f.created_by === user?.email);
             }
             return all;
-        }
+        },
+        staleTime: 10000
     });
     
     const { data: checklistSubmissions = [], isLoading: checklistsLoading } = useQuery({
-        queryKey: ['checklist-submissions'],
+        queryKey: ['checklist-submissions', canViewAll, user?.email],
         queryFn: async () => {
             const all = await base44.entities.ChecklistSubmission.list('-created_date');
-            // Team members only see their own submissions
             if (!canViewAll) {
                 return all.filter(c => c.created_by === user?.email);
             }
             return all;
-        }
+        },
+        staleTime: 10000
     });
     
     const filteredForms = formSubmissions.filter(sub =>
