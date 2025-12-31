@@ -34,7 +34,27 @@ export default function FillChecklist() {
     });
     
     const submitMutation = useMutation({
-        mutationFn: (data) => base44.entities.ChecklistSubmission.create(data),
+        mutationFn: async (data) => {
+            const submission = await base44.entities.ChecklistSubmission.create(data);
+            
+            // Trigger automations
+            if (data.status === 'completed') {
+                await base44.functions.invoke('executeAutomations', {
+                    trigger_type: 'checklist_completed',
+                    trigger_data: {
+                        template_id: checklist.id,
+                        submission_id: submission.id,
+                        submission_type: 'checklist',
+                        title: checklist.title,
+                        submitted_by_email: data.created_by,
+                        link_page: 'ViewChecklistSubmission',
+                        link_params: `id=${submission.id}`
+                    }
+                });
+            }
+            
+            return submission;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries(['submissions']);
             setSubmitted(true);
