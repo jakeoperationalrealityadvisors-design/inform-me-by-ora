@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Send, Loader2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, CheckCircle, ChevronDown } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -141,58 +142,66 @@ export default function FillForm() {
     }
     
     return (
-        <div className="min-h-screen bg-[#0a0e17]">
+        <div className="min-h-screen bg-[#0a0e17] overflow-y-auto">
             {/* Header */}
-            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
-                <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
+            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-20 shadow-sm">
+                <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 flex items-center gap-2 sm:gap-4">
                     <Link to={createPageUrl('Home')}>
-                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
-                            <ArrowLeft className="w-5 h-5" />
+                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400 shrink-0 h-9 w-9">
+                            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                         </Button>
                     </Link>
-                    <div className="flex-1">
-                        <h1 className="text-lg font-semibold text-white">{form.title}</h1>
+                    <div className="flex-1 min-w-0">
+                        <h1 className="text-base sm:text-lg font-semibold text-white truncate">{form.title}</h1>
                         {form.description && (
-                            <p className="text-sm text-blue-400">{form.description}</p>
+                            <p className="text-xs sm:text-sm text-blue-400 truncate">{form.description}</p>
                         )}
                     </div>
                 </div>
             </div>
             
-            <div className="max-w-2xl mx-auto px-4 py-6">
-                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-6 space-y-6">
-                    {/* Submitter Info */}
-                    <div className="pb-6 border-b border-blue-900/20 space-y-4">
-                        <div>
-                            <Label className="text-blue-100 font-medium">
-                                Your Name <span className="text-red-500">*</span>
-                            </Label>
-                            <Input
-                                value={submitterName}
-                                onChange={(e) => setSubmitterName(e.target.value)}
-                                placeholder="Enter your name"
-                                className="mt-2 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
-                            />
-                        </div>
-                        <div>
-                            <Label className="text-blue-100 font-medium">Location / Site</Label>
-                            <Input
-                                value={location}
-                                onChange={(e) => setLocation(e.target.value)}
-                                placeholder="Enter location (optional)"
-                                className="mt-2 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
-                            />
-                        </div>
-                    </div>
+            <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+                <div className="bg-[#0f1419] rounded-xl sm:rounded-2xl border border-blue-900/20 p-4 sm:p-6 space-y-4 sm:space-y-6">
+                    {/* Submitter Info - Collapsible */}
+                    <Collapsible defaultOpen>
+                        <CollapsibleTrigger className="w-full flex items-center justify-between pb-3 border-b border-blue-900/20">
+                            <h3 className="text-sm sm:text-base font-medium text-blue-100">Your Information</h3>
+                            <ChevronDown className="w-4 h-4 text-blue-400" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                            <div className="pt-4 space-y-3">
+                                <div>
+                                    <Label className="text-xs sm:text-sm text-blue-100 font-medium">
+                                        Name <span className="text-red-500">*</span>
+                                    </Label>
+                                    <Input
+                                        value={submitterName}
+                                        onChange={(e) => setSubmitterName(e.target.value)}
+                                        placeholder="Enter your name"
+                                        className="mt-1 h-10 sm:h-11 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
+                                    />
+                                </div>
+                                <div>
+                                    <Label className="text-xs sm:text-sm text-blue-100 font-medium">Location</Label>
+                                    <Input
+                                        value={location}
+                                        onChange={(e) => setLocation(e.target.value)}
+                                        placeholder="Optional"
+                                        className="mt-1 h-10 sm:h-11 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
+                                    />
+                                </div>
+                            </div>
+                        </CollapsibleContent>
+                    </Collapsible>
                     
                     {/* Form Fields */}
-                    <AnimatePresence>
+                    <div className="space-y-4">
                         {form.fields?.map((field, idx) => (
                             <motion.div
                                 key={field.id}
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: idx * 0.05 }}
+                                transition={{ delay: idx * 0.02 }}
                             >
                                 <DynamicField
                                     field={field}
@@ -201,26 +210,26 @@ export default function FillForm() {
                                 />
                             </motion.div>
                         ))}
-                    </AnimatePresence>
+                    </div>
                     
                     {(!form.fields || form.fields.length === 0) && (
                         <p className="text-blue-300/70 text-center py-8">No fields in this form</p>
                     )}
                 </div>
                 
-                {/* Submit Button */}
-                <div className="mt-6">
+                {/* Submit Button - Sticky on mobile */}
+                <div className="mt-4 sm:mt-6 sticky bottom-0 left-0 right-0 p-3 sm:p-0 bg-[#0a0e17] sm:bg-transparent -mx-3 sm:mx-0">
                     <Button
                         onClick={handleSubmit}
                         disabled={!validateForm() || submitMutation.isPending}
-                        className="w-full h-14 text-lg rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 shadow-lg shadow-blue-600/30"
+                        className="w-full h-12 sm:h-14 text-base sm:text-lg rounded-xl sm:rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 shadow-lg shadow-blue-600/30"
                     >
                         {submitMutation.isPending ? (
-                            <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin mr-2" />
                         ) : (
-                            <Send className="w-5 h-5 mr-2" />
+                            <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                         )}
-                        Submit Form
+                        Submit
                     </Button>
                 </div>
             </div>

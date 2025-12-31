@@ -128,10 +128,10 @@ export default function Home() {
     const isLoading = formsLoading || checklistsLoading;
     
     return (
-        <div className="min-h-screen bg-[#0a0e17] transition-colors">
+        <div className="min-h-screen bg-[#0a0e17] transition-colors overflow-y-auto">
             {/* Header */}
-            <div className="bg-[#0a0e17] border-b border-blue-900/30 sticky top-0 z-10 shadow-sm transition-colors">
-                <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
+            <div className="bg-[#0a0e17] border-b border-blue-900/30 sticky top-0 z-20 shadow-sm transition-colors">
+                <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3">
                     <div className="flex items-center justify-between">
                         <h1 className="text-xl font-bold text-[#FF8C00]">
                             {isSeniorMode ? 'My Forms' : 'InForm Me'}

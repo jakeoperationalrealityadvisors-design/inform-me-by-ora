@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, CheckCircle, Circle, MessageSquare, Loader2, Send } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Circle, MessageSquare, Loader2, Send, ChevronDown } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -147,61 +148,71 @@ export default function FillChecklist() {
     }
     
     return (
-        <div className="min-h-screen bg-[#0a0e17]">
+        <div className="min-h-screen bg-[#0a0e17] overflow-y-auto">
             {/* Header */}
-            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
-                <div className="max-w-2xl mx-auto px-4 py-4">
-                    <div className="flex items-center gap-4 mb-4">
+            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-20 shadow-sm">
+                <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3">
+                    <div className="flex items-center gap-2 sm:gap-4 mb-3">
                         <Link to={createPageUrl('Home')}>
-                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
-                                <ArrowLeft className="w-5 h-5" />
+                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400 shrink-0 h-9 w-9">
+                                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                             </Button>
                         </Link>
-                        <div className="flex-1">
-                            <h1 className="text-lg font-semibold text-white">{checklist.title}</h1>
+                        <div className="flex-1 min-w-0">
+                            <h1 className="text-base sm:text-lg font-semibold text-white truncate">{checklist.title}</h1>
                             {checklist.description && (
-                                <p className="text-sm text-blue-400">{checklist.description}</p>
+                                <p className="text-xs sm:text-sm text-blue-400 truncate hidden sm:block">{checklist.description}</p>
                             )}
                         </div>
                     </div>
                     
                     {/* Progress */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <Progress value={progress} className="h-2 bg-blue-950/50" />
-                        <span className="text-sm font-medium text-blue-300 whitespace-nowrap">
+                        <span className="text-xs sm:text-sm font-medium text-blue-300 whitespace-nowrap">
                             {completedItems.length}/{checklist.items?.length || 0}
                         </span>
                     </div>
                 </div>
             </div>
             
-            <div className="max-w-2xl mx-auto px-4 py-6">
-                {/* Submitter Info */}
-                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-6 mb-4 space-y-4">
-                    <div>
-                        <Label className="text-blue-100 font-medium">
-                            Your Name <span className="text-red-500">*</span>
-                        </Label>
-                        <Input
-                            value={submitterName}
-                            onChange={(e) => setSubmitterName(e.target.value)}
-                            placeholder="Enter your name"
-                            className="mt-2 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
-                        />
+            <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+                {/* Submitter Info - Collapsible */}
+                <Collapsible defaultOpen>
+                    <div className="bg-[#0f1419] rounded-xl sm:rounded-2xl border border-blue-900/20 p-4 sm:p-6 mb-3 sm:mb-4">
+                        <CollapsibleTrigger className="w-full flex items-center justify-between pb-3 border-b border-blue-900/20">
+                            <h3 className="text-sm sm:text-base font-medium text-blue-100">Your Information</h3>
+                            <ChevronDown className="w-4 h-4 text-blue-400" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                            <div className="pt-4 space-y-3">
+                                <div>
+                                    <Label className="text-xs sm:text-sm text-blue-100 font-medium">
+                                        Name <span className="text-red-500">*</span>
+                                    </Label>
+                                    <Input
+                                        value={submitterName}
+                                        onChange={(e) => setSubmitterName(e.target.value)}
+                                        placeholder="Enter your name"
+                                        className="mt-1 h-10 sm:h-11 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
+                                    />
+                                </div>
+                                <div>
+                                    <Label className="text-xs sm:text-sm text-blue-100 font-medium">Location</Label>
+                                    <Input
+                                        value={location}
+                                        onChange={(e) => setLocation(e.target.value)}
+                                        placeholder="Optional"
+                                        className="mt-1 h-10 sm:h-11 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
+                                    />
+                                </div>
+                            </div>
+                        </CollapsibleContent>
                     </div>
-                    <div>
-                        <Label className="text-blue-100 font-medium">Location / Site</Label>
-                        <Input
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            placeholder="Enter location (optional)"
-                            className="mt-2 bg-black/30 border-blue-900/30 focus:bg-black/50 text-white placeholder:text-blue-400/50"
-                        />
-                    </div>
-                </div>
+                </Collapsible>
                 
                 {/* Checklist Items */}
-                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 overflow-hidden">
+                <div className="bg-[#0f1419] rounded-xl sm:rounded-2xl border border-blue-900/20 overflow-hidden max-h-[60vh] overflow-y-auto">
                     <AnimatePresence>
                         {checklist.items?.map((item, idx) => {
                             const isCompleted = completedItems.includes(item.id);
@@ -283,19 +294,19 @@ export default function FillChecklist() {
                     )}
                 </div>
                 
-                {/* Submit Button */}
-                <div className="mt-6">
+                {/* Submit Button - Sticky on mobile */}
+                <div className="mt-4 sm:mt-6 sticky bottom-0 left-0 right-0 p-3 sm:p-0 bg-[#0a0e17] sm:bg-transparent -mx-3 sm:mx-0">
                     <Button
                         onClick={handleSubmit}
                         disabled={!submitterName.trim() || submitMutation.isPending}
-                        className="w-full h-14 text-lg rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 shadow-lg shadow-blue-600/30"
+                        className="w-full h-12 sm:h-14 text-base sm:text-lg rounded-xl sm:rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 shadow-lg shadow-blue-600/30"
                     >
                         {submitMutation.isPending ? (
-                            <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin mr-2" />
                         ) : (
-                            <Send className="w-5 h-5 mr-2" />
+                            <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                         )}
-                        Submit Checklist
+                        Submit
                     </Button>
                 </div>
             </div>

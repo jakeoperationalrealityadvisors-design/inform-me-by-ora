@@ -76,9 +76,9 @@ export default function Settings() {
     };
     
     return (
-        <div className="min-h-screen bg-[#0a0e17]">
-            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
-                <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="min-h-screen bg-[#0a0e17] overflow-y-auto">
+            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-20 shadow-sm">
+                <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
                     <div className="flex items-center gap-4">
                         <Link to={createPageUrl('Home')}>
                             <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
