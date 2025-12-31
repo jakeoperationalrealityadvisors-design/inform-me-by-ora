@@ -10,7 +10,8 @@ export default function BottomNav() {
     const location = useLocation();
     const { canViewAll } = useUserRole();
     const { t } = useLanguage();
-    const [isVisible, setIsVisible] = React.useState(true);
+    const [isScrollingUp, setIsScrollingUp] = React.useState(false);
+    const [isHovering, setIsHovering] = React.useState(false);
     const [lastScrollY, setLastScrollY] = React.useState(0);
     
     React.useEffect(() => {
@@ -18,11 +19,11 @@ export default function BottomNav() {
             const currentScrollY = window.scrollY;
             
             if (currentScrollY < 10) {
-                setIsVisible(true);
+                setIsScrollingUp(true);
             } else if (currentScrollY > lastScrollY && currentScrollY > 80) {
-                setIsVisible(false);
+                setIsScrollingUp(false);
             } else if (currentScrollY < lastScrollY) {
-                setIsVisible(true);
+                setIsScrollingUp(true);
             }
             
             setLastScrollY(currentScrollY);
@@ -31,6 +32,8 @@ export default function BottomNav() {
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
+    
+    const isVisible = isScrollingUp || isHovering;
     
     const isActive = (pageName) => {
         return location.pathname.includes(pageName);
@@ -45,10 +48,14 @@ export default function BottomNav() {
     ];
     
     return (
-        <div className={cn(
-            "sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 safe-area-inset-bottom transition-transform duration-300",
-            isVisible ? "translate-y-0" : "translate-y-full"
-        )}>
+        <div 
+            className={cn(
+                "sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 safe-area-inset-bottom transition-transform duration-300",
+                isVisible ? "translate-y-0" : "translate-y-full"
+            )}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+        >
             <div className="flex justify-around items-center h-16 px-2">
                 {navItems.map((item) => {
                     const Icon = item.icon;
