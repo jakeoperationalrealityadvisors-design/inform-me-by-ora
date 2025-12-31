@@ -185,7 +185,7 @@ function ReportsContent() {
     return (
         <div className="min-h-screen bg-slate-100 dark:bg-[#0a0e17] transition-colors pb-20 md:pb-6">
             {/* Header */}
-            <div className="bg-white dark:bg-[#0f1419] border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10 shadow-sm transition-colors">
+            <div className="bg-white dark:bg-[#0a0e17] border-b border-slate-200 dark:border-blue-900/30 sticky top-0 z-10 shadow-sm transition-colors">
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center gap-4">
                         <Link to={createPageUrl('Home')}>
@@ -194,11 +194,11 @@ function ReportsContent() {
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                <BarChart3 className="w-6 h-6 text-orange-500" />
+                            <h1 className="text-xl font-bold text-slate-900 dark:text-[#FF8C00] flex items-center gap-2">
+                                <BarChart3 className="w-6 h-6 text-orange-500 dark:text-[#FF8C00]" />
                                 Reports & Analytics
                             </h1>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                            <p className="text-sm text-slate-600 dark:text-[#FF8C00]/70">
                                 Insights and metrics from your data
                             </p>
                         </div>
