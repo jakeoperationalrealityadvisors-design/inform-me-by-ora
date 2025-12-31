@@ -208,6 +208,20 @@ Deno.serve(async (req) => {
                                     author_email: 'automation@system'
                                 });
                             }
+                        } else if (action.type === 'update_documents') {
+                            // Find and update all linked documents
+                            const linkedDocs = await base44.asServiceRole.entities.Document.filter({
+                                'linked_to.form_submission_id': trigger_data.submission_id || null,
+                                'linked_to.checklist_submission_id': trigger_data.submission_id || null,
+                                'linked_to.task_id': trigger_data.task_id || null
+                            });
+                            
+                            for (const doc of linkedDocs) {
+                                await base44.asServiceRole.entities.Document.update(doc.id, {
+                                    status: action.config.document_status || 'active',
+                                    tags: action.config.add_tags ? [...(doc.tags || []), ...action.config.add_tags] : doc.tags
+                                });
+                            }
                         }
                     });
 
