@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Bell } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,40 +9,11 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NotificationItem from './NotificationItem';
+import { useRealtimeNotifications } from './useRealtimeNotifications';
 
 export default function NotificationBell() {
     const [open, setOpen] = useState(false);
-    const queryClient = useQueryClient();
-    
-    const { data: user } = useQuery({
-        queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
-    });
-    
-    const { data: notifications = [] } = useQuery({
-        queryKey: ['notifications', user?.email],
-        queryFn: () => base44.entities.Notification.filter(
-            { user_email: user?.email },
-            '-created_date',
-            50
-        ),
-        enabled: !!user?.email,
-        refetchInterval: 30000 // Refetch every 30 seconds
-    });
-    
-    const unreadCount = notifications.filter(n => !n.read).length;
-    
-    const markAllReadMutation = useMutation({
-        mutationFn: async () => {
-            const unreadIds = notifications.filter(n => !n.read).map(n => n.id);
-            await Promise.all(
-                unreadIds.map(id => base44.entities.Notification.update(id, { read: true }))
-            );
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['notifications']);
-        }
-    });
+    const { notifications, unreadCount, markAllAsRead } = useRealtimeNotifications();
     
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -52,7 +21,7 @@ export default function NotificationBell() {
                 <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="relative rounded-full hover:bg-slate-100 text-slate-600"
+                    className="relative rounded-full hover:bg-blue-900/30 text-[#FF8C00]"
                 >
                     <Bell className="w-5 h-5" />
                     {unreadCount > 0 && (
@@ -62,15 +31,15 @@ export default function NotificationBell() {
                     )}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 p-0" align="end">
-                <div className="flex items-center justify-between p-4 border-b">
-                    <h3 className="font-semibold">Notifications</h3>
+            <PopoverContent className="w-80 p-0 bg-[#0f1419] border-blue-900/20" align="end">
+                <div className="flex items-center justify-between p-4 border-b border-blue-900/20">
+                    <h3 className="font-semibold text-white">Notifications</h3>
                     {unreadCount > 0 && (
                         <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => markAllReadMutation.mutate()}
-                            className="text-xs text-blue-600 hover:text-blue-700"
+                            onClick={markAllAsRead}
+                            className="text-xs text-blue-400 hover:text-blue-300"
                         >
                             Mark all read
                         </Button>
@@ -78,7 +47,7 @@ export default function NotificationBell() {
                 </div>
                 <ScrollArea className="h-[400px]">
                     {notifications.length > 0 ? (
-                        <div className="divide-y">
+                        <div className="divide-y divide-blue-900/20">
                             {notifications.map(notification => (
                                 <NotificationItem
                                     key={notification.id}
@@ -88,8 +57,8 @@ export default function NotificationBell() {
                             ))}
                         </div>
                     ) : (
-                        <div className="p-8 text-center text-slate-500">
-                            <Bell className="w-12 h-12 mx-auto mb-2 text-slate-300" />
+                        <div className="p-8 text-center text-blue-400/60">
+                            <Bell className="w-12 h-12 mx-auto mb-2 text-blue-400/30" />
                             <p className="text-sm">No notifications yet</p>
                         </div>
                     )}
