@@ -76,7 +76,7 @@ export default function Scanner() {
 
     const saveToStorage = async (image, storageType) => {
         try {
-            await base44.entities.Document.create({
+            const doc = await base44.entities.Document.create({
                 title: image.name,
                 file_url: image.url,
                 file_name: image.name,
@@ -85,6 +85,18 @@ export default function Scanner() {
                 status: 'active',
                 description: image.ocrText || undefined
             });
+            
+            // Trigger workflows
+            try {
+                await base44.functions.invoke('triggerDocumentWorkflow', {
+                    documentId: doc.id,
+                    triggerType: 'document_uploaded',
+                    documentData: doc
+                });
+            } catch (e) {
+                // Workflow trigger failed but document saved
+            }
+            
             toast.success(`Saved to ${storageType === 'cloud' ? 'Cloud' : 'Internal'} Storage`);
         } catch (error) {
             toast.error('Failed to save document');

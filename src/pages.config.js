@@ -43,6 +43,8 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
+import DocumentWorkflows from './pages/DocumentWorkflows';
+import CreateDocumentWorkflow from './pages/CreateDocumentWorkflow';
 import __Layout from './Layout.jsx';
 
 
@@ -92,6 +94,8 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
+    "DocumentWorkflows": DocumentWorkflows,
+    "CreateDocumentWorkflow": CreateDocumentWorkflow,
 }
 
 export const pagesConfig = {
