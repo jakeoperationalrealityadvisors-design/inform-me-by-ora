@@ -18,24 +18,24 @@ export default function Layout({ children, currentPageName }) {
                             --ora-blue-light: #4DA6FF;
                             --ora-blue-dark: #0066CC;
                             
-                            --background: 210 20% 8%;
-                            --foreground: 210 20% 98%;
-                            --card: 210 20% 10%;
-                            --card-foreground: 210 20% 98%;
-                            --popover: 210 20% 10%;
-                            --popover-foreground: 210 20% 98%;
+                            --background: 0 0% 0%;
+                            --foreground: 0 0% 95%;
+                            --card: 0 0% 4%;
+                            --card-foreground: 0 0% 95%;
+                            --popover: 0 0% 4%;
+                            --popover-foreground: 0 0% 95%;
                             --primary: 27 100% 50%;
                             --primary-foreground: 0 0% 100%;
-                            --secondary: 210 20% 15%;
-                            --secondary-foreground: 210 20% 98%;
-                            --muted: 210 20% 15%;
-                            --muted-foreground: 210 10% 60%;
+                            --secondary: 0 0% 8%;
+                            --secondary-foreground: 0 0% 95%;
+                            --muted: 0 0% 8%;
+                            --muted-foreground: 0 0% 60%;
                             --accent: 27 100% 50%;
                             --accent-foreground: 0 0% 100%;
                             --destructive: 0 84% 60%;
                             --destructive-foreground: 0 0% 100%;
-                            --border: 210 20% 20%;
-                            --input: 210 20% 20%;
+                            --border: 0 0% 12%;
+                            --input: 0 0% 12%;
                             --ring: 27 100% 50%;
                             --radius: 0.5rem;
                         }
@@ -72,8 +72,8 @@ export default function Layout({ children, currentPageName }) {
                         }
                         
                         body.dark-mode {
-                            background: #0a0e17;
-                            color: #e2e8f0;
+                            background: #000000;
+                            color: #f0f0f0;
                         }
                         
                         body.light-mode {
@@ -87,7 +87,7 @@ export default function Layout({ children, currentPageName }) {
                         }
                         
                         .dark-mode .ora-theme {
-                            background: #0a0e17;
+                            background: #000000;
                         }
                         
                         .light-mode .ora-theme {
