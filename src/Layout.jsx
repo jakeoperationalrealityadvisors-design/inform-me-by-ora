@@ -3,6 +3,8 @@ import { LanguageProvider } from './components/language/LanguageContext';
 import { ThemeProvider } from './components/theme/ThemeContext';
 import OfflineIndicator from './components/mobile/OfflineIndicator';
 import InstallPWA from './components/mobile/InstallPWA';
+import SyncIndicator from './components/mobile/SyncManager';
+import MobileNav from './components/mobile/MobileNav';
 
 export default function Layout({ children, currentPageName }) {
     // Register service worker for PWA
@@ -19,6 +21,7 @@ export default function Layout({ children, currentPageName }) {
             <LanguageProvider>
                 <OfflineIndicator />
                 <InstallPWA />
+                <SyncIndicator />
                 <div className="ora-theme">
                     <style>{`
                         /* Dark Mode (Default) */
@@ -120,6 +123,7 @@ export default function Layout({ children, currentPageName }) {
                         }
                     `}</style>
                     {children}
+                    <MobileNav />
                 </div>
             </LanguageProvider>
         </ThemeProvider>

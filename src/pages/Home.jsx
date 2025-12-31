@@ -20,6 +20,9 @@ import GlobalSearch from '@/components/search/GlobalSearch';
 import CategorySidebar from '@/components/navigation/CategorySidebar';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import { offlineStorage } from '@/components/mobile/OfflineStorage';
+import PullToRefresh from '@/components/mobile/PullToRefresh';
+import PushNotificationToggle from '@/components/mobile/PushNotifications';
+import SwipeActions from '@/components/mobile/SwipeActions';
 
 export default function Home() {
     const { isAdmin, canViewAll, canCreateForms } = useUserRole();
@@ -81,6 +84,14 @@ export default function Home() {
     
     const getCategoryById = (id) => categories.find(c => c.id === id);
     
+    const handleRefresh = async () => {
+        await Promise.all([
+            queryClient.invalidateQueries(['forms']),
+            queryClient.invalidateQueries(['checklists']),
+            queryClient.invalidateQueries(['categories'])
+        ]);
+    };
+    
     const filteredForms = React.useMemo(() => forms.filter(form => {
         const matchesSearch = !search || form.title.toLowerCase().includes(search.toLowerCase());
         const matchesCategory = !selectedCategory || form.category_id === selectedCategory;
@@ -116,6 +127,7 @@ export default function Home() {
                         </div>
                         <div className="flex gap-1 sm:gap-2 flex-shrink-0">
                             <NotificationBell />
+                            <PushNotificationToggle />
                             <ThemeToggle />
                             <LanguageSwitcher />
                             {canCreateForms && (
@@ -154,6 +166,7 @@ export default function Home() {
                 </div>
                 </div>
 
+                <PullToRefresh onRefresh={handleRefresh}>
                 <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-20 sm:pb-6">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* Sidebar - Desktop Only */}
@@ -218,11 +231,12 @@ export default function Home() {
                     filteredForms.length > 0 ? (
                         <div className="grid gap-3 sm:gap-4">
                             {filteredForms.map((form) => (
-                                <FormCard 
-                                    key={form.id}
-                                    form={form} 
-                                    category={getCategoryById(form.category_id)}
-                                />
+                                <SwipeActions key={form.id}>
+                                    <FormCard 
+                                        form={form} 
+                                        category={getCategoryById(form.category_id)}
+                                    />
+                                </SwipeActions>
                             ))}
                         </div>
                     ) : (
@@ -236,11 +250,12 @@ export default function Home() {
                     filteredChecklists.length > 0 ? (
                         <div className="grid gap-3 sm:gap-4">
                             {filteredChecklists.map((checklist) => (
-                                <ChecklistCard 
-                                    key={checklist.id}
-                                    checklist={checklist}
-                                    category={getCategoryById(checklist.category_id)}
-                                />
+                                <SwipeActions key={checklist.id}>
+                                    <ChecklistCard 
+                                        checklist={checklist}
+                                        category={getCategoryById(checklist.category_id)}
+                                    />
+                                </SwipeActions>
                             ))}
                         </div>
                     ) : (
@@ -254,6 +269,7 @@ export default function Home() {
                     </div>
                     </div>
                     </div>
+                    </PullToRefresh>
                     <GlobalSearch open={showGlobalSearch} onOpenChange={setShowGlobalSearch} />
                     <BottomNav />
                     </div>
