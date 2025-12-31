@@ -14,6 +14,7 @@ import EmptyState from '@/components/common/EmptyState';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import BottomNav from '@/components/navigation/BottomNav';
+import OrgSwitcher from '@/components/navigation/OrgSwitcher';
 import { useLanguage } from '@/components/language/LanguageContext';
 import LanguageSwitcher from '@/components/language/LanguageSwitcher';
 import TooltipHelper from '@/components/tutorial/TooltipHelper';
@@ -131,11 +132,17 @@ export default function Home() {
         <div className="min-h-screen bg-[#0a0e17] transition-colors overflow-y-auto">
             {/* Header */}
             <div className="bg-[#0a0e17] border-b border-blue-900/30 sticky top-0 z-20 shadow-sm transition-colors">
-                <div className="max-w-2xl mx-auto px-4 sm:px-4 py-4 sm:py-3">
+                <div className="max-w-5xl mx-auto px-4 sm:px-4 py-4 sm:py-3">
+                    {/* Org Switcher - Desktop Only */}
+                    <div className="hidden sm:flex justify-end mb-2">
+                        <OrgSwitcher />
+                    </div>
                     <div className="flex items-center justify-between mb-3 sm:mb-0">
-                        <h1 className="text-2xl sm:text-xl font-bold text-[#FF8C00]">
-                            {isSeniorMode ? 'My Forms' : 'InForm Me'}
-                        </h1>
+                        <div>
+                            <h1 className="text-2xl sm:text-xl font-bold text-[#FF8C00]">
+                                {isSeniorMode ? 'My Forms' : 'InForm Me'}
+                            </h1>
+                        </div>
                         <div className="flex gap-2">
                             <NotificationBell />
                             {canCreateForms && (

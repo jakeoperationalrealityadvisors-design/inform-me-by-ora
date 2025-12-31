@@ -48,6 +48,7 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
+import HopCode from './pages/HopCode';
 import __Layout from './Layout.jsx';
 
 
@@ -102,6 +103,7 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
+    "HopCode": HopCode,
 }
 
 export const pagesConfig = {
