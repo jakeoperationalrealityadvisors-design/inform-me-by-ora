@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 
 export default function UserManagement() {
     return (
-        <RoleGuard allowedRoles={['admin']}>
+        <RoleGuard requiredPermission="can_manage_users">
             <UserManagementContent />
         </RoleGuard>
     );

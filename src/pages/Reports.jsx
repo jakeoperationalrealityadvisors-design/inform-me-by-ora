@@ -321,7 +321,7 @@ function ReportsContent() {
 
 export default function Reports() {
     return (
-        <RoleGuard allowedRoles={['admin', 'manager']}>
+        <RoleGuard requiredPermission="can_view_reports">
             <ReportsContent />
         </RoleGuard>
     );

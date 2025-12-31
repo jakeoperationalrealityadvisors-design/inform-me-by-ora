@@ -15,6 +15,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { SuggestFieldsButton, AutoCategorizeButton, GenerateExamplesButton } from '@/components/ai/AIFormHelper';
 import ExampleSubmissionsDialog from '@/components/ai/ExampleSubmissionsDialog';
 import { toast } from 'sonner';
+import RoleGuard from '@/components/auth/RoleGuard';
 
 const FIELD_TYPES = [
     { value: 'text', label: 'Text Input' },
@@ -27,7 +28,7 @@ const FIELD_TYPES = [
     { value: 'signature', label: 'Signature' }
 ];
 
-export default function EditForm() {
+function EditFormContent() {
     const urlParams = new URLSearchParams(window.location.search);
     const formId = urlParams.get('id');
     const navigate = useNavigate();
@@ -361,5 +362,13 @@ export default function EditForm() {
                 submissions={exampleSubmissions}
             />
         </div>
+    );
+}
+
+export default function EditForm() {
+    return (
+        <RoleGuard requiredPermission="can_edit_forms">
+            <EditFormContent />
+        </RoleGuard>
     );
 }
