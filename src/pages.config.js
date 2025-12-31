@@ -4,6 +4,7 @@ import Admin from './pages/Admin';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AutomationOptimizer from './pages/AutomationOptimizer';
 import Calendar from './pages/Calendar';
+import CreateDocumentWorkflow from './pages/CreateDocumentWorkflow';
 import CreateForm from './pages/CreateForm';
 import CreateTask from './pages/CreateTask';
 import CustomerPortal from './pages/CustomerPortal';
@@ -11,6 +12,7 @@ import DailyTasks from './pages/DailyTasks';
 import Dashboard from './pages/Dashboard';
 import DocumentEditor from './pages/DocumentEditor';
 import DocumentSearch from './pages/DocumentSearch';
+import DocumentWorkflows from './pages/DocumentWorkflows';
 import Documents from './pages/Documents';
 import EditAutomation from './pages/EditAutomation';
 import EditCategory from './pages/EditCategory';
@@ -43,8 +45,7 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import DocumentWorkflows from './pages/DocumentWorkflows';
-import CreateDocumentWorkflow from './pages/CreateDocumentWorkflow';
+import AIAssistantPage from './pages/AIAssistantPage';
 import __Layout from './Layout.jsx';
 
 
@@ -55,6 +56,7 @@ export const PAGES = {
     "AnalyticsDashboard": AnalyticsDashboard,
     "AutomationOptimizer": AutomationOptimizer,
     "Calendar": Calendar,
+    "CreateDocumentWorkflow": CreateDocumentWorkflow,
     "CreateForm": CreateForm,
     "CreateTask": CreateTask,
     "CustomerPortal": CustomerPortal,
@@ -62,6 +64,7 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "DocumentEditor": DocumentEditor,
     "DocumentSearch": DocumentSearch,
+    "DocumentWorkflows": DocumentWorkflows,
     "Documents": Documents,
     "EditAutomation": EditAutomation,
     "EditCategory": EditCategory,
@@ -94,8 +97,7 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "DocumentWorkflows": DocumentWorkflows,
-    "CreateDocumentWorkflow": CreateDocumentWorkflow,
+    "AIAssistantPage": AIAssistantPage,
 }
 
 export const pagesConfig = {
