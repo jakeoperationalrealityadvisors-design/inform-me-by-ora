@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity } from 'lucide-react';
+import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity, Shield } from 'lucide-react';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,7 +14,7 @@ import NotificationPreferences from '@/components/notifications/NotificationPref
 
 export default function Settings() {
     const queryClient = useQueryClient();
-    const { canManage } = useUserRole();
+    const { canManage, isAdmin } = useUserRole();
     const [offlineEnabled, setOfflineEnabled] = useState(false);
     const [cacheSize, setCacheSize] = useState(0);
     
@@ -163,6 +163,28 @@ export default function Settings() {
                     </Card>
                 )}
                 
+                {/* Role Management */}
+                {isAdmin && (
+                    <Card className="bg-[#0f1419] border-blue-900/20">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <Shield className="w-5 h-5 text-[#FF8C00]" />
+                                Role Management
+                            </CardTitle>
+                            <CardDescription className="text-blue-400">
+                                Configure custom roles and permissions
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link to={createPageUrl('RoleManagement')}>
+                                <Button variant="outline" className="w-full border-blue-900/30 text-blue-300 hover:bg-blue-950/50">
+                                    Manage Roles
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Activity Log */}
                 {canManage && (
                     <Card className="bg-[#0f1419] border-blue-900/20">

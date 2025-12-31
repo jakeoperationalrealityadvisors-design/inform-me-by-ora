@@ -27,6 +27,7 @@ import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import RoleManagement from './pages/RoleManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -60,6 +61,7 @@ export const PAGES = {
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
     "AnalyticsDashboard": AnalyticsDashboard,
+    "RoleManagement": RoleManagement,
 }
 
 export const pagesConfig = {

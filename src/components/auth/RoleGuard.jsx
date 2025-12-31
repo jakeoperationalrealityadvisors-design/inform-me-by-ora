@@ -6,79 +6,110 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export function useUserRole() {
-    const { data: user, isLoading } = useQuery({
+    const { data: user, isLoading: userLoading } = useQuery({
         queryKey: ['current-user'],
         queryFn: () => base44.auth.me()
     });
-    
+
+    const { data: customRole, isLoading: roleLoading } = useQuery({
+        queryKey: ['user-role', user?.custom_role_id],
+        queryFn: () => user?.custom_role_id ? base44.entities.Role.filter({ id: user.custom_role_id }).then(r => r[0]) : null,
+        enabled: !!user?.custom_role_id
+    });
+
+    const isLoading = userLoading || roleLoading;
     const isAdmin = user?.role === 'admin';
     const isManager = user?.team_role === 'manager';
     const isTeamMember = !isAdmin && !isManager;
     
-    // Permission checks with override support
+    // Permission checks with custom role support
     const hasPermission = (permission) => {
-        if (isAdmin) return true; // Admin has all permissions
-        if (user?.permissions_override?.[permission] !== undefined) {
-            return user.permissions_override[permission];
+        if (isAdmin) return true;
+
+        // Check user-specific overrides first
+        if (user?.permissions_override) {
+            const overrideValue = user.permissions_override[permission];
+            if (overrideValue !== undefined) return overrideValue;
         }
-        // Default permissions by role
+
+        // Check custom role permissions
+        if (customRole?.permissions) {
+            const [category, action] = permission.split('.');
+            const categoryPerms = customRole.permissions[category];
+            if (categoryPerms && categoryPerms[action] !== undefined) {
+                return categoryPerms[action];
+            }
+        }
+
+        // Fallback to legacy role permissions
         const managerPermissions = [
-            'can_view_forms', 'can_create_forms', 'can_edit_forms', 'can_delete_forms',
-            'can_view_checklists', 'can_create_checklists', 'can_edit_checklists', 'can_delete_checklists',
-            'can_view_tasks', 'can_create_tasks', 'can_edit_tasks',
-            'can_view_documents', 'can_upload_documents', 'can_edit_documents',
-            'can_view_automations', 'can_create_automations', 'can_edit_automations',
-            'can_view_reports', 'can_view_all_submissions', 'can_manage_categories', 'can_view_activity_log'
+            'forms.view', 'forms.create', 'forms.edit', 'forms.delete', 'forms.submit',
+            'checklists.view', 'checklists.create', 'checklists.edit', 'checklists.delete', 'checklists.submit',
+            'tasks.view', 'tasks.create', 'tasks.edit', 'tasks.delete',
+            'documents.view', 'documents.upload', 'documents.edit', 'documents.delete',
+            'submissions.view_all', 'submissions.approve', 'submissions.reject',
+            'automations.view', 'automations.create', 'automations.edit',
+            'reports.view', 'categories.manage'
         ];
         const teamMemberPermissions = [
-            'can_view_forms', 'can_view_checklists', 'can_view_tasks', 'can_view_documents'
+            'forms.view', 'forms.submit',
+            'checklists.view', 'checklists.submit',
+            'tasks.view',
+            'documents.view',
+            'submissions.view_own'
         ];
-        
+
         if (isManager && managerPermissions.includes(permission)) return true;
         if (isTeamMember && teamMemberPermissions.includes(permission)) return true;
-        
+
         return false;
     };
     
     return {
         user,
+        customRole,
         isLoading,
         isAdmin,
         isManager,
         isTeamMember,
         canManage: isAdmin || isManager,
-        canViewAll: isAdmin || isManager,
+        canViewAll: isAdmin || hasPermission('submissions.view_all'),
         // Forms
-        canViewForms: hasPermission('can_view_forms'),
-        canCreateForms: hasPermission('can_create_forms'),
-        canEditForms: hasPermission('can_edit_forms'),
-        canDeleteForms: hasPermission('can_delete_forms'),
+        canViewForms: hasPermission('forms.view'),
+        canCreateForms: hasPermission('forms.create'),
+        canEditForms: hasPermission('forms.edit'),
+        canDeleteForms: hasPermission('forms.delete'),
+        canSubmitForms: hasPermission('forms.submit'),
         // Checklists
-        canViewChecklists: hasPermission('can_view_checklists'),
-        canCreateChecklists: hasPermission('can_create_checklists'),
-        canEditChecklists: hasPermission('can_edit_checklists'),
-        canDeleteChecklists: hasPermission('can_delete_checklists'),
+        canViewChecklists: hasPermission('checklists.view'),
+        canCreateChecklists: hasPermission('checklists.create'),
+        canEditChecklists: hasPermission('checklists.edit'),
+        canDeleteChecklists: hasPermission('checklists.delete'),
+        canSubmitChecklists: hasPermission('checklists.submit'),
         // Tasks
-        canViewTasks: hasPermission('can_view_tasks'),
-        canCreateTasks: hasPermission('can_create_tasks'),
-        canEditTasks: hasPermission('can_edit_tasks'),
-        canDeleteTasks: hasPermission('can_delete_tasks'),
+        canViewTasks: hasPermission('tasks.view'),
+        canCreateTasks: hasPermission('tasks.create'),
+        canEditTasks: hasPermission('tasks.edit'),
+        canDeleteTasks: hasPermission('tasks.delete'),
         // Documents
-        canViewDocuments: hasPermission('can_view_documents'),
-        canUploadDocuments: hasPermission('can_upload_documents'),
-        canEditDocuments: hasPermission('can_edit_documents'),
-        canDeleteDocuments: hasPermission('can_delete_documents'),
+        canViewDocuments: hasPermission('documents.view'),
+        canUploadDocuments: hasPermission('documents.upload'),
+        canEditDocuments: hasPermission('documents.edit'),
+        canDeleteDocuments: hasPermission('documents.delete'),
+        // Submissions
+        canViewAllSubmissions: hasPermission('submissions.view_all'),
+        canViewOwnSubmissions: hasPermission('submissions.view_own'),
+        canApproveSubmissions: hasPermission('submissions.approve'),
+        canRejectSubmissions: hasPermission('submissions.reject'),
         // Automations
-        canViewAutomations: hasPermission('can_view_automations'),
-        canCreateAutomations: hasPermission('can_create_automations'),
-        canEditAutomations: hasPermission('can_edit_automations'),
-        canDeleteAutomations: hasPermission('can_delete_automations'),
+        canViewAutomations: hasPermission('automations.view'),
+        canCreateAutomations: hasPermission('automations.create'),
+        canEditAutomations: hasPermission('automations.edit'),
+        canDeleteAutomations: hasPermission('automations.delete'),
         // System
-        canViewReports: hasPermission('can_view_reports'),
-        canManageUsers: hasPermission('can_manage_users'),
-        canViewAllSubmissions: hasPermission('can_view_all_submissions'),
-        canManageCategories: hasPermission('can_manage_categories'),
-        canViewActivityLog: hasPermission('can_view_activity_log'),
+        canViewReports: hasPermission('reports.view'),
+        canManageUsers: hasPermission('users.manage'),
+        canManageCategories: hasPermission('categories.manage'),
         hasPermission
     };
 }
