@@ -24,6 +24,7 @@ import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import CreateForm from './pages/CreateForm';
 import CreateTask from './pages/CreateTask';
+import ActivityLog from './pages/ActivityLog';
 import __Layout from './Layout.jsx';
 
 
@@ -54,6 +55,7 @@ export const PAGES = {
     "ViewFormSubmission": ViewFormSubmission,
     "CreateForm": CreateForm,
     "CreateTask": CreateTask,
+    "ActivityLog": ActivityLog,
 }
 
 export const pagesConfig = {

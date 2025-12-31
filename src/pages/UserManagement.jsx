@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import RoleGuard from '@/components/auth/RoleGuard';
 import { toast } from 'sonner';
+import { logActivity } from '@/components/activity/ActivityLogger';
 
 export default function UserManagement() {
     return (
@@ -34,7 +35,13 @@ function UserManagementContent() {
     
     const inviteMutation = useMutation({
         mutationFn: ({ email, role }) => base44.users.inviteUser(email, role),
-        onSuccess: () => {
+        onSuccess: async (data, variables) => {
+            await logActivity({
+                action_type: 'user_invited',
+                entity_type: 'user',
+                entity_title: variables.email,
+                description: `Invited user ${variables.email} with role ${variables.role}`
+            });
             toast.success('User invited successfully');
             setInviteOpen(false);
             queryClient.invalidateQueries(['all-users']);
@@ -46,7 +53,15 @@ function UserManagementContent() {
     
     const updateMutation = useMutation({
         mutationFn: ({ id, data }) => base44.entities.User.update(id, data),
-        onSuccess: () => {
+        onSuccess: async (updatedUser, variables) => {
+            await logActivity({
+                action_type: 'user_updated',
+                entity_type: 'user',
+                entity_id: variables.id,
+                entity_title: updatedUser.email,
+                description: `Updated user settings for ${updatedUser.email}`,
+                metadata: variables.data
+            });
             toast.success('User updated successfully');
             setEditingUser(null);
             queryClient.invalidateQueries(['all-users']);

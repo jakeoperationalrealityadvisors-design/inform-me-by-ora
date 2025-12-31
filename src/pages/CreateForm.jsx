@@ -13,6 +13,7 @@ import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
 import { useLanguage } from '@/components/language/LanguageContext';
 import RoleGuard from '@/components/auth/RoleGuard';
+import { logActivity } from '@/components/activity/ActivityLogger';
 
 function CreateFormContent() {
     const navigate = useNavigate();
@@ -40,7 +41,14 @@ function CreateFormContent() {
 
     const createMutation = useMutation({
         mutationFn: (data) => base44.entities.FormTemplate.create(data),
-        onSuccess: () => {
+        onSuccess: async (newForm) => {
+            await logActivity({
+                action_type: 'form_created',
+                entity_type: 'form',
+                entity_id: newForm.id,
+                entity_title: newForm.title,
+                description: `Created form template: ${newForm.title}`
+            });
             queryClient.invalidateQueries({ queryKey: ['forms'] });
             toast.success('Form template created successfully');
             navigate(createPageUrl('Home'));
