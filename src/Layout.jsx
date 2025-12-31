@@ -9,6 +9,7 @@ import InstallPWA from './components/mobile/InstallPWA';
 import SyncIndicator from './components/mobile/SyncManager';
 import MobileNav from './components/mobile/MobileNav';
 import { useBackgroundSync } from './components/mobile/BackgroundSync';
+import UserProfile from './components/navigation/UserProfile';
 
 export default function Layout({ children, currentPageName }) {
     // Initialize background sync
@@ -61,6 +62,9 @@ export default function Layout({ children, currentPageName }) {
                         <OfflineIndicator />
                         <InstallPWA />
                         <SyncIndicator />
+                        <div className="fixed top-4 right-4 z-50 hidden sm:block">
+                            <UserProfile />
+                        </div>
                         <div className="ora-theme" data-senior-mode={seniorMode}>
                     <style>{`
                         /* Dark Mode (Default) */
