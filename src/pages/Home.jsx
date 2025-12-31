@@ -6,6 +6,12 @@ import { createPageUrl } from '@/utils';
 import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users, Calendar, FolderOpen, LayoutGrid, LayoutList, Scan, MoreVertical, Menu } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import SearchBar from '@/components/common/SearchBar';
 import FormCard from '@/components/forms/FormCard';
 import ChecklistCard from '@/components/forms/ChecklistCard';
