@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, User, AlertCircle } from 'lucide-react';
+import { Calendar, User, AlertCircle, Plus } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { useUserRole } from '@/components/auth/RoleGuard';
 
@@ -132,6 +132,28 @@ export default function AssignmentPanel({ submission, onUpdate, submissionType =
                         <p className="text-sm text-blue-400/60">No assignment details</p>
                     )}
                 </div>
+                
+                {canManage && (
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full mt-3 border-blue-800 text-blue-300 hover:bg-blue-950/50 gap-2"
+                        onClick={() => {
+                            // Open calendar with pre-filled data
+                            const taskTitle = submission.form_title || submission.checklist_title;
+                            const queryParams = new URLSearchParams({
+                                title: `Follow-up: ${taskTitle}`,
+                                type: 'follow_up',
+                                related_id: submission.id,
+                                related_type: submissionType
+                            });
+                            window.location.href = `/Calendar?${queryParams.toString()}`;
+                        }}
+                    >
+                        <Plus className="w-4 h-4" />
+                        Schedule Follow-up
+                    </Button>
+                )}
             </div>
         );
     }

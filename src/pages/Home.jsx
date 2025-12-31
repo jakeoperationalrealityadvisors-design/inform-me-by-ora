@@ -80,9 +80,14 @@ export default function Home() {
                                     <FolderOpen className="w-5 h-5" />
                                 </Button>
                             </Link>
-                            <Link to={createPageUrl('DailyTasks')}>
+                            <Link to={createPageUrl('Calendar')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
                                     <Calendar className="w-5 h-5" />
+                                </Button>
+                            </Link>
+                            <Link to={createPageUrl('DailyTasks')}>
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600">
+                                    <ListTodo className="w-5 h-5" />
                                 </Button>
                             </Link>
                             <Link to={createPageUrl('MyTasks')}>
