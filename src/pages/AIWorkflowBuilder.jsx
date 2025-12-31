@@ -25,7 +25,8 @@ function AIWorkflowBuilderContent() {
         "When a task is overdue by 2 days, escalate it to the admin and change priority to urgent",
         "Create a follow-up event 7 days after form submission for customer check-in",
         "When project status changes to 'completed', update all linked documents and notify stakeholders",
-        "If submission status changes to 'approved', update associated documents metadata and send confirmation email"
+        "If submission status changes to 'approved', update associated documents metadata and send confirmation email",
+        "When a form is submitted with 'Support Request' category, automatically log it to Salesforce as a case"
     ];
     
     const generateMutation = useMutation({
@@ -42,7 +43,7 @@ Create a complete automation configuration with:
 - Realistic field values and parameters
 
 Be specific and practical. Use actual trigger types like 'form_submitted', 'task_overdue', etc.
-For actions, use types like 'assign_task', 'send_notification', 'send_email', 'create_task', 'create_followup', 'update_status', 'update_documents', 'add_comment'.`,
+For actions, use types like 'assign_task', 'send_notification', 'send_email', 'create_task', 'create_followup', 'update_status', 'update_documents', 'add_comment', 'log_to_salesforce'.`,
                 response_json_schema: {
                     type: "object",
                     properties: {
@@ -167,7 +168,8 @@ For actions, use types like 'assign_task', 'send_notification', 'send_email', 'c
         create_followup: 'Create Follow-up',
         update_status: 'Update Status',
         add_comment: 'Add Comment',
-        update_documents: 'Update Linked Documents'
+        update_documents: 'Update Linked Documents',
+        log_to_salesforce: 'Log to Salesforce'
     };
     
     return (

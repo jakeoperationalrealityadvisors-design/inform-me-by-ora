@@ -222,6 +222,17 @@ Deno.serve(async (req) => {
                                     tags: action.config.add_tags ? [...(doc.tags || []), ...action.config.add_tags] : doc.tags
                                 });
                             }
+                        } else if (action.type === 'log_to_salesforce') {
+                            // Call the Salesforce logging function
+                            await base44.asServiceRole.functions.invoke('logToSalesforce', {
+                                submission_id: trigger_data.submission_id,
+                                submission_type: trigger_data.submission_type,
+                                subject: action.config.subject,
+                                description: action.config.description,
+                                priority: action.config.priority || trigger_data.priority,
+                                contact_email: trigger_data.submitted_by_email,
+                                contact_name: trigger_data.submitted_by_name
+                            });
                         }
                     });
 
