@@ -5,6 +5,7 @@ import { CheckSquare, ChevronDown, ChevronRight } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 export default function ChecklistCard({ checklist, category }) {
+    const [shareOpen, setShareOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const itemCount = checklist.items?.length || 0;
     

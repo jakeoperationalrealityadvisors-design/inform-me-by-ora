@@ -5,6 +5,7 @@ import { FileText, ChevronDown, ChevronRight } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 export default function FormCard({ form, category }) {
+    const [shareOpen, setShareOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const fieldCount = form.fields?.length || 0;
     

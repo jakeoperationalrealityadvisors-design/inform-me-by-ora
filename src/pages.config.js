@@ -37,6 +37,7 @@ import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import PublicForm from './pages/PublicForm';
 import PublicChecklist from './pages/PublicChecklist';
+import PublicSubmission from './pages/PublicSubmission';
 import __Layout from './Layout.jsx';
 
 
@@ -80,6 +81,7 @@ export const PAGES = {
     "ViewFormSubmission": ViewFormSubmission,
     "PublicForm": PublicForm,
     "PublicChecklist": PublicChecklist,
+    "PublicSubmission": PublicSubmission,
 }
 
 export const pagesConfig = {
