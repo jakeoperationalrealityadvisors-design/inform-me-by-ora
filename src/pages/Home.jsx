@@ -187,6 +187,15 @@ export default function Home() {
 
                     {/* Main Content */}
                     <div className="lg:col-span-3">
+                {/* Mobile Category Filter */}
+                <div className="lg:hidden mb-4">
+                    <CategoryFilter 
+                        selectedCategory={selectedCategory}
+                        onSelectCategory={setSelectedCategory}
+                        categories={categories}
+                    />
+                </div>
+
                 {/* Tab Switcher */}
                 <div className="flex gap-2 mb-6">
                     <button
