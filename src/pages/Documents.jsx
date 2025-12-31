@@ -3,7 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Plus, FileText, Folder, Search, Filter, Download, Trash2, Upload, X } from 'lucide-react';
+import { ArrowLeft, Plus, FileText, Folder, Search, Filter, Download, Trash2, Upload, X, Sparkles } from 'lucide-react';
+import AIAssistant from '@/components/ai/AIAssistant';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,8 @@ export default function Documents() {
     const [sizeFilter, setSizeFilter] = useState('all');
     const [uploaderFilter, setUploaderFilter] = useState('');
     const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+    const [showAI, setShowAI] = useState(false);
+    const [selectedDoc, setSelectedDoc] = useState(null);
     const { user } = useUserRole();
     
     const { data: documents = [], isLoading: docsLoading } = useQuery({
@@ -101,6 +104,14 @@ export default function Documents() {
                             </div>
                         </div>
                         <div className="flex gap-2">
+                            <Button 
+                                onClick={() => setShowAI(!showAI)}
+                                variant="outline"
+                                className="gap-2 border-[#FF8C00]/30 text-[#FF8C00]"
+                            >
+                                <Sparkles className="w-4 h-4" />
+                                AI
+                            </Button>
                             <Link to={createPageUrl('ManageFolders')}>
                                 <Button variant="outline" className="gap-2">
                                     <Folder className="w-4 h-4" />
@@ -223,6 +234,13 @@ export default function Documents() {
             </div>
             
             <div className="max-w-6xl mx-auto px-4 py-6">
+                {/* AI Assistant */}
+                {showAI && (
+                    <div className="mb-6">
+                        <AIAssistant document={selectedDoc} mode="full" context={selectedDoc?.title} />
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* Sidebar */}
                     <div className="lg:col-span-1">
@@ -304,9 +322,8 @@ export default function Documents() {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: idx * 0.05 }}
                                     >
-                                        <Link to={createPageUrl(`ViewDocument?id=${doc.id}`)}>
-                                            <div className="bg-white rounded-lg border border-slate-200 p-5 hover:border-blue-400 hover:shadow-lg transition-all group">
-                                                <div className="flex items-start justify-between">
+                                        <div className="bg-white rounded-lg border border-slate-200 p-5 hover:border-blue-400 hover:shadow-lg transition-all group">
+                                            <div className="flex items-start justify-between gap-3">
                                                     <div className="flex items-start gap-4 flex-1">
                                                         <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#1e90ff] to-[#0066cc] flex items-center justify-center flex-shrink-0">
                                                             <FileText className="w-6 h-6 text-white" />
@@ -347,12 +364,33 @@ export default function Documents() {
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <div className="text-xs text-slate-400">
-                                                        {format(new Date(doc.created_date), 'MMM d, yyyy')}
+                                                    <div className="flex flex-col gap-2 items-end shrink-0">
+                                                        <div className="text-xs text-slate-400">
+                                                            {format(new Date(doc.created_date), 'MMM d, yyyy')}
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <Button 
+                                                                size="sm" 
+                                                                variant="outline"
+                                                                onClick={(e) => {
+                                                                    e.preventDefault();
+                                                                    setSelectedDoc(doc);
+                                                                    setShowAI(true);
+                                                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                                }}
+                                                                className="border-[#FF8C00]/30 text-[#FF8C00] hover:bg-[#FF8C00]/10 h-7"
+                                                            >
+                                                                <Sparkles className="w-3 h-3" />
+                                                            </Button>
+                                                            <Link to={createPageUrl(`ViewDocument?id=${doc.id}`)}>
+                                                                <Button size="sm" variant="outline" className="h-7">
+                                                                    View
+                                                                </Button>
+                                                            </Link>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </Link>
                                     </motion.div>
                                 ))}
                             </div>
