@@ -31,7 +31,25 @@ export default function FillForm() {
     });
     
     const submitMutation = useMutation({
-        mutationFn: (data) => base44.entities.FormSubmission.create(data),
+        mutationFn: async (data) => {
+            const submission = await base44.entities.FormSubmission.create(data);
+            
+            // Trigger automations
+            await base44.functions.invoke('executeAutomations', {
+                trigger_type: 'form_submitted',
+                trigger_data: {
+                    template_id: form.id,
+                    submission_id: submission.id,
+                    submission_type: 'form',
+                    title: form.title,
+                    submitted_by_email: data.created_by,
+                    link_page: 'ViewFormSubmission',
+                    link_params: `id=${submission.id}`
+                }
+            });
+            
+            return submission;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries(['submissions']);
             setSubmitted(true);
