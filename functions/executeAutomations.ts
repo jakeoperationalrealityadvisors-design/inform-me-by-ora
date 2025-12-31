@@ -12,33 +12,57 @@ async function retryOperation(fn, maxRetries = 3, delay = 1000) {
     }
 }
 
-// Helper function to evaluate conditions
-function evaluateConditions(conditions, data) {
-    if (!conditions || conditions.length === 0) return true;
+// Helper function to evaluate a single condition
+function evaluateSingleCondition(condition, data) {
+    const value = data[condition.field];
+    const targetValue = condition.value;
     
-    return conditions.every(condition => {
-        const value = data[condition.field];
-        const targetValue = condition.value;
+    switch (condition.operator) {
+        case 'equals':
+            return value == targetValue;
+        case 'not_equals':
+            return value != targetValue;
+        case 'contains':
+            return String(value || '').toLowerCase().includes(String(targetValue).toLowerCase());
+        case 'greater_than':
+            return Number(value) > Number(targetValue);
+        case 'less_than':
+            return Number(value) < Number(targetValue);
+        case 'is_empty':
+            return !value || value === '';
+        case 'is_not_empty':
+            return value && value !== '';
+        default:
+            return true;
+    }
+}
+
+// Helper function to evaluate complex condition logic with AND/OR operators
+function evaluateConditionLogic(conditionLogic, data) {
+    if (!conditionLogic || !conditionLogic.groups || conditionLogic.groups.length === 0) {
+        return true;
+    }
+    
+    const groupResults = conditionLogic.groups.map(group => {
+        // Evaluate all conditions within the group
+        const conditionResults = group.conditions.map(condition => 
+            evaluateSingleCondition(condition, data)
+        );
         
-        switch (condition.operator) {
-            case 'equals':
-                return value == targetValue;
-            case 'not_equals':
-                return value != targetValue;
-            case 'contains':
-                return String(value || '').toLowerCase().includes(String(targetValue).toLowerCase());
-            case 'greater_than':
-                return Number(value) > Number(targetValue);
-            case 'less_than':
-                return Number(value) < Number(targetValue);
-            case 'is_empty':
-                return !value || value === '';
-            case 'is_not_empty':
-                return value && value !== '';
-            default:
-                return true;
+        // Apply group operator (AND/OR)
+        if (group.operator === 'OR') {
+            return conditionResults.some(result => result === true);
+        } else {
+            return conditionResults.every(result => result === true);
         }
     });
+    
+    // Apply top-level operator between groups
+    if (conditionLogic.operator === 'OR') {
+        return groupResults.some(result => result === true);
+    } else {
+        return groupResults.every(result => result === true);
+    }
 }
 
 Deno.serve(async (req) => {
@@ -84,8 +108,8 @@ Deno.serve(async (req) => {
 
             if (!shouldExecute) continue;
             
-            // Check conditions
-            if (!evaluateConditions(rule.conditions, trigger_data)) {
+            // Check complex condition logic
+            if (!evaluateConditionLogic(rule.condition_logic, trigger_data)) {
                 continue;
             }
 
@@ -105,7 +129,22 @@ Deno.serve(async (req) => {
                 }
                 try {
                     await retryOperation(async () => {
-                        if (action.type === 'assign_task') {
+                        if (action.type === 'custom_code') {
+                            // Execute custom code in sandboxed environment
+                            try {
+                                const customFunction = new Function('trigger_data', 'action_config', 'base44', action.code_snippet);
+                                const result = await customFunction(trigger_data, action.config, base44.asServiceRole);
+                                executedActions.push({
+                                    rule: rule.name,
+                                    action: 'custom_code',
+                                    success: true,
+                                    result: result
+                                });
+                            } catch (codeError) {
+                                console.error('Custom code execution error:', codeError);
+                                throw new Error(`Custom code failed: ${codeError.message}`);
+                            }
+                        } else if (action.type === 'assign_task') {
                             if (trigger_data.submission_id && trigger_data.submission_type) {
                                 const entity = trigger_data.submission_type === 'form' ? 'FormSubmission' : 'ChecklistSubmission';
                                 await base44.asServiceRole.entities[entity].update(trigger_data.submission_id, {
