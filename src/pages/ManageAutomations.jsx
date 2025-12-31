@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import RoleGuard from '@/components/auth/RoleGuard';
+import RoleGuard, { useUserRole } from '@/components/auth/RoleGuard';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 function ManageAutomationsContent() {
     const queryClient = useQueryClient();
     const [deleteId, setDeleteId] = useState(null);
+    const { canCreateAutomations, canEditAutomations, canDeleteAutomations } = useUserRole();
 
     const { data: rules = [], isLoading } = useQuery({
         queryKey: ['automation-rules'],
@@ -93,12 +94,14 @@ function ManageAutomationsContent() {
                                 <p className="text-sm text-slate-600">Configure automated workflows</p>
                             </div>
                         </div>
-                        <Link to={createPageUrl('EditAutomation')}>
-                            <Button className="bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white gap-2">
-                                <Plus className="w-4 h-4" />
-                                New Rule
-                            </Button>
-                        </Link>
+                        {canCreateAutomations && (
+                            <Link to={createPageUrl('EditAutomation')}>
+                                <Button className="bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white gap-2">
+                                    <Plus className="w-4 h-4" />
+                                    New Rule
+                                </Button>
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>
@@ -148,24 +151,30 @@ function ManageAutomationsContent() {
                                             )}
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <Switch
-                                                checked={rule.enabled}
-                                                onCheckedChange={(enabled) => 
-                                                    toggleMutation.mutate({ id: rule.id, enabled })
-                                                }
-                                            />
-                                            <Link to={createPageUrl(`EditAutomation?id=${rule.id}`)}>
-                                                <Button variant="ghost" size="icon">
-                                                    <Edit className="w-4 h-4" />
+                                            {canEditAutomations && (
+                                                <Switch
+                                                    checked={rule.enabled}
+                                                    onCheckedChange={(enabled) => 
+                                                        toggleMutation.mutate({ id: rule.id, enabled })
+                                                    }
+                                                />
+                                            )}
+                                            {canEditAutomations && (
+                                                <Link to={createPageUrl(`EditAutomation?id=${rule.id}`)}>
+                                                    <Button variant="ghost" size="icon">
+                                                        <Edit className="w-4 h-4" />
+                                                    </Button>
+                                                </Link>
+                                            )}
+                                            {canDeleteAutomations && (
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="icon"
+                                                    onClick={() => setDeleteId(rule.id)}
+                                                >
+                                                    <Trash2 className="w-4 h-4 text-red-600" />
                                                 </Button>
-                                            </Link>
-                                            <Button 
-                                                variant="ghost" 
-                                                size="icon"
-                                                onClick={() => setDeleteId(rule.id)}
-                                            >
-                                                <Trash2 className="w-4 h-4 text-red-600" />
-                                            </Button>
+                                            )}
                                         </div>
                                     </div>
                                 </CardHeader>
@@ -237,7 +246,7 @@ function ManageAutomationsContent() {
 
 export default function ManageAutomations() {
     return (
-        <RoleGuard allowedRoles={['admin', 'manager']}>
+        <RoleGuard requiredPermission="can_view_automations">
             <ManageAutomationsContent />
         </RoleGuard>
     );

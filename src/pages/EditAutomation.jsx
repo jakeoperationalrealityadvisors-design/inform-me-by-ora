@@ -665,8 +665,12 @@ function EditAutomationContent() {
 }
 
 export default function EditAutomation() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ruleId = urlParams.get('id');
+    const requiredPermission = ruleId ? 'can_edit_automations' : 'can_create_automations';
+    
     return (
-        <RoleGuard allowedRoles={['admin', 'manager']}>
+        <RoleGuard requiredPermission={requiredPermission}>
             <EditAutomationContent />
         </RoleGuard>
     );

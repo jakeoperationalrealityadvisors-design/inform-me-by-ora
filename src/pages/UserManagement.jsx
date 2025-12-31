@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import RoleGuard from '@/components/auth/RoleGuard';
 import { toast } from 'sonner';
 import { logActivity } from '@/components/activity/ActivityLogger';
+import PermissionEditor from '@/components/rbac/PermissionEditor';
 
 export default function UserManagement() {
     return (
@@ -309,17 +310,32 @@ function InviteUserForm({ onSubmit, isLoading }) {
 function EditUserForm({ user, onSubmit, isLoading }) {
     const [teamRole, setTeamRole] = useState(user.team_role || '');
     const [department, setDepartment] = useState(user.department || '');
+    const [permissions, setPermissions] = useState(user.permissions_override || {});
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit({ team_role: teamRole || null, department: department || null });
+        onSubmit({ 
+            team_role: teamRole || null, 
+            department: department || null,
+            permissions_override: Object.keys(permissions).length > 0 ? permissions : null
+        });
     };
     
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto">
             <div>
                 <Label className="text-blue-100">Email</Label>
                 <Input value={user.email} disabled className="bg-[#0a0e17] border-blue-900/20 text-blue-400/60" />
+            </div>
+            
+            <div>
+                <Label className="text-blue-100">App Role</Label>
+                <Input 
+                    value={user.role === 'admin' ? 'Admin' : 'User'} 
+                    disabled 
+                    className="bg-[#0a0e17] border-blue-900/20 text-blue-400/60" 
+                />
+                <p className="text-xs text-blue-400/60 mt-1">App role cannot be changed here</p>
             </div>
             
             <div>
@@ -345,6 +361,12 @@ function EditUserForm({ user, onSubmit, isLoading }) {
                     className="bg-[#0a0e17] border-blue-900/20 text-white"
                 />
             </div>
+            
+            <PermissionEditor 
+                permissions={permissions}
+                onChange={setPermissions}
+                disabled={user.role === 'admin'}
+            />
             
             <Button type="submit" disabled={isLoading} className="w-full bg-blue-600 hover:bg-blue-700">
                 Save Changes
