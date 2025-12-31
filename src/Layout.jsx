@@ -5,8 +5,12 @@ import OfflineIndicator from './components/mobile/OfflineIndicator';
 import InstallPWA from './components/mobile/InstallPWA';
 import SyncIndicator from './components/mobile/SyncManager';
 import MobileNav from './components/mobile/MobileNav';
+import { useBackgroundSync } from './components/mobile/BackgroundSync';
 
 export default function Layout({ children, currentPageName }) {
+    // Initialize background sync
+    useBackgroundSync();
+    
     // Register service worker for PWA
     React.useEffect(() => {
         if ('serviceWorker' in navigator) {

@@ -106,14 +106,29 @@ class OfflineStorage {
         });
     }
 
-    async addToSyncQueue(action, entity, data) {
+    async addToSyncQueue(action, entity, data, metadata = {}) {
         return this.saveData(STORES.SYNC_QUEUE, {
             action,
             entity,
             data,
             timestamp: Date.now(),
-            synced: false
+            synced: false,
+            attempts: 0,
+            error: null,
+            metadata
         });
+    }
+    
+    async updateSyncItem(id, updates) {
+        if (!this.db) await this.init();
+        const item = await this.getData(STORES.SYNC_QUEUE, id);
+        if (!item) return;
+        return this.saveData(STORES.SYNC_QUEUE, { ...item, ...updates });
+    }
+    
+    async getFailedSyncItems() {
+        const queue = await this.getAllData(STORES.SYNC_QUEUE);
+        return queue.filter(item => item.error && !item.synced);
     }
 
     async getSyncQueue() {

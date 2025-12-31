@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { offlineStorage } from './OfflineStorage';
 import { toast } from 'sonner';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, ListChecks } from 'lucide-react';
+import SyncStatusPanel from './SyncStatusPanel';
+import { useBackgroundSync } from './BackgroundSync';
 
 export function useSyncManager() {
     const [syncing, setSyncing] = useState(false);
@@ -73,19 +75,39 @@ export function useSyncManager() {
 
 export default function SyncIndicator() {
     const { syncing, pendingItems, syncNow } = useSyncManager();
+    const [showPanel, setShowPanel] = useState(false);
+    const { syncQueue } = useBackgroundSync();
+
+    useEffect(() => {
+        // Initialize background sync
+        syncQueue();
+    }, []);
 
     if (pendingItems === 0) return null;
 
     return (
-        <button
-            onClick={syncNow}
-            disabled={syncing}
-            className="fixed bottom-24 right-4 z-40 bg-orange-600 text-white rounded-full p-3 shadow-lg hover:bg-orange-700 transition-all flex items-center gap-2"
-        >
-            <RefreshCw className={`w-5 h-5 ${syncing ? 'animate-spin' : ''}`} />
-            <span className="text-sm font-medium pr-1">
-                {syncing ? 'Syncing...' : `${pendingItems} pending`}
-            </span>
-        </button>
+        <>
+            <div className="fixed bottom-24 right-4 z-40 flex flex-col gap-2">
+                <button
+                    onClick={() => setShowPanel(true)}
+                    className="bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700 transition-all"
+                    title="View sync details"
+                >
+                    <ListChecks className="w-5 h-5" />
+                </button>
+                <button
+                    onClick={syncNow}
+                    disabled={syncing || !navigator.onLine}
+                    className="bg-orange-600 text-white rounded-full p-3 shadow-lg hover:bg-orange-700 transition-all disabled:opacity-50 flex items-center gap-2"
+                >
+                    <RefreshCw className={`w-5 h-5 ${syncing ? 'animate-spin' : ''}`} />
+                    <span className="text-sm font-medium pr-1">
+                        {syncing ? 'Syncing...' : `${pendingItems}`}
+                    </span>
+                </button>
+            </div>
+            
+            <SyncStatusPanel open={showPanel} onOpenChange={setShowPanel} />
+        </>
     );
 }
