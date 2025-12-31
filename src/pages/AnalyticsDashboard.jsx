@@ -17,6 +17,7 @@ import CompletionRateChart from '@/components/analytics/CompletionRateChart';
 import TaskEfficiencyChart from '@/components/analytics/TaskEfficiencyChart';
 import AutomationAnalytics from '@/components/analytics/AutomationAnalytics';
 import DocumentUsageChart from '@/components/analytics/DocumentUsageChart';
+import AIInsightsPanel from '@/components/analytics/AIInsightsPanel';
 import { format, subDays } from 'date-fns';
 
 function AnalyticsDashboardContent() {
@@ -236,6 +237,15 @@ function AnalyticsDashboardContent() {
             </div>
 
             <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+            {/* AI Insights Panel */}
+            <AIInsightsPanel
+                dateRange={dateRange}
+                category={selectedCategory !== 'all' ? categories.find(c => c.id === selectedCategory)?.name : null}
+                formSubmissions={filteredForms}
+                checklistSubmissions={filteredChecklists}
+                users={users}
+            />
+            
             {/* Key Metrics Overview */}
             {dashboardConfig.includes('metrics') && (
                 <MetricsOverview
