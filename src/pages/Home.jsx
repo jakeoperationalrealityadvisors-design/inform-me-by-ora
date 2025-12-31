@@ -33,6 +33,8 @@ import PullToRefresh from '@/components/mobile/PullToRefresh';
 import PushNotificationToggle from '@/components/mobile/PushNotifications';
 import SwipeActions from '@/components/mobile/SwipeActions';
 import { useNavigate } from 'react-router-dom';
+import SmartSuggestions from '@/components/ai/SmartSuggestions';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Home() {
     const { isAdmin, canViewAll, canCreateForms, user } = useUserRole();
@@ -72,7 +74,9 @@ export default function Home() {
             }
         },
         staleTime: 30000,
-        enabled: !!user?.organization_id
+        enabled: !!user?.organization_id,
+        retry: 3,
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000)
     });
     
     const { data: checklists = [], isLoading: checklistsLoading } = useQuery({
@@ -95,14 +99,20 @@ export default function Home() {
             }
         },
         staleTime: 30000,
-        enabled: !!user?.organization_id
+        enabled: !!user?.organization_id,
+        retry: 3,
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000)
     });
     
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
         queryFn: () => base44.entities.Category.list(),
-        staleTime: 60000
+        staleTime: 60000,
+        retry: 3,
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000)
     });
+    
+    const queryClient = useQueryClient();
     
     const handleRefresh = async () => {
         await Promise.all([
@@ -240,6 +250,15 @@ export default function Home() {
 
                 <PullToRefresh onRefresh={handleRefresh}>
                 <div className="max-w-5xl mx-auto px-4 py-6 pb-20 sm:pb-6">
+                    {/* AI Suggestions */}
+                    {!isSimpleMode && user && (
+                        <SmartSuggestions 
+                            forms={forms} 
+                            checklists={checklists}
+                            userEmail={user.email}
+                        />
+                    )}
+                    
                     {/* Main Content */}
                     <div>
                 {/* Tab Switcher */}
