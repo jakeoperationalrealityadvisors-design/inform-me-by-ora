@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap } from 'lucide-react';
+import { useUserRole } from '@/components/auth/RoleGuard';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -12,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function Settings() {
     const queryClient = useQueryClient();
+    const { canManage } = useUserRole();
     const [offlineEnabled, setOfflineEnabled] = useState(false);
     const [cacheSize, setCacheSize] = useState(0);
     
@@ -244,6 +246,28 @@ export default function Settings() {
                         </Button>
                     </CardContent>
                 </Card>
+                
+                {/* Automation Management */}
+                {canManage && (
+                    <Card className="bg-[#0f1419] border-blue-900/20">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <Zap className="w-5 h-5 text-blue-500" />
+                                Automation
+                            </CardTitle>
+                            <CardDescription className="text-blue-400">
+                                Configure automated workflows and triggers
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link to={createPageUrl('ManageAutomations')}>
+                                <Button variant="outline" className="w-full border-blue-900/30 text-blue-300 hover:bg-blue-950/50">
+                                    Manage Automation Rules
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         </div>
     );
