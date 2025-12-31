@@ -1,4 +1,6 @@
 import React from 'react';
+import React from 'react';
+import { base44 } from '@/api/base44Client';
 import { LanguageProvider } from './components/language/LanguageContext';
 import { ThemeProvider } from './components/theme/ThemeContext';
 import OfflineIndicator from './components/mobile/OfflineIndicator';
@@ -10,6 +12,21 @@ import { useBackgroundSync } from './components/mobile/BackgroundSync';
 export default function Layout({ children, currentPageName }) {
     // Initialize background sync
     useBackgroundSync();
+    
+    const [seniorMode, setSeniorMode] = React.useState(false);
+    
+    // Check for senior mode
+    React.useEffect(() => {
+        const checkUser = async () => {
+            try {
+                const user = await base44.auth.me();
+                setSeniorMode(user?.technical_level === 'senior');
+            } catch (e) {
+                // User not logged in yet
+            }
+        };
+        checkUser();
+    }, []);
     
     // Register service worker for PWA
     React.useEffect(() => {
@@ -26,7 +43,7 @@ export default function Layout({ children, currentPageName }) {
                 <OfflineIndicator />
                 <InstallPWA />
                 <SyncIndicator />
-                <div className="ora-theme">
+                <div className="ora-theme" data-senior-mode={seniorMode}>
                     <style>{`
                         /* Dark Mode (Default) */
                         :root[data-theme="dark"],

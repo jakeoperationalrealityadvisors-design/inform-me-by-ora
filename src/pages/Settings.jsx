@@ -107,10 +107,11 @@ export default function Settings() {
                     </CardHeader>
                     <CardContent className="space-y-3">
                         {[
+                            { value: 'senior', label: 'Extra Large & Simple', emoji: '👴', desc: 'Very large buttons, plain English, one step at a time' },
                             { value: 'simple', label: 'Simple & Easy', emoji: '🌟', desc: 'Large buttons, simple words, step-by-step' },
                             { value: 'beginner', label: 'Some Guidance', emoji: '📚', desc: 'Clear instructions and helpful tips' },
                             { value: 'intermediate', label: 'I Know Apps', emoji: '💡', desc: 'Just show me what\'s different' },
-                            { value: 'expert', label: 'Full Bore Tech', emoji: '⚡', desc: 'Everything, no training wheels' }
+                            { value: 'expert', label: 'Full Features', emoji: '⚡', desc: 'Everything available' }
                         ].map((level) => (
                             <button
                                 key={level.value}

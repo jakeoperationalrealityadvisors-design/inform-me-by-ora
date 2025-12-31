@@ -31,7 +31,7 @@ export default function Home() {
     const { isAdmin, canViewAll, canCreateForms, user } = useUserRole();
     const { t } = useLanguage();
     const navigate = useNavigate();
-    const { isSimpleMode, isExpertMode, technicalLevel } = useSimpleMode();
+    const { isSeniorMode, isSimpleMode, isExpertMode, technicalLevel } = useSimpleMode();
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeTab, setActiveTab] = useState('forms');
@@ -137,13 +137,13 @@ export default function Home() {
                             <img 
                                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png" 
                                 alt="InForm Me - Operational Reality Advisors"
-                                className={isSimpleMode ? "h-12 flex-shrink-0 rounded-lg" : "h-8 sm:h-12 flex-shrink-0 rounded-lg"}
+                                className={isSeniorMode ? "h-16 flex-shrink-0 rounded-lg" : isSimpleMode ? "h-12 flex-shrink-0 rounded-lg" : "h-8 sm:h-12 flex-shrink-0 rounded-lg"}
                             />
                             <div className="min-w-0">
-                                <h1 className={`font-bold text-[#FF8C00] truncate ${isSimpleMode ? 'text-xl' : 'text-sm sm:text-xl'}`}>
-                                    {t('home.title')}
+                                <h1 className={`font-bold text-[#FF8C00] truncate ${isSeniorMode ? 'text-2xl' : isSimpleMode ? 'text-xl' : 'text-sm sm:text-xl'}`}>
+                                    {isSeniorMode ? 'My Forms' : t('home.title')}
                                 </h1>
-                                {!isSimpleMode && <p className="text-xs text-[#FF8C00]/70 hidden sm:block">{t('home.subtitle')}</p>}
+                                {!isSimpleMode && !isSeniorMode && <p className="text-xs text-[#FF8C00]/70 hidden sm:block">{t('home.subtitle')}</p>}
                             </div>
                         </div>
                         <div className="flex gap-1 sm:gap-2 flex-shrink-0 items-center">
@@ -154,10 +154,10 @@ export default function Home() {
                                     description="Stay updated with task assignments, form submissions, and important updates in real-time."
                                 />
                             )}
-                            <NotificationBell />
-                            {!isSimpleMode && <PushNotificationToggle />}
-                            {!isSimpleMode && <ThemeToggle />}
-                            {!isSimpleMode && <LanguageSwitcher />}
+                            {!isSeniorMode && <NotificationBell />}
+                            {!isSimpleMode && !isSeniorMode && <PushNotificationToggle />}
+                            {!isSimpleMode && !isSeniorMode && <ThemeToggle />}
+                            {!isSimpleMode && !isSeniorMode && <LanguageSwitcher />}
                             {canCreateForms && (
                                 <>
                                     {!isExpertMode && (
@@ -168,29 +168,31 @@ export default function Home() {
                                         />
                                     )}
                                     <Link to={createPageUrl('CreateForm')}>
-                                        <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
-                                            <Plus className={isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
+                                        <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSeniorMode ? 'h-16 w-16' : isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
+                                            <Plus className={isSeniorMode ? 'w-8 h-8' : isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
                                         </Button>
                                     </Link>
-                                </>
-                            )}
-                            {!isExpertMode && (
-                                <TooltipHelper
+                                    </>
+                                    )}
+                                    {!isSeniorMode && !isExpertMode && (
+                                    <TooltipHelper
                                     id="home-tasks"
                                     title="My Tasks"
                                     description="View all tasks assigned to you, track deadlines, and manage your workload efficiently."
-                                />
-                            )}
-                            <Link to={createPageUrl('MyTasks')}>
-                                <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
-                                    <ListTodo className={isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
-                                </Button>
-                            </Link>
-                            <Link to={createPageUrl('Settings')}>
-                                <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
-                                    <Settings className={isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
-                                </Button>
-                            </Link>
+                                    />
+                                    )}
+                                    {!isSeniorMode && (
+                                    <Link to={createPageUrl('MyTasks')}>
+                                    <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
+                                        <ListTodo className={isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
+                                    </Button>
+                                    </Link>
+                                    )}
+                                    <Link to={createPageUrl('Settings')}>
+                                    <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSeniorMode ? 'h-16 w-16' : isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
+                                    <Settings className={isSeniorMode ? 'w-8 h-8' : isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
+                                    </Button>
+                                    </Link>
                         </div>
                     </div>
                     
@@ -228,38 +230,40 @@ export default function Home() {
                     <button
                         onClick={() => setActiveTab('forms')}
                         className={`flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 rounded-lg font-medium transition-all ${
-                            isSimpleMode ? 'py-4 text-base' : 'py-2.5 sm:py-3 text-xs sm:text-sm'
+                            isSeniorMode ? 'py-6 text-2xl' : isSimpleMode ? 'py-4 text-base' : 'py-2.5 sm:py-3 text-xs sm:text-sm'
                         } ${
                             activeTab === 'forms' 
                                 ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black shadow-md shadow-orange-500/20' 
                                 : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
                         }`}
                     >
-                        <FileText className={isSimpleMode ? 'w-6 h-6' : 'w-4 h-4'} />
-                        <span>{t('common.forms')}</span>
-                        {isSimpleMode && <span className="text-xs opacity-80">({forms.length} available)</span>}
-                        {!isSimpleMode && <span className="hidden xs:inline">({forms.length})</span>}
+                        <FileText className={isSeniorMode ? 'w-10 h-10' : isSimpleMode ? 'w-6 h-6' : 'w-4 h-4'} />
+                        <span>{isSeniorMode ? 'Forms' : t('common.forms')}</span>
+                        {isSeniorMode && <span className="text-lg opacity-80">({forms.length})</span>}
+                        {isSimpleMode && !isSeniorMode && <span className="text-xs opacity-80">({forms.length} available)</span>}
+                        {!isSimpleMode && !isSeniorMode && <span className="hidden xs:inline">({forms.length})</span>}
                     </button>
                     <button
                         onClick={() => setActiveTab('checklists')}
                         className={`flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 rounded-lg font-medium transition-all ${
-                            isSimpleMode ? 'py-4 text-base' : 'py-2.5 sm:py-3 text-xs sm:text-sm'
+                            isSeniorMode ? 'py-6 text-2xl' : isSimpleMode ? 'py-4 text-base' : 'py-2.5 sm:py-3 text-xs sm:text-sm'
                         } ${
                             activeTab === 'checklists' 
                                 ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black shadow-md shadow-orange-500/20' 
                                 : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
                         }`}
                     >
-                        <CheckSquare className={isSimpleMode ? 'w-6 h-6' : 'w-4 h-4'} />
-                        <span>{t('common.checklists')}</span>
-                        {isSimpleMode && <span className="text-xs opacity-80">({checklists.length} available)</span>}
-                        {!isSimpleMode && <span className="hidden xs:inline">({checklists.length})</span>}
+                        <CheckSquare className={isSeniorMode ? 'w-10 h-10' : isSimpleMode ? 'w-6 h-6' : 'w-4 h-4'} />
+                        <span>{isSeniorMode ? 'Checklists' : t('common.checklists')}</span>
+                        {isSeniorMode && <span className="text-lg opacity-80">({checklists.length})</span>}
+                        {isSimpleMode && !isSeniorMode && <span className="text-xs opacity-80">({checklists.length} available)</span>}
+                        {!isSimpleMode && !isSeniorMode && <span className="hidden xs:inline">({checklists.length})</span>}
                     </button>
                 </div>
                 
                 {/* View Mode Toggle & Category Filter */}
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
-                    {categories.length > 0 && !isSimpleMode && (
+                    {categories.length > 0 && !isSimpleMode && !isSeniorMode && (
                         <div className="flex-1">
                             <CategoryFilter
                                 categories={categories}
@@ -268,7 +272,7 @@ export default function Home() {
                             />
                         </div>
                     )}
-                    {!isSimpleMode && (
+                    {!isSimpleMode && !isSeniorMode && (
                         <div className="flex items-center gap-2">
                             {!isExpertMode && (
                                 <TooltipHelper
