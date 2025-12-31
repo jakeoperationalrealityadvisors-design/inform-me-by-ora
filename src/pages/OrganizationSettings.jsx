@@ -49,6 +49,24 @@ export default function OrganizationSettings() {
         setTimeout(() => setCopied(false), 2000);
     };
     
+    const generateHopCode = async () => {
+        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const expiresIn30Days = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        
+        await base44.entities.Organization.update(organization.id, {
+            hopcode: code,
+            hopcode_expires: expiresIn30Days
+        });
+        
+        queryClient.invalidateQueries(['organization']);
+        toast.success('New hop code generated!');
+    };
+    
+    const copyHopCode = () => {
+        navigator.clipboard.writeText(organization.hopcode);
+        toast.success('Hop code copied to clipboard');
+    };
+    
     const updateOrgMutation = useMutation({
         mutationFn: (data) => base44.entities.Organization.update(organization.id, data),
         onSuccess: () => {
@@ -178,6 +196,52 @@ export default function OrganizationSettings() {
                         </div>
                     </CardContent>
                 </Card>
+                
+                {/* Hop Code for Contractors */}
+                {isOwner && (
+                    <Card className="bg-[#0f1419] border-blue-900/20">
+                        <CardHeader>
+                            <CardTitle className="text-white">Contractor Hop Code</CardTitle>
+                            <CardDescription className="text-blue-400">
+                                Share this code with contractors for temporary site access
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className="flex-1 bg-[#0a0e17] rounded-lg p-4 border border-blue-900/30">
+                                    <div className="text-3xl font-mono font-bold text-[#FF8C00] text-center">
+                                        {organization.hopcode || 'Not Set'}
+                                    </div>
+                                    {organization.hopcode_expires && (
+                                        <div className="text-xs text-blue-400 text-center mt-2">
+                                            Expires: {new Date(organization.hopcode_expires).toLocaleDateString()}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <Button
+                                    onClick={generateHopCode}
+                                    className="flex-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"
+                                >
+                                    Generate New Code
+                                </Button>
+                                {organization.hopcode && (
+                                    <Button
+                                        onClick={copyHopCode}
+                                        variant="outline"
+                                        className="border-blue-900/30"
+                                    >
+                                        Copy
+                                    </Button>
+                                )}
+                            </div>
+                            <p className="text-xs text-blue-400">
+                                💡 Contractors can enter this code to get temporary access to your forms and checklists
+                            </p>
+                        </CardContent>
+                    </Card>
+                )}
                 
                 {/* Members List */}
                 <Card className="bg-[#0f1419] border-blue-900/20">
