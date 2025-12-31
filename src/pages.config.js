@@ -28,6 +28,8 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
+import NetworkOnboarding from './pages/NetworkOnboarding';
+import OrganizationSettings from './pages/OrganizationSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -62,6 +64,8 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
+    "NetworkOnboarding": NetworkOnboarding,
+    "OrganizationSettings": OrganizationSettings,
 }
 
 export const pagesConfig = {

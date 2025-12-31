@@ -23,14 +23,23 @@ import { offlineStorage } from '@/components/mobile/OfflineStorage';
 import PullToRefresh from '@/components/mobile/PullToRefresh';
 import PushNotificationToggle from '@/components/mobile/PushNotifications';
 import SwipeActions from '@/components/mobile/SwipeActions';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
-    const { isAdmin, canViewAll, canCreateForms } = useUserRole();
+    const { isAdmin, canViewAll, canCreateForms, user } = useUserRole();
     const { t } = useLanguage();
+    const navigate = useNavigate();
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeTab, setActiveTab] = useState('forms');
     const [showGlobalSearch, setShowGlobalSearch] = useState(false);
+    
+    // Redirect to onboarding if no organization
+    React.useEffect(() => {
+        if (user && !user.organization_id) {
+            navigate(createPageUrl('NetworkOnboarding'));
+        }
+    }, [user, navigate]);
     
     const { data: forms = [], isLoading: formsLoading } = useQuery({
         queryKey: ['forms'],
@@ -51,7 +60,8 @@ export default function Home() {
                 throw error;
             }
         },
-        staleTime: 30000
+        staleTime: 30000,
+        enabled: !!user?.organization_id
     });
     
     const { data: checklists = [], isLoading: checklistsLoading } = useQuery({
@@ -73,7 +83,8 @@ export default function Home() {
                 throw error;
             }
         },
-        staleTime: 30000
+        staleTime: 30000,
+        enabled: !!user?.organization_id
     });
     
     const { data: categories = [] } = useQuery({
