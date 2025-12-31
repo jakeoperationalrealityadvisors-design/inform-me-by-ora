@@ -9,6 +9,8 @@ import CreateTask from './pages/CreateTask';
 import CustomerPortal from './pages/CustomerPortal';
 import DailyTasks from './pages/DailyTasks';
 import Dashboard from './pages/Dashboard';
+import DocumentEditor from './pages/DocumentEditor';
+import DocumentSearch from './pages/DocumentSearch';
 import Documents from './pages/Documents';
 import EditAutomation from './pages/EditAutomation';
 import EditCategory from './pages/EditCategory';
@@ -31,6 +33,8 @@ import PublicForm from './pages/PublicForm';
 import PublicSubmission from './pages/PublicSubmission';
 import Reports from './pages/Reports';
 import RoleManagement from './pages/RoleManagement';
+import Scanner from './pages/Scanner';
+import SendFax from './pages/SendFax';
 import Settings from './pages/Settings';
 import Submissions from './pages/Submissions';
 import TikTokDashboard from './pages/TikTokDashboard';
@@ -39,10 +43,6 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import Scanner from './pages/Scanner';
-import DocumentEditor from './pages/DocumentEditor';
-import SendFax from './pages/SendFax';
-import DocumentSearch from './pages/DocumentSearch';
 import __Layout from './Layout.jsx';
 
 
@@ -58,6 +58,8 @@ export const PAGES = {
     "CustomerPortal": CustomerPortal,
     "DailyTasks": DailyTasks,
     "Dashboard": Dashboard,
+    "DocumentEditor": DocumentEditor,
+    "DocumentSearch": DocumentSearch,
     "Documents": Documents,
     "EditAutomation": EditAutomation,
     "EditCategory": EditCategory,
@@ -80,6 +82,8 @@ export const PAGES = {
     "PublicSubmission": PublicSubmission,
     "Reports": Reports,
     "RoleManagement": RoleManagement,
+    "Scanner": Scanner,
+    "SendFax": SendFax,
     "Settings": Settings,
     "Submissions": Submissions,
     "TikTokDashboard": TikTokDashboard,
@@ -88,10 +92,6 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "Scanner": Scanner,
-    "DocumentEditor": DocumentEditor,
-    "SendFax": SendFax,
-    "DocumentSearch": DocumentSearch,
 }
 
 export const pagesConfig = {

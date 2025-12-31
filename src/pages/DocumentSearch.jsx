@@ -24,34 +24,34 @@ export default function DocumentSearch() {
 
         setIsSearching(true);
         try {
-            // Search in document titles, descriptions, and OCR text
-            const filtered = documents.filter(doc => {
-                const titleMatch = doc.title?.toLowerCase().includes(searchTerm.toLowerCase());
-                const descMatch = doc.description?.toLowerCase().includes(searchTerm.toLowerCase());
-                const tagMatch = doc.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-                
-                return titleMatch || descMatch || tagMatch;
-            });
-
-            // For documents with OCR text, search within the extracted text
-            const withOCRSearch = await Promise.all(
-                filtered.map(async (doc) => {
-                    if (doc.description?.includes('OCR Text:')) {
-                        const ocrText = doc.description.split('OCR Text:')[1];
-                        const matchIndex = ocrText.toLowerCase().indexOf(searchTerm.toLowerCase());
-                        if (matchIndex !== -1) {
-                            return {
-                                ...doc,
-                                snippet: ocrText.substring(Math.max(0, matchIndex - 50), matchIndex + 100),
-                                matchFound: true
-                            };
-                        }
+            const searchLower = searchTerm.toLowerCase();
+            
+            // Filter and map in single pass for better performance
+            const filtered = documents
+                .filter(doc => {
+                    const titleMatch = doc.title?.toLowerCase().includes(searchLower);
+                    const descMatch = doc.description?.toLowerCase().includes(searchLower);
+                    const tagMatch = doc.tags?.some(tag => tag.toLowerCase().includes(searchLower));
+                    return titleMatch || descMatch || tagMatch;
+                })
+                .map(doc => {
+                    // Extract snippet if found in description
+                    if (doc.description?.toLowerCase().includes(searchLower)) {
+                        const matchIndex = doc.description.toLowerCase().indexOf(searchLower);
+                        return {
+                            ...doc,
+                            snippet: doc.description.substring(
+                                Math.max(0, matchIndex - 50), 
+                                Math.min(doc.description.length, matchIndex + 150)
+                            ),
+                            matchFound: true
+                        };
                     }
                     return doc;
                 })
-            );
+                .slice(0, 50); // Limit results for performance
 
-            setResults(withOCRSearch);
+            setResults(filtered);
         } catch (error) {
             console.error('Search error:', error);
         }

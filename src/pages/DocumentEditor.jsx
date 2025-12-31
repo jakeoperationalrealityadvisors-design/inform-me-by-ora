@@ -116,7 +116,7 @@ export default function DocumentEditor() {
         setIsSaving(true);
         try {
             const canvas = canvasRef.current;
-            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
             const file = new File([blob], `edited_${Date.now()}.jpg`, { type: 'image/jpeg' });
             
             const { file_url } = await base44.integrations.Core.UploadFile({ file });
@@ -128,7 +128,7 @@ export default function DocumentEditor() {
                 file_type: 'image/jpeg',
                 tags: ['edited', 'scanner'],
                 status: 'active',
-                description: extractedText ? `OCR Text: ${extractedText.substring(0, 500)}...` : undefined
+                description: extractedText || undefined
             });
             
             toast.success('Document saved successfully');

@@ -34,7 +34,8 @@ export default function Scanner() {
                     url: file_url,
                     name: file.name,
                     type: file.type,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    ocrText: null
                 });
             } catch (error) {
                 toast.error(`Failed to upload ${file.name}`);
@@ -58,7 +59,8 @@ export default function Scanner() {
                 url: file_url,
                 name: `Photo_${new Date().toLocaleDateString()}`,
                 type: file.type,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                ocrText: null
             };
             setCapturedImages([...capturedImages, newImage]);
             toast.success('Photo captured');
@@ -80,7 +82,8 @@ export default function Scanner() {
                 file_name: image.name,
                 file_type: image.type,
                 tags: [activeMode, storageType],
-                status: 'active'
+                status: 'active',
+                description: image.ocrText || undefined
             });
             toast.success(`Saved to ${storageType === 'cloud' ? 'Cloud' : 'Internal'} Storage`);
         } catch (error) {

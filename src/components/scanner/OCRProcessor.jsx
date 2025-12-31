@@ -14,16 +14,34 @@ export default function OCRProcessor({ imageUrl, onTextExtracted }) {
     const extractText = async () => {
         setIsProcessing(true);
         try {
+            // Check cache first
+            const cacheKey = `ocr_${imageUrl}`;
+            const cached = localStorage.getItem(cacheKey);
+            
+            if (cached) {
+                setExtractedText(cached);
+                if (onTextExtracted) onTextExtracted(cached);
+                toast.success('Text loaded from cache');
+                setIsProcessing(false);
+                return;
+            }
+
             const result = await base44.integrations.Core.InvokeLLM({
                 prompt: 'Extract all text from this image. Return only the text content, preserving formatting and structure. If there are tables, preserve them in a readable format.',
                 file_urls: [imageUrl]
             });
             
             const text = typeof result === 'string' ? result : result.text || '';
-            setExtractedText(text);
-            if (onTextExtracted) {
-                onTextExtracted(text);
+            
+            // Cache result
+            try {
+                localStorage.setItem(cacheKey, text);
+            } catch (e) {
+                // Cache full, ignore
             }
+            
+            setExtractedText(text);
+            if (onTextExtracted) onTextExtracted(text);
             toast.success('Text extracted successfully');
         } catch (error) {
             toast.error('Failed to extract text');
