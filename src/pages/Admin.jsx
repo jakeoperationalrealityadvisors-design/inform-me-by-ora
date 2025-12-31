@@ -22,7 +22,7 @@ import RoleGuard from '@/components/auth/RoleGuard';
 
 export default function Admin() {
     return (
-        <RoleGuard allowedRoles={['admin']}>
+        <RoleGuard allowedRoles={['admin', 'manager']}>
             <AdminContent />
         </RoleGuard>
     );
