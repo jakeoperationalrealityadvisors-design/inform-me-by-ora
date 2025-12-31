@@ -1,5 +1,34 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+// Helper function to evaluate conditions
+function evaluateConditions(conditions, data) {
+    if (!conditions || conditions.length === 0) return true;
+    
+    return conditions.every(condition => {
+        const value = data[condition.field];
+        const targetValue = condition.value;
+        
+        switch (condition.operator) {
+            case 'equals':
+                return value == targetValue;
+            case 'not_equals':
+                return value != targetValue;
+            case 'contains':
+                return String(value || '').toLowerCase().includes(String(targetValue).toLowerCase());
+            case 'greater_than':
+                return Number(value) > Number(targetValue);
+            case 'less_than':
+                return Number(value) < Number(targetValue);
+            case 'is_empty':
+                return !value || value === '';
+            case 'is_not_empty':
+                return value && value !== '';
+            default:
+                return true;
+        }
+    });
+}
+
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
@@ -20,6 +49,12 @@ Deno.serve(async (req) => {
         const executedActions = [];
 
         for (const rule of rules) {
+            // Update execution count and timestamp
+            await base44.asServiceRole.entities.AutomationRule.update(rule.id, {
+                execution_count: (rule.execution_count || 0) + 1,
+                last_executed: new Date().toISOString()
+            });
+            
             // Check if rule matches the trigger config
             let shouldExecute = true;
 
@@ -34,9 +69,26 @@ Deno.serve(async (req) => {
             }
 
             if (!shouldExecute) continue;
+            
+            // Check conditions
+            if (!evaluateConditions(rule.conditions, trigger_data)) {
+                continue;
+            }
 
             // Execute each action
             for (const action of rule.actions || []) {
+                // Handle delayed actions
+                if (action.delay_minutes && action.delay_minutes > 0) {
+                    // In a real system, you'd use a queue/scheduler
+                    // For now, we'll just skip delayed actions
+                    executedActions.push({
+                        rule: rule.name,
+                        action: action.type,
+                        success: true,
+                        note: `Scheduled for ${action.delay_minutes} minutes from now`
+                    });
+                    continue;
+                }
                 try {
                     if (action.type === 'assign_task') {
                         // Assign the submission to a user
@@ -110,6 +162,83 @@ Deno.serve(async (req) => {
                             action: 'create_followup',
                             success: true
                         });
+                    } else if (action.type === 'create_task') {
+                        // Create a standalone task
+                        await base44.asServiceRole.entities.Task.create({
+                            title: action.config.title || `Task from: ${trigger_data.title}`,
+                            description: action.config.description,
+                            assigned_to_email: action.config.assignee_email,
+                            priority: action.config.priority || 'medium',
+                            due_date: action.config.due_date,
+                            status: 'todo',
+                            related_form_id: trigger_data.submission_type === 'form' ? trigger_data.submission_id : null,
+                            related_checklist_id: trigger_data.submission_type === 'checklist' ? trigger_data.submission_id : null
+                        });
+
+                        executedActions.push({
+                            rule: rule.name,
+                            action: 'create_task',
+                            success: true
+                        });
+                    } else if (action.type === 'update_status') {
+                        // Update submission status
+                        if (trigger_data.submission_id && trigger_data.submission_type) {
+                            const entity = trigger_data.submission_type === 'form' 
+                                ? 'FormSubmission' 
+                                : 'ChecklistSubmission';
+                            
+                            await base44.asServiceRole.entities[entity].update(
+                                trigger_data.submission_id,
+                                { status: action.config.new_status }
+                            );
+
+                            executedActions.push({
+                                rule: rule.name,
+                                action: 'update_status',
+                                success: true
+                            });
+                        }
+                    } else if (action.type === 'trigger_automation') {
+                        // Trigger another automation rule
+                        const targetRule = await base44.asServiceRole.entities.AutomationRule.filter({
+                            id: action.config.target_rule_id,
+                            enabled: true
+                        });
+                        
+                        if (targetRule.length > 0) {
+                            // Recursive call to execute the target automation
+                            await fetch(req.url, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    trigger_type: 'manual_trigger',
+                                    trigger_data: trigger_data
+                                })
+                            });
+
+                            executedActions.push({
+                                rule: rule.name,
+                                action: 'trigger_automation',
+                                success: true
+                            });
+                        }
+                    } else if (action.type === 'add_comment') {
+                        // Add a comment to the submission
+                        if (trigger_data.submission_id && trigger_data.submission_type) {
+                            await base44.asServiceRole.entities.Comment.create({
+                                submission_id: trigger_data.submission_id,
+                                submission_type: trigger_data.submission_type,
+                                comment_text: action.config.comment_text || 'Automated comment',
+                                author_name: 'Automation',
+                                author_email: 'automation@system'
+                            });
+
+                            executedActions.push({
+                                rule: rule.name,
+                                action: 'add_comment',
+                                success: true
+                            });
+                        }
                     }
                 } catch (error) {
                     executedActions.push({

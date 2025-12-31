@@ -45,6 +45,7 @@ function EditAutomationContent() {
         description: rule?.description || '',
         trigger_type: rule?.trigger_type || 'form_submitted',
         trigger_config: rule?.trigger_config || {},
+        conditions: rule?.conditions || [],
         actions: rule?.actions || [{ type: 'send_notification', config: {} }],
         enabled: rule?.enabled ?? true
     });
@@ -56,6 +57,7 @@ function EditAutomationContent() {
                 description: rule.description || '',
                 trigger_type: rule.trigger_type || 'form_submitted',
                 trigger_config: rule.trigger_config || {},
+                conditions: rule.conditions || [],
                 actions: rule.actions || [{ type: 'send_notification', config: {} }],
                 enabled: rule.enabled ?? true
             });
@@ -81,6 +83,26 @@ function EditAutomationContent() {
             ...formData,
             actions: [...formData.actions, { type: 'send_notification', config: {} }]
         });
+    };
+    
+    const addCondition = () => {
+        setFormData({
+            ...formData,
+            conditions: [...(formData.conditions || []), { field: 'priority', operator: 'equals', value: '' }]
+        });
+    };
+    
+    const removeCondition = (index) => {
+        setFormData({
+            ...formData,
+            conditions: formData.conditions.filter((_, i) => i !== index)
+        });
+    };
+    
+    const updateCondition = (index, field, value) => {
+        const newConditions = [...(formData.conditions || [])];
+        newConditions[index] = { ...newConditions[index], [field]: value };
+        setFormData({ ...formData, conditions: newConditions });
     };
 
     const removeAction = (index) => {
@@ -173,7 +195,11 @@ function EditAutomationContent() {
                                     <SelectContent>
                                         <SelectItem value="form_submitted">Form Submitted</SelectItem>
                                         <SelectItem value="checklist_completed">Checklist Completed</SelectItem>
+                                        <SelectItem value="task_created">Task Created</SelectItem>
+                                        <SelectItem value="task_completed">Task Completed</SelectItem>
+                                        <SelectItem value="task_overdue">Task Overdue</SelectItem>
                                         <SelectItem value="document_uploaded">Document Uploaded</SelectItem>
+                                        <SelectItem value="status_changed">Status Changed</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -225,6 +251,88 @@ function EditAutomationContent() {
                             )}
                         </CardContent>
                     </Card>
+                    
+                    {/* Conditions */}
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <CardTitle>Conditions (Optional)</CardTitle>
+                                    <p className="text-sm text-slate-600 mt-1">Add conditions that must be met for this automation to run</p>
+                                </div>
+                                <Button type="button" variant="outline" size="sm" onClick={addCondition}>
+                                    <Plus className="w-4 h-4 mr-1" />
+                                    Add Condition
+                                </Button>
+                            </div>
+                        </CardHeader>
+                        {formData.conditions && formData.conditions.length > 0 && (
+                            <CardContent className="space-y-3">
+                                {formData.conditions.map((condition, index) => (
+                                    <div key={index} className="border border-slate-200 rounded-lg p-4">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <Label>Condition {index + 1}</Label>
+                                            <Button 
+                                                type="button" 
+                                                variant="ghost" 
+                                                size="icon"
+                                                onClick={() => removeCondition(index)}
+                                            >
+                                                <Trash2 className="w-4 h-4 text-red-600" />
+                                            </Button>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-3">
+                                            <div>
+                                                <Label>Field</Label>
+                                                <Select 
+                                                    value={condition.field}
+                                                    onValueChange={(v) => updateCondition(index, 'field', v)}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="priority">Priority</SelectItem>
+                                                        <SelectItem value="status">Status</SelectItem>
+                                                        <SelectItem value="completion_percentage">Completion %</SelectItem>
+                                                        <SelectItem value="location">Location</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div>
+                                                <Label>Operator</Label>
+                                                <Select 
+                                                    value={condition.operator}
+                                                    onValueChange={(v) => updateCondition(index, 'operator', v)}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="equals">Equals</SelectItem>
+                                                        <SelectItem value="not_equals">Not Equals</SelectItem>
+                                                        <SelectItem value="contains">Contains</SelectItem>
+                                                        <SelectItem value="greater_than">Greater Than</SelectItem>
+                                                        <SelectItem value="less_than">Less Than</SelectItem>
+                                                        <SelectItem value="is_empty">Is Empty</SelectItem>
+                                                        <SelectItem value="is_not_empty">Is Not Empty</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div>
+                                                <Label>Value</Label>
+                                                <Input
+                                                    value={condition.value}
+                                                    onChange={(e) => updateCondition(index, 'value', e.target.value)}
+                                                    placeholder="Value to compare"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </CardContent>
+                        )}
+                    </Card>
 
                     {/* Actions */}
                     <Card>
@@ -262,10 +370,13 @@ function EditAutomationContent() {
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="assign_task">Assign Task</SelectItem>
+                                            <SelectItem value="assign_task">Assign Submission</SelectItem>
+                                            <SelectItem value="create_task">Create Standalone Task</SelectItem>
                                             <SelectItem value="send_notification">Send Notification</SelectItem>
                                             <SelectItem value="send_email">Send Email</SelectItem>
                                             <SelectItem value="create_followup">Create Follow-up Event</SelectItem>
+                                            <SelectItem value="update_status">Update Status</SelectItem>
+                                            <SelectItem value="add_comment">Add Comment</SelectItem>
                                         </SelectContent>
                                     </Select>
 
@@ -400,6 +511,97 @@ function EditAutomationContent() {
                                                 </Select>
                                             </div>
                                         </>
+                                    )}
+
+                                    {action.type === 'create_task' && (
+                                        <>
+                                            <div>
+                                                <Label>Task Title</Label>
+                                                <Input
+                                                    value={action.config.title || ''}
+                                                    onChange={(e) => updateAction(index, 'title', e.target.value)}
+                                                    placeholder="Task title"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Description</Label>
+                                                <Textarea
+                                                    value={action.config.description || ''}
+                                                    onChange={(e) => updateAction(index, 'description', e.target.value)}
+                                                    placeholder="Task description"
+                                                    rows={2}
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Assign To</Label>
+                                                <Select 
+                                                    value={action.config.assignee_email || ''}
+                                                    onValueChange={(v) => updateAction(index, 'assignee_email', v)}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select user" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {users.map(user => (
+                                                            <SelectItem key={user.id} value={user.email}>
+                                                                {user.full_name || user.email}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div>
+                                                <Label>Priority</Label>
+                                                <Select 
+                                                    value={action.config.priority || 'medium'}
+                                                    onValueChange={(v) => updateAction(index, 'priority', v)}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="low">Low</SelectItem>
+                                                        <SelectItem value="medium">Medium</SelectItem>
+                                                        <SelectItem value="high">High</SelectItem>
+                                                        <SelectItem value="urgent">Urgent</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    {action.type === 'update_status' && (
+                                        <div>
+                                            <Label>New Status</Label>
+                                            <Select 
+                                                value={action.config.new_status || ''}
+                                                onValueChange={(v) => updateAction(index, 'new_status', v)}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select status" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="submitted">Submitted</SelectItem>
+                                                    <SelectItem value="reviewed">Reviewed</SelectItem>
+                                                    <SelectItem value="approved">Approved</SelectItem>
+                                                    <SelectItem value="rejected">Rejected</SelectItem>
+                                                    <SelectItem value="in_progress">In Progress</SelectItem>
+                                                    <SelectItem value="completed">Completed</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    )}
+
+                                    {action.type === 'add_comment' && (
+                                        <div>
+                                            <Label>Comment Text</Label>
+                                            <Textarea
+                                                value={action.config.comment_text || ''}
+                                                onChange={(e) => updateAction(index, 'comment_text', e.target.value)}
+                                                placeholder="Enter comment text"
+                                                rows={3}
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             ))}

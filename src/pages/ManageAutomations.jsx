@@ -57,10 +57,15 @@ function ManageAutomationsContent() {
     };
 
     const actionLabels = {
-        assign_task: 'Assign Task',
+        assign_task: 'Assign Submission',
+        create_task: 'Create Task',
         send_notification: 'Send Notification',
         send_email: 'Send Email',
-        create_followup: 'Create Follow-up'
+        create_followup: 'Create Follow-up',
+        update_status: 'Update Status',
+        trigger_automation: 'Trigger Automation',
+        add_comment: 'Add Comment',
+        update_field: 'Update Field'
     };
 
     return (
@@ -167,6 +172,14 @@ function ManageAutomationsContent() {
                                                 {triggerLabels[rule.trigger_type] || rule.trigger_type}
                                             </Badge>
                                         </div>
+                                        {rule.conditions && rule.conditions.length > 0 && (
+                                            <div>
+                                                <p className="text-xs text-slate-500 mb-1">CONDITIONS</p>
+                                                <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                                                    {rule.conditions.length} condition{rule.conditions.length > 1 ? 's' : ''}
+                                                </Badge>
+                                            </div>
+                                        )}
                                         <div>
                                             <p className="text-xs text-slate-500 mb-1">ACTIONS</p>
                                             <div className="flex flex-wrap gap-2">
@@ -177,6 +190,11 @@ function ManageAutomationsContent() {
                                                 ))}
                                             </div>
                                         </div>
+                                        {rule.execution_count > 0 && (
+                                            <div className="text-xs text-slate-500">
+                                                Executed {rule.execution_count} time{rule.execution_count > 1 ? 's' : ''}
+                                            </div>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
