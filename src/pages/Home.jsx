@@ -18,6 +18,7 @@ import { useLanguage } from '@/components/language/LanguageContext';
 import LanguageSwitcher from '@/components/language/LanguageSwitcher';
 import GlobalSearch from '@/components/search/GlobalSearch';
 import CategorySidebar from '@/components/navigation/CategorySidebar';
+import ThemeToggle from '@/components/theme/ThemeToggle';
 
 export default function Home() {
     const { isAdmin, canViewAll } = useUserRole();
@@ -62,34 +63,35 @@ export default function Home() {
     const isLoading = formsLoading || checklistsLoading;
     
     return (
-        <div className="min-h-screen bg-slate-100">
+        <div className="min-h-screen bg-slate-100 dark:bg-[#0a0e17] transition-colors">
             {/* Header */}
-            <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+            <div className="bg-white dark:bg-[#0f1419] border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10 shadow-sm transition-colors">
                 <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
                         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                             <img 
-                                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/a3d021289_file_000000005d3071f5ac3dbefae9155a78.png" 
-                                alt="Operational Reality Advisors"
-                                className="h-8 sm:h-12 flex-shrink-0"
+                                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png" 
+                                alt="InForm Me - Operational Reality Advisors"
+                                className="h-8 sm:h-12 flex-shrink-0 rounded-lg"
                             />
                             <div className="min-w-0">
-                                <h1 className="text-sm sm:text-xl font-bold text-slate-900 truncate">
+                                <h1 className="text-sm sm:text-xl font-bold text-slate-900 dark:text-white truncate">
                                     {t('home.title')}
                                 </h1>
-                                <p className="text-xs text-slate-600 hidden sm:block">{t('home.subtitle')}</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400 hidden sm:block">{t('home.subtitle')}</p>
                             </div>
                         </div>
                         <div className="flex gap-1 sm:gap-2 flex-shrink-0">
                             <NotificationBell />
+                            <ThemeToggle />
                             <LanguageSwitcher />
                             <Link to={createPageUrl('MyTasks')}>
-                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600 h-9 w-9 sm:h-10 sm:w-10">
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 h-9 w-9 sm:h-10 sm:w-10">
                                     <ListTodo className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </Button>
                             </Link>
                             <Link to={createPageUrl('Settings')}>
-                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600 h-9 w-9 sm:h-10 sm:w-10">
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 h-9 w-9 sm:h-10 sm:w-10">
                                     <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </Button>
                             </Link>
@@ -125,13 +127,13 @@ export default function Home() {
                     {/* Main Content */}
                     <div className="lg:col-span-3">
                 {/* Tab Switcher */}
-                <div className="flex gap-2 p-1 bg-white rounded-xl mb-4 sm:mb-6 border border-slate-200 shadow-sm">
+                <div className="flex gap-2 p-1 bg-white dark:bg-[#0f1419] rounded-xl mb-4 sm:mb-6 border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
                     <button
                         onClick={() => setActiveTab('forms')}
                         className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all ${
                             activeTab === 'forms' 
-                                ? 'bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white shadow-md' 
-                                : 'text-slate-600 hover:bg-slate-50'
+                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E90FF] text-white shadow-md shadow-orange-500/20' 
+                                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                         }`}
                     >
                         <FileText className="w-4 h-4" />
@@ -141,8 +143,8 @@ export default function Home() {
                         onClick={() => setActiveTab('checklists')}
                         className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all ${
                             activeTab === 'checklists' 
-                                ? 'bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white shadow-md' 
-                                : 'text-slate-600 hover:bg-slate-50'
+                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E90FF] text-white shadow-md shadow-orange-500/20' 
+                                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                         }`}
                     >
                         <CheckSquare className="w-4 h-4" />
@@ -165,10 +167,10 @@ export default function Home() {
                 {isLoading ? (
                     <div className="grid gap-3 sm:gap-4">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="bg-white rounded-lg border border-slate-200 p-4 sm:p-5 animate-pulse shadow-lg">
-                                <div className="h-8 sm:h-10 bg-slate-200 rounded mb-3 sm:mb-4" />
-                                <div className="h-4 sm:h-5 w-3/4 bg-slate-200 rounded mb-2" />
-                                <div className="h-3 sm:h-4 w-1/2 bg-slate-100 rounded" />
+                            <div key={i} className="bg-white dark:bg-[#0f1419] rounded-lg border border-slate-200 dark:border-slate-800 p-4 sm:p-5 animate-pulse shadow-lg transition-colors">
+                                <div className="h-8 sm:h-10 bg-slate-200 dark:bg-slate-700 rounded mb-3 sm:mb-4" />
+                                <div className="h-4 sm:h-5 w-3/4 bg-slate-200 dark:bg-slate-700 rounded mb-2" />
+                                <div className="h-3 sm:h-4 w-1/2 bg-slate-100 dark:bg-slate-800 rounded" />
                             </div>
                         ))}
                     </div>
