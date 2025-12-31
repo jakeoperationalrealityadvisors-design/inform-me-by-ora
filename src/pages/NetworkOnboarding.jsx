@@ -184,13 +184,22 @@ export default function NetworkOnboarding() {
         return (
             <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] to-[#1a1f2e] flex items-center justify-center p-4">
                 <Card className="max-w-4xl w-full bg-white/95 backdrop-blur">
+                    {/* Progress Indicator */}
+                    <div className="flex items-center justify-center gap-2 pt-6">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">1</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">2</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">3</div>
+                    </div>
+                    
                     <CardHeader className="text-center pb-6">
                         <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-[#FF8C00] to-[#1E40AF] rounded-2xl flex items-center justify-center">
                             <Building2 className="w-10 h-10 text-white" />
                         </div>
-                        <CardTitle className="text-3xl">Welcome to InForm Me</CardTitle>
+                        <CardTitle className="text-3xl">👋 Welcome to InForm Me!</CardTitle>
                         <CardDescription className="text-lg">
-                            What would you like to do today?
+                            Let's get you started in 3 easy steps. First, what brings you here?
                         </CardDescription>
                     </CardHeader>
                     
@@ -238,14 +247,14 @@ export default function NetworkOnboarding() {
                         <Button
                             onClick={() => setStep('technical')}
                             disabled={!selectedPath}
-                            className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] h-12 text-base"
+                            className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] h-14 text-lg font-semibold disabled:opacity-50"
                         >
-                            Continue
+                            Next Step: Choose Your Experience
                             <ArrowRight className="w-5 h-5 ml-2" />
                         </Button>
                         
-                        <div className="text-center text-sm text-slate-500">
-                            Don't worry, you can access all features regardless of your choice
+                        <div className="text-center text-sm text-slate-500 bg-blue-50 rounded-lg p-3 border border-blue-200">
+                            💡 <strong>Don't worry!</strong> You'll have access to all features no matter what you pick
                         </div>
                     </CardContent>
                 </Card>
@@ -257,13 +266,22 @@ export default function NetworkOnboarding() {
         return (
             <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] to-[#1a1f2e] flex items-center justify-center p-4">
                 <Card className="max-w-2xl w-full bg-white/95 backdrop-blur">
+                    {/* Progress Indicator */}
+                    <div className="flex items-center justify-center gap-2 pt-6">
+                        <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">✓</div>
+                        <div className="w-16 h-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"></div>
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">2</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">3</div>
+                    </div>
+                    
                     <CardHeader className="text-center pb-6">
                         <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center">
                             <TrendingUp className="w-8 h-8 text-white" />
                         </div>
-                        <CardTitle className="text-2xl">Choose Your Experience Level</CardTitle>
+                        <CardTitle className="text-2xl">How comfortable are you with apps?</CardTitle>
                         <CardDescription className="text-base">
-                            Pick the mode that fits you best - you can change this anytime in settings
+                            Be honest! This helps us show you the right amount of help. You can always change it later.
                         </CardDescription>
                     </CardHeader>
                     
@@ -296,16 +314,15 @@ export default function NetworkOnboarding() {
                             <Button
                                 onClick={() => setStep('welcome')}
                                 variant="outline"
-                                className="flex-1"
+                                className="flex-1 h-12"
                             >
-                                Back
+                                ← Back
                             </Button>
                             <Button
                                 onClick={() => setStep('network')}
-                                className="flex-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"
+                                className="flex-1 h-12 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-base font-semibold"
                             >
-                                Continue
-                                <ArrowRight className="w-4 h-4 ml-2" />
+                                Final Step: Connect →
                             </Button>
                         </div>
                     </CardContent>
@@ -317,41 +334,67 @@ export default function NetworkOnboarding() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] to-[#1a1f2e] flex items-center justify-center p-4">
             <Card className="max-w-2xl w-full bg-white/95 backdrop-blur">
+                {/* Progress Indicator */}
+                <div className="flex items-center justify-center gap-2 pt-6">
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">✓</div>
+                    <div className="w-16 h-1 bg-green-500"></div>
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">✓</div>
+                    <div className="w-16 h-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"></div>
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">3</div>
+                </div>
+                
                 <CardHeader className="text-center pb-6">
                     <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#FF8C00] to-[#1E40AF] rounded-2xl flex items-center justify-center">
                         <Building2 className="w-8 h-8 text-white" />
                     </div>
-                    <CardTitle className="text-2xl">Join or Create a Network</CardTitle>
+                    <CardTitle className="text-2xl">🚀 Almost There!</CardTitle>
                     <CardDescription className="text-base">
-                        Connect with your organization or start your own
+                        Do you have an invite code from your team, or are you starting fresh?
                     </CardDescription>
                 </CardHeader>
                 
                 <CardContent className="space-y-6">
-                    <div className="grid grid-cols-2 gap-3">
-                        <Button
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button
                             onClick={() => setStep('join')}
-                            variant="outline"
-                            className="h-24 flex-col gap-2 border-2 hover:border-[#FF8C00] hover:bg-orange-50"
+                            className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
+                                step === 'join' 
+                                    ? 'border-[#FF8C00] bg-gradient-to-br from-orange-50 to-blue-50' 
+                                    : 'border-slate-200 hover:border-[#FF8C00] bg-white'
+                            }`}
                         >
-                            <Key className="w-6 h-6" />
-                            <span className="font-semibold">Join Network</span>
-                        </Button>
-                        <Button
+                            <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-[#FF8C00] to-orange-600 rounded-xl flex items-center justify-center">
+                                <Key className="w-7 h-7 text-white" />
+                            </div>
+                            <div className="font-bold text-lg mb-1">I Have a Code</div>
+                            <div className="text-sm text-slate-600">Join my team's network</div>
+                        </button>
+                        <button
                             onClick={() => setStep('create')}
-                            variant="outline"
-                            className="h-24 flex-col gap-2 border-2 hover:border-[#1E40AF] hover:bg-blue-50"
+                            className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
+                                step === 'create' 
+                                    ? 'border-[#1E40AF] bg-gradient-to-br from-blue-50 to-cyan-50' 
+                                    : 'border-slate-200 hover:border-[#1E40AF] bg-white'
+                            }`}
                         >
-                            <Users className="w-6 h-6" />
-                            <span className="font-semibold">Create Network</span>
-                        </Button>
+                            <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-[#1E40AF] to-blue-600 rounded-xl flex items-center justify-center">
+                                <Users className="w-7 h-7 text-white" />
+                            </div>
+                            <div className="font-bold text-lg mb-1">Start Fresh</div>
+                            <div className="text-sm text-slate-600">Create my own network</div>
+                        </button>
                     </div>
                     
                     {step === 'join' && (
                         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
-                                <p className="font-medium mb-1">Have an invite code?</p>
-                                <p className="text-xs">Enter the code provided by your organization administrator.</p>
+                            <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-5 text-blue-800">
+                                <div className="flex items-start gap-3">
+                                    <div className="text-2xl">📧</div>
+                                    <div>
+                                        <p className="font-bold text-base mb-1">Got an invite code?</p>
+                                        <p className="text-sm">Your admin should have sent you an 8-character code. It looks like: ABCD1234</p>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div>
@@ -369,19 +412,23 @@ export default function NetworkOnboarding() {
                             <Button 
                                 onClick={() => joinMutation.mutate(inviteCode)}
                                 disabled={inviteCode.length !== 8 || joinMutation.isPending}
-                                className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"
+                                className="w-full h-14 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-lg font-semibold"
                             >
-                                Join Network
-                                <ArrowRight className="w-4 h-4 ml-2" />
+                                {joinMutation.isPending ? 'Joining...' : '🎉 Join My Team'}
                             </Button>
                         </div>
                     )}
                     
                     {step === 'create' && (
                         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
-                            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-sm text-orange-800">
-                                <p className="font-medium mb-1">Start your own network</p>
-                                <p className="text-xs">30-day free trial with up to 10 users</p>
+                            <div className="bg-gradient-to-r from-orange-50 to-blue-50 border-2 border-orange-300 rounded-xl p-5 text-orange-900">
+                                <div className="flex items-start gap-3">
+                                    <div className="text-2xl">🎁</div>
+                                    <div>
+                                        <p className="font-bold text-base mb-1">Free 30-Day Trial!</p>
+                                        <p className="text-sm">Start with up to 10 team members. No credit card needed to begin.</p>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div>
@@ -408,10 +455,9 @@ export default function NetworkOnboarding() {
                             <Button 
                                 onClick={() => createMutation.mutate({ name: orgName, email: contactEmail })}
                                 disabled={!orgName || createMutation.isPending}
-                                className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"
+                                className="w-full h-14 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-lg font-semibold"
                             >
-                                Create Network
-                                <ArrowRight className="w-4 h-4 ml-2" />
+                                {createMutation.isPending ? 'Creating...' : '✨ Create My Network'}
                             </Button>
                         </div>
                     )}
@@ -419,9 +465,9 @@ export default function NetworkOnboarding() {
                     <Button
                         onClick={() => setStep('network')}
                         variant="ghost"
-                        className="w-full"
+                        className="w-full h-12 text-base"
                     >
-                        Back
+                        ← Back to Options
                     </Button>
                 </CardContent>
             </Card>
