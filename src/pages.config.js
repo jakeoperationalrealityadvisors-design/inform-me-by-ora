@@ -31,6 +31,7 @@ import ViewFormSubmission from './pages/ViewFormSubmission';
 import NetworkOnboarding from './pages/NetworkOnboarding';
 import OrganizationSettings from './pages/OrganizationSettings';
 import CustomerPortal from './pages/CustomerPortal';
+import AutomationOptimizer from './pages/AutomationOptimizer';
 import __Layout from './Layout.jsx';
 
 
@@ -68,6 +69,7 @@ export const PAGES = {
     "NetworkOnboarding": NetworkOnboarding,
     "OrganizationSettings": OrganizationSettings,
     "CustomerPortal": CustomerPortal,
+    "AutomationOptimizer": AutomationOptimizer,
 }
 
 export const pagesConfig = {
