@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, FileText, CheckSquare, Calendar, AlertCircle, User, LayoutList, CalendarDays, ArrowUpDown } from 'lucide-react';
+import { ArrowLeft, FileText, CheckSquare, Calendar, AlertCircle, User, LayoutList, CalendarDays, ArrowUpDown, Plus, ListTodo } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,12 +13,24 @@ import { motion } from 'framer-motion';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import TaskCalendar from '@/components/tasks/TaskCalendar';
 import TaskReminderBadge from '@/components/tasks/TaskReminderBadge';
+import TaskCard from '@/components/tasks/TaskCard';
 
 export default function MyTasks() {
+    const navigate = useNavigate();
     const [filter, setFilter] = useState('all');
     const [viewMode, setViewMode] = useState('list'); // 'list' or 'calendar'
     const [sortBy, setSortBy] = useState('due_date'); // 'due_date', 'priority', 'status'
     const { user, canViewAll } = useUserRole();
+    
+    const { data: standaloneTasks = [] } = useQuery({
+        queryKey: ['standalone-tasks'],
+        queryFn: async () => {
+            const all = await base44.entities.Task.list('-created_date');
+            if (canViewAll) return all;
+            return all.filter(t => t.assigned_to_email === user?.email);
+        },
+        enabled: !!user
+    });
     
     const { data: formTasks = [] } = useQuery({
         queryKey: ['my-form-tasks'],
@@ -74,6 +86,7 @@ export default function MyTasks() {
     
     const filteredForms = filterTasks(formTasks);
     const filteredChecklists = filterTasks(checklistTasks);
+    const filteredStandaloneTasks = filterTasks(standaloneTasks);
     
     const priorityColors = {
         low: 'bg-blue-500/10 text-blue-400',
@@ -88,20 +101,29 @@ export default function MyTasks() {
         <div className="min-h-screen bg-[#0a0e17]">
             <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
                 <div className="max-w-4xl mx-auto px-4 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link to={createPageUrl('Home')}>
-                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
-                                <ArrowLeft className="w-5 h-5" />
-                            </Button>
-                        </Link>
-                        <div>
-                            <h1 className="text-xl font-bold text-white">
-                                {canViewAll ? 'Team Tasks' : 'My Tasks'}
-                            </h1>
-                            <p className="text-sm text-blue-400">
-                                {canViewAll ? 'All team tasks and assignments' : 'Tasks assigned to you'}
-                            </p>
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                            <Link to={createPageUrl('Home')}>
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 text-blue-400">
+                                    <ArrowLeft className="w-5 h-5" />
+                                </Button>
+                            </Link>
+                            <div>
+                                <h1 className="text-xl font-bold text-white">
+                                    {canViewAll ? 'Team Tasks' : 'My Tasks'}
+                                </h1>
+                                <p className="text-sm text-blue-400">
+                                    {canViewAll ? 'All team tasks and assignments' : 'Tasks assigned to you'}
+                                </p>
+                            </div>
                         </div>
+                        <Button
+                            onClick={() => navigate(createPageUrl('CreateTask'))}
+                            className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] hover:opacity-90 text-black"
+                        >
+                            <Plus className="w-4 h-4 mr-2" />
+                            New Task
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -174,8 +196,12 @@ export default function MyTasks() {
                     />
                 ) : (
                     /* List View */
-                    <Tabs defaultValue="forms">
-                        <TabsList className="w-full grid grid-cols-2">
+                    <Tabs defaultValue="tasks">
+                        <TabsList className="w-full grid grid-cols-3">
+                            <TabsTrigger value="tasks" className="gap-2">
+                                <ListTodo className="w-4 h-4" />
+                                Tasks ({filteredStandaloneTasks.length})
+                            </TabsTrigger>
                             <TabsTrigger value="forms" className="gap-2">
                                 <FileText className="w-4 h-4" />
                                 Forms ({filteredForms.length})
@@ -185,6 +211,33 @@ export default function MyTasks() {
                                 Checklists ({filteredChecklists.length})
                             </TabsTrigger>
                         </TabsList>
+                    
+                    <TabsContent value="tasks" className="space-y-4 mt-4">
+                        {filteredStandaloneTasks.length > 0 ? (
+                            filteredStandaloneTasks.map((task, idx) => (
+                                <motion.div
+                                    key={task.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: idx * 0.05 }}
+                                >
+                                    <TaskCard task={task} />
+                                </motion.div>
+                            ))
+                        ) : (
+                            <div className="text-center py-12 text-blue-400/60">
+                                <ListTodo className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                                <p>No tasks found</p>
+                                <Button
+                                    onClick={() => navigate(createPageUrl('CreateTask'))}
+                                    className="mt-4 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] hover:opacity-90 text-black"
+                                >
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    Create First Task
+                                </Button>
+                            </div>
+                        )}
+                    </TabsContent>
                     
                     <TabsContent value="forms" className="space-y-4 mt-4">
                         {filteredForms.length > 0 ? (
