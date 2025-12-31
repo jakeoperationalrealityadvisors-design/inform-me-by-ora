@@ -235,21 +235,26 @@ export default function Settings() {
                     </Card>
                 )}
                 
-                {/* Customer Portal */}
+                {/* Plans & Billing */}
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>
                         <CardTitle className="text-white flex items-center gap-2">
                             <Building2 className="w-5 h-5 text-[#FF8C00]" />
-                            Customer Portal
+                            Plans & Billing
                         </CardTitle>
                         <CardDescription className="text-blue-400">
-                            Manage subscription, billing, and view analytics
+                            Manage subscription, upgrade plans, and view billing
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-2">
+                        <Link to={createPageUrl('Pricing')}>
+                            <Button className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]">
+                                View Plans & Upgrade
+                            </Button>
+                        </Link>
                         <Link to={createPageUrl('CustomerPortal')}>
                             <Button variant="outline" className="w-full border-blue-900/30 text-blue-300 hover:bg-blue-950/50">
-                                Open Customer Portal
+                                Billing & Analytics
                             </Button>
                         </Link>
                         <Link to={createPageUrl('OrganizationSettings')}>

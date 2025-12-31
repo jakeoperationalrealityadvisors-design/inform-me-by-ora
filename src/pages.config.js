@@ -47,6 +47,7 @@ import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import AIAssistantPage from './pages/AIAssistantPage';
 import AIAssistantTest from './pages/AIAssistantTest';
+import Pricing from './pages/Pricing';
 import __Layout from './Layout.jsx';
 
 
@@ -100,6 +101,7 @@ export const PAGES = {
     "ViewFormSubmission": ViewFormSubmission,
     "AIAssistantPage": AIAssistantPage,
     "AIAssistantTest": AIAssistantTest,
+    "Pricing": Pricing,
 }
 
 export const pagesConfig = {
