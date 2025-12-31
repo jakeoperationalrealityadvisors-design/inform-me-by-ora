@@ -12,6 +12,7 @@ import SearchBar from '@/components/common/SearchBar';
 import EmptyState from '@/components/common/EmptyState';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import AISubmissionAnalyzer from '@/components/ai/AISubmissionAnalyzer';
 
 export default function Submissions() {
     const [search, setSearch] = useState('');
@@ -96,7 +97,11 @@ export default function Submissions() {
                 </div>
             </div>
             
-            <div className="max-w-4xl mx-auto px-4 py-6 space-y-2">
+            <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+                {/* AI Submission Analyzer */}
+                <AISubmissionAnalyzer submissions={[...formSubmissions, ...checklistSubmissions]} />
+                
+                <div className="space-y-2">
                 {(formsLoading || checklistsLoading) ? (
                     <div className="text-center py-12 text-blue-400">Loading...</div>
                 ) : activeTab === 'forms' ? (
@@ -116,6 +121,7 @@ export default function Submissions() {
                         <EmptyState icon={CheckSquare} title="No submissions" />
                     )
                 )}
+                </div>
             </div>
         </div>
     );

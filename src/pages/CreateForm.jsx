@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import { useLanguage } from '@/components/language/LanguageContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import { logActivity } from '@/components/activity/ActivityLogger';
+import AIFormBuilder from '@/components/ai/AIFormBuilder';
 
 function CreateFormContent() {
     const navigate = useNavigate();
@@ -207,9 +208,12 @@ Return JSON with: { title, description, fields: [...] }`,
                 </div>
             </div>
 
-            <div className="max-w-4xl mx-auto px-4 py-6">
+            <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+                {/* AI Form Builder */}
+                <AIFormBuilder />
+                
                 {/* Upload Options */}
-                <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30 mb-6">
+                <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30">
                     <CardHeader>
                         <CardTitle className="text-slate-900 dark:text-[#FF8C00] flex items-center gap-2">
                             <Sparkles className="w-5 h-5" />
