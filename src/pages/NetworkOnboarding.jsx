@@ -8,13 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Building2, Users, Key, ArrowRight, CheckCircle2, Zap, Shield, TrendingUp } from 'lucide-react';
+import { Building2, Users, Key, ArrowRight, CheckCircle2, Zap, Shield, TrendingUp, User } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function NetworkOnboarding() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const [step, setStep] = useState('welcome');
+    const [step, setStep] = useState('account-type');
+    const [accountType, setAccountType] = useState('');
     const [selectedPath, setSelectedPath] = useState(null);
     
     // Join network state
@@ -131,6 +132,7 @@ export default function NetworkOnboarding() {
             await base44.auth.updateMe({
                 organization_id: org.id,
                 team_role: 'member',
+                account_type: accountType,
                 onboarding_completed: true,
                 age: parseInt(age),
                 technical_level: technicalLevel,
@@ -175,6 +177,7 @@ export default function NetworkOnboarding() {
             await base44.auth.updateMe({
                 organization_id: org.id,
                 team_role: 'owner',
+                account_type: accountType,
                 onboarding_completed: true,
                 age: parseInt(age),
                 technical_level: technicalLevel,
@@ -193,10 +196,10 @@ export default function NetworkOnboarding() {
         }
     });
     
-    if (step === 'welcome') {
+    if (step === 'account-type') {
         return (
             <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] to-[#1a1f2e] flex items-center justify-center p-4">
-                <Card className="max-w-4xl w-full bg-white/95 backdrop-blur">
+                <Card className="max-w-2xl w-full bg-white/95 backdrop-blur">
                     {/* Progress Indicator */}
                     <div className="flex items-center justify-center gap-2 pt-6">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">1</div>
@@ -204,15 +207,116 @@ export default function NetworkOnboarding() {
                         <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">2</div>
                         <div className="w-16 h-1 bg-slate-200"></div>
                         <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">3</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">4</div>
+                    </div>
+                    
+                    <CardHeader className="text-center pb-6">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#FF8C00] to-[#1E40AF] rounded-2xl flex items-center justify-center">
+                            <Users className="w-8 h-8 text-white" />
+                        </div>
+                        <CardTitle className="text-2xl">What describes you?</CardTitle>
+                        <CardDescription className="text-base">
+                            This helps us customize your experience
+                        </CardDescription>
+                    </CardHeader>
+                    
+                    <CardContent className="space-y-6">
+                        <div className="space-y-3">
+                            <button
+                                onClick={() => setAccountType('organization')}
+                                className={`w-full p-6 rounded-xl border-2 transition-all text-left ${
+                                    accountType === 'organization'
+                                        ? 'border-[#FF8C00] bg-gradient-to-br from-orange-50 to-blue-50 shadow-lg'
+                                        : 'border-slate-200 hover:border-slate-300 bg-white hover:shadow-md'
+                                }`}
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF8C00] to-orange-600 flex items-center justify-center flex-shrink-0">
+                                        <Building2 className="w-6 h-6 text-white" />
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-lg text-slate-900">I Run an Organization</div>
+                                        <div className="text-sm text-slate-600">Manage teams, projects, and workflows</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button
+                                onClick={() => setAccountType('self_employed')}
+                                className={`w-full p-6 rounded-xl border-2 transition-all text-left ${
+                                    accountType === 'self_employed'
+                                        ? 'border-[#FF8C00] bg-gradient-to-br from-orange-50 to-blue-50 shadow-lg'
+                                        : 'border-slate-200 hover:border-slate-300 bg-white hover:shadow-md'
+                                }`}
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center flex-shrink-0">
+                                        <User className="w-6 h-6 text-white" />
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-lg text-slate-900">I'm Self-Employed</div>
+                                        <div className="text-sm text-slate-600">Independent contractor or freelancer</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button
+                                onClick={() => setAccountType('employee')}
+                                className={`w-full p-6 rounded-xl border-2 transition-all text-left ${
+                                    accountType === 'employee'
+                                        ? 'border-[#1E40AF] bg-gradient-to-br from-blue-50 to-cyan-50 shadow-lg'
+                                        : 'border-slate-200 hover:border-slate-300 bg-white hover:shadow-md'
+                                }`}
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#1E40AF] to-blue-600 flex items-center justify-center flex-shrink-0">
+                                        <Users className="w-6 h-6 text-white" />
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-lg text-slate-900">I'm an Employee</div>
+                                        <div className="text-sm text-slate-600">Working for an organization</div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <Button
+                            onClick={() => setStep('welcome')}
+                            disabled={!accountType}
+                            className="w-full h-12 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-base font-semibold disabled:opacity-50"
+                        >
+                            Continue
+                            <ArrowRight className="w-5 h-5 ml-2" />
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+    
+    if (step === 'welcome') {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] to-[#1a1f2e] flex items-center justify-center p-4">
+                <Card className="max-w-4xl w-full bg-white/95 backdrop-blur">
+                    {/* Progress Indicator */}
+                    <div className="flex items-center justify-center gap-2 pt-6">
+                        <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">✓</div>
+                        <div className="w-16 h-1 bg-green-500"></div>
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">2</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">3</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">4</div>
                     </div>
                     
                     <CardHeader className="text-center pb-6">
                         <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-[#FF8C00] to-[#1E40AF] rounded-2xl flex items-center justify-center">
                             <Building2 className="w-10 h-10 text-white" />
                         </div>
-                        <CardTitle className="text-3xl">👋 Welcome to InForm Me!</CardTitle>
+                        <CardTitle className="text-3xl">What brings you here?</CardTitle>
                         <CardDescription className="text-lg">
-                            Let's get you started in 3 easy steps. First, what brings you here?
+                            Choose what best describes what you'll be doing
                         </CardDescription>
                     </CardHeader>
                     
@@ -257,14 +361,22 @@ export default function NetworkOnboarding() {
                             })}
                         </div>
                         
-                        <Button
-                            onClick={() => setStep('technical')}
-                            disabled={!selectedPath}
-                            className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] h-14 text-lg font-semibold disabled:opacity-50"
-                        >
-                            Next Step: Choose Your Experience
-                            <ArrowRight className="w-5 h-5 ml-2" />
-                        </Button>
+                        <div className="flex gap-3">
+                            <Button
+                                onClick={() => setStep('account-type')}
+                                variant="outline"
+                                className="flex-1 h-12"
+                            >
+                                ← Back
+                            </Button>
+                            <Button
+                                onClick={() => setStep('technical')}
+                                disabled={!selectedPath}
+                                className="flex-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] h-12 text-base font-semibold disabled:opacity-50"
+                            >
+                                Next Step →
+                            </Button>
+                        </div>
                         
                         <div className="text-center text-sm text-slate-500 bg-blue-50 rounded-lg p-3 border border-blue-200">
                             💡 <strong>Don't worry!</strong> You'll have access to all features no matter what you pick
@@ -281,11 +393,13 @@ export default function NetworkOnboarding() {
                 <Card className="max-w-2xl w-full bg-white/95 backdrop-blur">
                     {/* Progress Indicator */}
                     <div className="flex items-center justify-center gap-2 pt-6">
-                        <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">✓</div>
-                        <div className="w-16 h-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"></div>
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">2</div>
-                        <div className="w-16 h-1 bg-slate-200"></div>
-                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">3</div>
+                        <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-xs">✓</div>
+                        <div className="w-12 h-1 bg-green-500"></div>
+                        <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-xs">✓</div>
+                        <div className="w-12 h-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"></div>
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">3</div>
+                        <div className="w-12 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">4</div>
                     </div>
                     
                     <CardHeader className="text-center pb-6">
@@ -375,11 +489,13 @@ export default function NetworkOnboarding() {
             <Card className="max-w-2xl w-full bg-white/95 backdrop-blur">
                 {/* Progress Indicator */}
                 <div className="flex items-center justify-center gap-2 pt-6">
-                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">✓</div>
-                    <div className="w-16 h-1 bg-green-500"></div>
-                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">✓</div>
-                    <div className="w-16 h-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"></div>
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">3</div>
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-xs">✓</div>
+                    <div className="w-12 h-1 bg-green-500"></div>
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-xs">✓</div>
+                    <div className="w-12 h-1 bg-green-500"></div>
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-xs">✓</div>
+                    <div className="w-12 h-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"></div>
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">4</div>
                 </div>
                 
                 <CardHeader className="text-center pb-6">
