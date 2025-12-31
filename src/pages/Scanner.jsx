@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Camera, Upload, FileText, Image, Scan, Copy, Send, Cloud, HardDrive, Edit3 } from 'lucide-react';
+import { ArrowLeft, Camera, Upload, FileText, Image, Scan, Copy, Send, Cloud, HardDrive, Edit3, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,6 +15,7 @@ export default function Scanner() {
     const [activeMode, setActiveMode] = useState('scan');
     const [capturedImages, setCapturedImages] = useState([]);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const fileInputRef = useRef(null);
     const cameraInputRef = useRef(null);
 
@@ -196,11 +197,27 @@ export default function Scanner() {
                 {/* Captured Documents */}
                 {capturedImages.length > 0 && (
                     <div className="space-y-4">
-                        <h2 className={`font-bold text-white ${isSeniorMode ? 'text-xl' : 'text-lg'}`}>
-                            Captured Documents ({capturedImages.length})
-                        </h2>
+                        <div className="flex items-center justify-between">
+                            <h2 className={`font-bold text-white ${isSeniorMode ? 'text-xl' : 'text-lg'}`}>
+                                Captured Documents ({capturedImages.length})
+                            </h2>
+                        </div>
+                        
+                        {/* Search Bar */}
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-400" />
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search documents by name..."
+                                className="w-full pl-10 pr-4 py-3 bg-[#0f1419] border border-blue-900/30 rounded-lg text-white placeholder-blue-400/50"
+                            />
+                        </div>
                         <div className="grid grid-cols-1 gap-4">
-                            {capturedImages.map((image) => (
+                            {capturedImages
+                                .filter(img => !searchQuery || img.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                                .map((image) => (
                                 <Card key={image.id} className="bg-[#0f1419] border-blue-900/20">
                                     <CardContent className="p-4">
                                         <div className="flex gap-4">

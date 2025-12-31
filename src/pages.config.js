@@ -42,6 +42,7 @@ import ViewFormSubmission from './pages/ViewFormSubmission';
 import Scanner from './pages/Scanner';
 import DocumentEditor from './pages/DocumentEditor';
 import SendFax from './pages/SendFax';
+import DocumentSearch from './pages/DocumentSearch';
 import __Layout from './Layout.jsx';
 
 
@@ -90,6 +91,7 @@ export const PAGES = {
     "Scanner": Scanner,
     "DocumentEditor": DocumentEditor,
     "SendFax": SendFax,
+    "DocumentSearch": DocumentSearch,
 }
 
 export const pagesConfig = {

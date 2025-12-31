@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Save, Crop, RotateCw, Contrast, Sun, Image as ImageIcon, Sliders } from 'lucide-react';
+import { ArrowLeft, Save, Crop, RotateCw, Contrast, Sun, Image as ImageIcon, Sliders, FileText } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import OCRProcessor from '@/components/scanner/OCRProcessor';
 
 export default function DocumentEditor() {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ export default function DocumentEditor() {
     const [cropMode, setCropMode] = useState(false);
     const [cropRect, setCropRect] = useState({ x: 0, y: 0, width: 100, height: 100 });
     const [isSaving, setIsSaving] = useState(false);
+    const [extractedText, setExtractedText] = useState('');
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -125,7 +127,8 @@ export default function DocumentEditor() {
                 file_name: file.name,
                 file_type: 'image/jpeg',
                 tags: ['edited', 'scanner'],
-                status: 'active'
+                status: 'active',
+                description: extractedText ? `OCR Text: ${extractedText.substring(0, 500)}...` : undefined
             });
             
             toast.success('Document saved successfully');
@@ -245,7 +248,7 @@ export default function DocumentEditor() {
                     </Card>
 
                     {/* Canvas Preview */}
-                    <div className="lg:col-span-3">
+                    <div className="lg:col-span-3 space-y-4">
                         <Card className="bg-[#0f1419] border-blue-900/20">
                             <CardContent className="p-6">
                                 <div className="bg-[#0a0e17] rounded-lg p-4 flex items-center justify-center min-h-[500px]">
@@ -259,6 +262,14 @@ export default function DocumentEditor() {
                                 </div>
                             </CardContent>
                         </Card>
+
+                        {/* OCR Section */}
+                        {imageUrl && (
+                            <OCRProcessor 
+                                imageUrl={imageUrl} 
+                                onTextExtracted={setExtractedText}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
