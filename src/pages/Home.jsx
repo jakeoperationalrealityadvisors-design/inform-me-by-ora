@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users, Calendar, FolderOpen, LayoutGrid, LayoutList } from 'lucide-react';
+import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users, Calendar, FolderOpen, LayoutGrid, LayoutList, Scan } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 import SearchBar from '@/components/common/SearchBar';
@@ -158,6 +158,11 @@ export default function Home() {
                             {!isSimpleMode && !isSeniorMode && <PushNotificationToggle />}
                             {!isSimpleMode && !isSeniorMode && <ThemeToggle />}
                             {!isSimpleMode && !isSeniorMode && <LanguageSwitcher />}
+                            <Link to={createPageUrl('Scanner')}>
+                                <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSeniorMode ? 'h-16 w-16' : isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
+                                    <Scan className={isSeniorMode ? 'w-8 h-8' : isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
+                                </Button>
+                            </Link>
                             {canCreateForms && (
                                 <>
                                     {!isExpertMode && (

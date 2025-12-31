@@ -17,6 +17,7 @@ import EditForm from './pages/EditForm';
 import FillChecklist from './pages/FillChecklist';
 import FillForm from './pages/FillForm';
 import Home from './pages/Home';
+import Integrations from './pages/Integrations';
 import KnowledgeBase from './pages/KnowledgeBase';
 import ManageAutomations from './pages/ManageAutomations';
 import ManageDailyTasks from './pages/ManageDailyTasks';
@@ -38,7 +39,9 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import Integrations from './pages/Integrations';
+import Scanner from './pages/Scanner';
+import DocumentEditor from './pages/DocumentEditor';
+import SendFax from './pages/SendFax';
 import __Layout from './Layout.jsx';
 
 
@@ -62,6 +65,7 @@ export const PAGES = {
     "FillChecklist": FillChecklist,
     "FillForm": FillForm,
     "Home": Home,
+    "Integrations": Integrations,
     "KnowledgeBase": KnowledgeBase,
     "ManageAutomations": ManageAutomations,
     "ManageDailyTasks": ManageDailyTasks,
@@ -83,7 +87,9 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "Integrations": Integrations,
+    "Scanner": Scanner,
+    "DocumentEditor": DocumentEditor,
+    "SendFax": SendFax,
 }
 
 export const pagesConfig = {
