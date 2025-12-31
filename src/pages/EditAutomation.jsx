@@ -3,17 +3,21 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Save, Workflow } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoleGuard from '@/components/auth/RoleGuard';
 import { toast } from 'sonner';
 import AutomationTester from '@/components/automation/AutomationTester';
 import AIAutomationHelper from '@/components/automation/AIAutomationHelper';
+import VisualWorkflowBuilder from '@/components/automation/VisualWorkflowBuilder';
+import ComplexConditionBuilder from '@/components/automation/ComplexConditionBuilder';
+import CodeSnippetEditor from '@/components/automation/CodeSnippetEditor';
 
 function EditAutomationContent() {
     const navigate = useNavigate();
@@ -47,10 +51,12 @@ function EditAutomationContent() {
         description: rule?.description || '',
         trigger_type: rule?.trigger_type || 'form_submitted',
         trigger_config: rule?.trigger_config || {},
-        conditions: rule?.conditions || [],
+        condition_logic: rule?.condition_logic || { operator: 'AND', groups: [] },
         actions: rule?.actions || [{ type: 'send_notification', config: {} }],
         enabled: rule?.enabled ?? true
     });
+
+    const [viewMode, setViewMode] = useState('builder');
 
     React.useEffect(() => {
         if (rule) {
@@ -59,7 +65,7 @@ function EditAutomationContent() {
                 description: rule.description || '',
                 trigger_type: rule.trigger_type || 'form_submitted',
                 trigger_config: rule.trigger_config || {},
-                conditions: rule.conditions || [],
+                condition_logic: rule.condition_logic || { operator: 'AND', groups: [] },
                 actions: rule.actions || [{ type: 'send_notification', config: {} }],
                 enabled: rule.enabled ?? true
             });
@@ -85,26 +91,6 @@ function EditAutomationContent() {
             ...formData,
             actions: [...formData.actions, { type: 'send_notification', config: {} }]
         });
-    };
-    
-    const addCondition = () => {
-        setFormData({
-            ...formData,
-            conditions: [...(formData.conditions || []), { field: 'priority', operator: 'equals', value: '' }]
-        });
-    };
-    
-    const removeCondition = (index) => {
-        setFormData({
-            ...formData,
-            conditions: formData.conditions.filter((_, i) => i !== index)
-        });
-    };
-    
-    const updateCondition = (index, field, value) => {
-        const newConditions = [...(formData.conditions || [])];
-        newConditions[index] = { ...newConditions[index], [field]: value };
-        setFormData({ ...formData, conditions: newConditions });
     };
 
     const removeAction = (index) => {
@@ -149,23 +135,50 @@ function EditAutomationContent() {
             {/* Header */}
             <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
                 <div className="max-w-4xl mx-auto px-4 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link to={createPageUrl('ManageAutomations')}>
-                            <Button variant="ghost" size="icon" className="rounded-full">
-                                <ArrowLeft className="w-5 h-5" />
-                            </Button>
-                        </Link>
-                        <div>
-                            <h1 className="text-xl font-bold text-slate-900">
-                                {ruleId ? 'Edit Automation' : 'New Automation'}
-                            </h1>
-                            <p className="text-sm text-slate-600">Configure triggers and actions</p>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <Link to={createPageUrl('ManageAutomations')}>
+                                <Button variant="ghost" size="icon" className="rounded-full">
+                                    <ArrowLeft className="w-5 h-5" />
+                                </Button>
+                            </Link>
+                            <div>
+                                <h1 className="text-xl font-bold text-slate-900">
+                                    {ruleId ? 'Edit Automation' : 'New Automation'}
+                                </h1>
+                                <p className="text-sm text-slate-600">Configure triggers and actions</p>
+                            </div>
                         </div>
+                        <Tabs value={viewMode} onValueChange={setViewMode} className="w-auto">
+                            <TabsList>
+                                <TabsTrigger value="builder">Builder</TabsTrigger>
+                                <TabsTrigger value="visual">
+                                    <Workflow className="w-4 h-4 mr-1" />
+                                    Visual
+                                </TabsTrigger>
+                            </TabsList>
+                        </Tabs>
                     </div>
                 </div>
             </div>
 
             <div className="max-w-4xl mx-auto px-4 py-6">
+                {viewMode === 'visual' && formData.name && (
+                    <Card className="mb-6">
+                        <CardHeader>
+                            <CardTitle>Workflow Visualization</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <VisualWorkflowBuilder 
+                                automation={formData}
+                                onUpdate={setFormData}
+                            />
+                        </CardContent>
+                    </Card>
+                )}
+
+                {viewMode === 'builder' && (
+                    <>
                 {/* AI Assistant */}
                 <div className="mb-6">
                     <AIAutomationHelper 
@@ -277,86 +290,18 @@ function EditAutomationContent() {
                         </CardContent>
                     </Card>
                     
-                    {/* Conditions */}
+                    {/* Complex Conditions */}
                     <Card>
                         <CardHeader>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <CardTitle>Conditions (Optional)</CardTitle>
-                                    <p className="text-sm text-slate-600 mt-1">Add conditions that must be met for this automation to run</p>
-                                </div>
-                                <Button type="button" variant="outline" size="sm" onClick={addCondition}>
-                                    <Plus className="w-4 h-4 mr-1" />
-                                    Add Condition
-                                </Button>
-                            </div>
+                            <CardTitle>Complex Conditions (Optional)</CardTitle>
+                            <p className="text-sm text-slate-600 mt-1">Build advanced logic with AND/OR operators between condition groups</p>
                         </CardHeader>
-                        {formData.conditions && formData.conditions.length > 0 && (
-                            <CardContent className="space-y-3">
-                                {formData.conditions.map((condition, index) => (
-                                    <div key={index} className="border border-slate-200 rounded-lg p-4">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <Label>Condition {index + 1}</Label>
-                                            <Button 
-                                                type="button" 
-                                                variant="ghost" 
-                                                size="icon"
-                                                onClick={() => removeCondition(index)}
-                                            >
-                                                <Trash2 className="w-4 h-4 text-red-600" />
-                                            </Button>
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-3">
-                                            <div>
-                                                <Label>Field</Label>
-                                                <Select 
-                                                    value={condition.field}
-                                                    onValueChange={(v) => updateCondition(index, 'field', v)}
-                                                >
-                                                    <SelectTrigger>
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="priority">Priority</SelectItem>
-                                                        <SelectItem value="status">Status</SelectItem>
-                                                        <SelectItem value="completion_percentage">Completion %</SelectItem>
-                                                        <SelectItem value="location">Location</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                            <div>
-                                                <Label>Operator</Label>
-                                                <Select 
-                                                    value={condition.operator}
-                                                    onValueChange={(v) => updateCondition(index, 'operator', v)}
-                                                >
-                                                    <SelectTrigger>
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="equals">Equals</SelectItem>
-                                                        <SelectItem value="not_equals">Not Equals</SelectItem>
-                                                        <SelectItem value="contains">Contains</SelectItem>
-                                                        <SelectItem value="greater_than">Greater Than</SelectItem>
-                                                        <SelectItem value="less_than">Less Than</SelectItem>
-                                                        <SelectItem value="is_empty">Is Empty</SelectItem>
-                                                        <SelectItem value="is_not_empty">Is Not Empty</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                            <div>
-                                                <Label>Value</Label>
-                                                <Input
-                                                    value={condition.value}
-                                                    onChange={(e) => updateCondition(index, 'value', e.target.value)}
-                                                    placeholder="Value to compare"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        )}
+                        <CardContent>
+                            <ComplexConditionBuilder
+                                conditionLogic={formData.condition_logic}
+                                onChange={(logic) => setFormData({ ...formData, condition_logic: logic })}
+                            />
+                        </CardContent>
                     </Card>
 
                     {/* Actions */}
@@ -402,6 +347,7 @@ function EditAutomationContent() {
                                             <SelectItem value="create_followup">Create Follow-up Event</SelectItem>
                                             <SelectItem value="update_status">Update Status</SelectItem>
                                             <SelectItem value="add_comment">Add Comment</SelectItem>
+                                            <SelectItem value="custom_code">Custom Code</SelectItem>
                                         </SelectContent>
                                     </Select>
 
@@ -629,6 +575,17 @@ function EditAutomationContent() {
                                         </div>
                                     )}
 
+                                    {action.type === 'custom_code' && (
+                                        <CodeSnippetEditor
+                                            value={action.code_snippet || ''}
+                                            onChange={(code) => {
+                                                const newActions = [...formData.actions];
+                                                newActions[index].code_snippet = code;
+                                                setFormData({ ...formData, actions: newActions });
+                                            }}
+                                        />
+                                    )}
+
                                     {/* Action Delay - Available for all action types */}
                                     <div className="pt-3 border-t border-slate-200">
                                         <Label>Delay Action (Optional)</Label>
@@ -682,6 +639,8 @@ function EditAutomationContent() {
                             triggerType={formData.trigger_type}
                         />
                     </div>
+                )}
+                </>
                 )}
             </div>
         </div>
