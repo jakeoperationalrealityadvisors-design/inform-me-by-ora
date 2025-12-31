@@ -19,6 +19,8 @@ import VisualWorkflowBuilder from '@/components/automation/VisualWorkflowBuilder
 import ComplexConditionBuilder from '@/components/automation/ComplexConditionBuilder';
 import CodeSnippetEditor from '@/components/automation/CodeSnippetEditor';
 import AutomationDebugger from '@/components/automation/AutomationDebugger';
+import AutomationTemplateLibrary from '@/components/automation/AutomationTemplateLibrary';
+import SaveAsTemplateDialog from '@/components/automation/SaveAsTemplateDialog';
 
 function EditAutomationContent() {
     const navigate = useNavigate();
