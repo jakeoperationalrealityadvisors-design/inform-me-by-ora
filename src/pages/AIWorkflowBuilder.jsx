@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Sparkles, Loader2, Wand2, CheckCircle2, Edit } from 'lucide-react';
+import { ArrowLeft, Sparkles, Loader2, Wand2, CheckCircle2, Edit, LayoutGrid, LayoutList } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +16,7 @@ function AIWorkflowBuilderContent() {
     const queryClient = useQueryClient();
     const [prompt, setPrompt] = useState('');
     const [generatedWorkflow, setGeneratedWorkflow] = useState(null);
+    const [viewMode, setViewMode] = useState('list');
     
     const examples = [
         "When a form is submitted with priority 'high', immediately notify the manager and create a task",
@@ -228,9 +229,33 @@ For actions, use types like 'assign_task', 'send_notification', 'send_email', 'c
                 {!generatedWorkflow && (
                     <Card className="bg-[#0f1419] border-blue-900/20">
                         <CardHeader>
-                            <CardTitle className="text-white text-lg">Example Workflows</CardTitle>
+                            <div className="flex items-center justify-between">
+                                <CardTitle className="text-white text-lg">Example Workflows</CardTitle>
+                                <div className="flex gap-1 bg-[#0a0e17] rounded-lg border border-blue-900/30 p-1">
+                                    <button
+                                        onClick={() => setViewMode('list')}
+                                        className={`p-1.5 rounded transition-colors ${
+                                            viewMode === 'list' 
+                                                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                                                : 'text-blue-400/70 hover:bg-blue-900/20'
+                                        }`}
+                                    >
+                                        <LayoutList className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => setViewMode('grid')}
+                                        className={`p-1.5 rounded transition-colors ${
+                                            viewMode === 'grid' 
+                                                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                                                : 'text-blue-400/70 hover:bg-blue-900/20'
+                                        }`}
+                                    >
+                                        <LayoutGrid className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
                         </CardHeader>
-                        <CardContent className="space-y-2">
+                        <CardContent className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-2"}>
                             {examples.map((example, idx) => (
                                 <button
                                     key={idx}
