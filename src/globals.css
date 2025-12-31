@@ -2,6 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
+/* PWA and Mobile Optimizations */
+:root {
+  --vh: 1vh;
+}
+
+/* iOS Safe Area */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Touch optimizations */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+button, a, input, textarea, select {
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Smooth scrolling on mobile */
+body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Better button sizing for mobile */
+@media (max-width: 768px) {
+  button, a[role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Hide scrollbar on mobile while keeping functionality */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+/* PWA splash screen */
+@media (display-mode: standalone) {
+  body {
+    background-color: #0a0e17;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -33,7 +33,22 @@ export default function Layout({ children, currentPageName }) {
     React.useEffect(() => {
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/service-worker.js')
-                .then(registration => console.log('SW registered'))
+                .then(registration => {
+                    console.log('SW registered:', registration.scope);
+
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New update available
+                                if (confirm('New version available! Reload to update?')) {
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                })
                 .catch(err => console.log('SW registration failed', err));
         }
     }, []);
