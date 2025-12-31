@@ -413,7 +413,6 @@ export default function Documents() {
                         )}
                     </div>
                 </div>
-                </div>
             </div>
         </div>
     );
