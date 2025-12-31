@@ -1,5 +1,16 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+async function retryOperation(fn, maxRetries = 3) {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            return await fn();
+        } catch (error) {
+            if (i === maxRetries - 1) throw error;
+            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+        }
+    }
+}
+
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
@@ -122,10 +133,14 @@ Deno.serve(async (req) => {
             }
         }
 
-        // Create notifications
-        if (notifications.length > 0) {
-            for (const notification of notifications) {
-                await base44.asServiceRole.entities.Notification.create(notification);
+        // Create notifications with retry
+        for (const notification of notifications) {
+            try {
+                await retryOperation(() => 
+                    base44.asServiceRole.entities.Notification.create(notification)
+                );
+            } catch (error) {
+                console.error('Failed to create notification:', error);
             }
         }
 

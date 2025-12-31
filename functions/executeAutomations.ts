@@ -1,5 +1,17 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+// Helper function to retry failed operations
+async function retryOperation(fn, maxRetries = 3, delay = 1000) {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            return await fn();
+        } catch (error) {
+            if (i === maxRetries - 1) throw error;
+            await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+        }
+    }
+}
+
 // Helper function to evaluate conditions
 function evaluateConditions(conditions, data) {
     if (!conditions || conditions.length === 0) return true;
@@ -49,11 +61,13 @@ Deno.serve(async (req) => {
         const executedActions = [];
 
         for (const rule of rules) {
-            // Update execution count and timestamp
-            await base44.asServiceRole.entities.AutomationRule.update(rule.id, {
-                execution_count: (rule.execution_count || 0) + 1,
-                last_executed: new Date().toISOString()
-            });
+            // Update execution count and timestamp with retry
+            await retryOperation(() => 
+                base44.asServiceRole.entities.AutomationRule.update(rule.id, {
+                    execution_count: (rule.execution_count || 0) + 1,
+                    last_executed: new Date().toISOString()
+                })
+            );
             
             // Check if rule matches the trigger config
             let shouldExecute = true;
@@ -90,162 +104,87 @@ Deno.serve(async (req) => {
                     continue;
                 }
                 try {
-                    if (action.type === 'assign_task') {
-                        // Assign the submission to a user
-                        if (trigger_data.submission_id && trigger_data.submission_type) {
-                            const entity = trigger_data.submission_type === 'form' 
-                                ? 'FormSubmission' 
-                                : 'ChecklistSubmission';
-                            
-                            await base44.asServiceRole.entities[entity].update(
-                                trigger_data.submission_id,
-                                {
+                    await retryOperation(async () => {
+                        if (action.type === 'assign_task') {
+                            if (trigger_data.submission_id && trigger_data.submission_type) {
+                                const entity = trigger_data.submission_type === 'form' ? 'FormSubmission' : 'ChecklistSubmission';
+                                await base44.asServiceRole.entities[entity].update(trigger_data.submission_id, {
                                     assigned_to_email: action.config.assignee_email,
                                     priority: action.config.priority || 'medium',
                                     due_date: action.config.due_date
-                                }
-                            );
-
-                            executedActions.push({
-                                rule: rule.name,
-                                action: 'assign_task',
-                                success: true
+                                });
+                            }
+                        } else if (action.type === 'send_notification') {
+                            await base44.asServiceRole.entities.Notification.create({
+                                user_email: action.config.recipient_email || trigger_data.submitted_by_email,
+                                title: action.config.title || `New ${trigger_type}`,
+                                message: action.config.message || `A ${trigger_type} event occurred`,
+                                type: 'task_assigned',
+                                link_page: trigger_data.link_page,
+                                link_params: trigger_data.link_params
                             });
+                        } else if (action.type === 'send_email') {
+                            await base44.asServiceRole.integrations.Core.SendEmail({
+                                to: action.config.recipient_email || trigger_data.submitted_by_email,
+                                subject: action.config.subject || `Automation: ${rule.name}`,
+                                body: action.config.body || `An automation rule was triggered: ${rule.name}`
+                            });
+                        } else if (action.type === 'create_followup') {
+                            const daysAhead = action.config.days_ahead || 7;
+                            const followupDate = new Date();
+                            followupDate.setDate(followupDate.getDate() + daysAhead);
+                            await base44.asServiceRole.entities.ScheduledEvent.create({
+                                title: action.config.title || `Follow-up: ${trigger_data.title}`,
+                                description: action.config.description,
+                                event_type: 'follow_up',
+                                start_date: followupDate.toISOString(),
+                                assigned_to_email: action.config.assignee_email,
+                                related_submission_id: trigger_data.submission_id,
+                                related_submission_type: trigger_data.submission_type
+                            });
+                        } else if (action.type === 'create_task') {
+                            await base44.asServiceRole.entities.Task.create({
+                                title: action.config.title || `Task from: ${trigger_data.title}`,
+                                description: action.config.description,
+                                assigned_to_email: action.config.assignee_email,
+                                assigned_to_name: action.config.assignee_name,
+                                priority: action.config.priority || 'medium',
+                                due_date: action.config.due_date,
+                                status: 'todo',
+                                related_form_id: trigger_data.submission_type === 'form' ? trigger_data.submission_id : null,
+                                related_checklist_id: trigger_data.submission_type === 'checklist' ? trigger_data.submission_id : null
+                            });
+                        } else if (action.type === 'update_status') {
+                            if (trigger_data.submission_id && trigger_data.submission_type) {
+                                const entity = trigger_data.submission_type === 'form' ? 'FormSubmission' : 'ChecklistSubmission';
+                                await base44.asServiceRole.entities[entity].update(trigger_data.submission_id, { status: action.config.new_status });
+                            }
+                        } else if (action.type === 'add_comment') {
+                            if (trigger_data.submission_id && trigger_data.submission_type) {
+                                await base44.asServiceRole.entities.Comment.create({
+                                    submission_id: trigger_data.submission_id,
+                                    submission_type: trigger_data.submission_type,
+                                    comment_text: action.config.comment_text || 'Automated comment',
+                                    author_name: 'Automation',
+                                    author_email: 'automation@system'
+                                });
+                            }
                         }
-                    } else if (action.type === 'send_notification') {
-                        // Create notification
-                        await base44.asServiceRole.entities.Notification.create({
-                            user_email: action.config.recipient_email || trigger_data.submitted_by_email,
-                            title: action.config.title || `New ${trigger_type}`,
-                            message: action.config.message || `A ${trigger_type} event occurred`,
-                            type: 'task_assigned',
-                            link_page: trigger_data.link_page,
-                            link_params: trigger_data.link_params
-                        });
+                    });
 
-                        executedActions.push({
-                            rule: rule.name,
-                            action: 'send_notification',
-                            success: true
-                        });
-                    } else if (action.type === 'send_email') {
-                        // Send email
-                        await base44.asServiceRole.integrations.Core.SendEmail({
-                            to: action.config.recipient_email || trigger_data.submitted_by_email,
-                            subject: action.config.subject || `Automation: ${rule.name}`,
-                            body: action.config.body || `An automation rule was triggered: ${rule.name}`
-                        });
-
-                        executedActions.push({
-                            rule: rule.name,
-                            action: 'send_email',
-                            success: true
-                        });
-                    } else if (action.type === 'create_followup') {
-                        // Create a follow-up event
-                        const daysAhead = action.config.days_ahead || 7;
-                        const followupDate = new Date();
-                        followupDate.setDate(followupDate.getDate() + daysAhead);
-
-                        await base44.asServiceRole.entities.ScheduledEvent.create({
-                            title: action.config.title || `Follow-up: ${trigger_data.title}`,
-                            description: action.config.description,
-                            event_type: 'follow_up',
-                            start_date: followupDate.toISOString(),
-                            assigned_to_email: action.config.assignee_email,
-                            related_submission_id: trigger_data.submission_id,
-                            related_submission_type: trigger_data.submission_type
-                        });
-
-                        executedActions.push({
-                            rule: rule.name,
-                            action: 'create_followup',
-                            success: true
-                        });
-                    } else if (action.type === 'create_task') {
-                        // Create a standalone task
-                        await base44.asServiceRole.entities.Task.create({
-                            title: action.config.title || `Task from: ${trigger_data.title}`,
-                            description: action.config.description,
-                            assigned_to_email: action.config.assignee_email,
-                            priority: action.config.priority || 'medium',
-                            due_date: action.config.due_date,
-                            status: 'todo',
-                            related_form_id: trigger_data.submission_type === 'form' ? trigger_data.submission_id : null,
-                            related_checklist_id: trigger_data.submission_type === 'checklist' ? trigger_data.submission_id : null
-                        });
-
-                        executedActions.push({
-                            rule: rule.name,
-                            action: 'create_task',
-                            success: true
-                        });
-                    } else if (action.type === 'update_status') {
-                        // Update submission status
-                        if (trigger_data.submission_id && trigger_data.submission_type) {
-                            const entity = trigger_data.submission_type === 'form' 
-                                ? 'FormSubmission' 
-                                : 'ChecklistSubmission';
-                            
-                            await base44.asServiceRole.entities[entity].update(
-                                trigger_data.submission_id,
-                                { status: action.config.new_status }
-                            );
-
-                            executedActions.push({
-                                rule: rule.name,
-                                action: 'update_status',
-                                success: true
-                            });
-                        }
-                    } else if (action.type === 'trigger_automation') {
-                        // Trigger another automation rule
-                        const targetRule = await base44.asServiceRole.entities.AutomationRule.filter({
-                            id: action.config.target_rule_id,
-                            enabled: true
-                        });
-                        
-                        if (targetRule.length > 0) {
-                            // Recursive call to execute the target automation
-                            await fetch(req.url, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    trigger_type: 'manual_trigger',
-                                    trigger_data: trigger_data
-                                })
-                            });
-
-                            executedActions.push({
-                                rule: rule.name,
-                                action: 'trigger_automation',
-                                success: true
-                            });
-                        }
-                    } else if (action.type === 'add_comment') {
-                        // Add a comment to the submission
-                        if (trigger_data.submission_id && trigger_data.submission_type) {
-                            await base44.asServiceRole.entities.Comment.create({
-                                submission_id: trigger_data.submission_id,
-                                submission_type: trigger_data.submission_type,
-                                comment_text: action.config.comment_text || 'Automated comment',
-                                author_name: 'Automation',
-                                author_email: 'automation@system'
-                            });
-
-                            executedActions.push({
-                                rule: rule.name,
-                                action: 'add_comment',
-                                success: true
-                            });
-                        }
-                    }
+                    executedActions.push({
+                        rule: rule.name,
+                        action: action.type,
+                        success: true
+                    });
                 } catch (error) {
+                    console.error(`Automation action failed: ${action.type}`, error);
                     executedActions.push({
                         rule: rule.name,
                         action: action.type,
                         success: false,
-                        error: error.message
+                        error: error.message,
+                        retries_exhausted: true
                     });
                 }
             }

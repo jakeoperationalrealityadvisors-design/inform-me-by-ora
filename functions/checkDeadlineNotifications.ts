@@ -1,5 +1,16 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+async function retryOperation(fn, maxRetries = 3) {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            return await fn();
+        } catch (error) {
+            if (i === maxRetries - 1) throw error;
+            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+        }
+    }
+}
+
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
@@ -20,27 +31,28 @@ Deno.serve(async (req) => {
             if (form.due_date && form.status !== 'approved' && form.status !== 'rejected') {
                 const dueDate = new Date(form.due_date);
                 
-                // Due in 24 hours
                 if (dueDate <= tomorrow && dueDate > now && form.assigned_to_email) {
-                    await base44.asServiceRole.entities.Notification.create({
-                        user_email: form.assigned_to_email,
-                        title: 'Task Due Soon',
-                        message: `Form "${form.form_title}" is due within 24 hours`,
-                        type: 'task_due_soon',
-                        link_page: 'ViewFormSubmission',
-                        link_params: `id=${form.id}`,
-                        read: false
-                    });
+                    try {
+                        await retryOperation(() => base44.asServiceRole.entities.Notification.create({
+                            user_email: form.assigned_to_email,
+                            title: 'Task Due Soon',
+                            message: `Form "${form.form_title}" is due within 24 hours`,
+                            type: 'task_due_soon',
+                            link_page: 'ViewFormSubmission',
+                            link_params: `id=${form.id}`,
+                            read: false
+                        }));
 
-                    // Send email
-                    await base44.functions.invoke('sendNotificationEmail', {
-                        recipient_email: form.assigned_to_email,
-                        subject: 'Task Due Soon - InForm Me',
-                        message: `Your form submission "${form.form_title}" is due within 24 hours. Please complete it as soon as possible.`,
-                        action_url: `${Deno.env.get('APP_URL')}/app/ViewFormSubmission?id=${form.id}`
-                    });
+                        await retryOperation(() => base44.asServiceRole.functions.invoke('sendNotificationEmail', {
+                            recipient_email: form.assigned_to_email,
+                            subject: 'Task Due Soon - InForm Me',
+                            message: `Your form submission "${form.form_title}" is due within 24 hours.`
+                        }));
 
-                    notificationsSent.push({ type: 'form', id: form.id, user: form.assigned_to_email });
+                        notificationsSent.push({ type: 'form', id: form.id, user: form.assigned_to_email });
+                    } catch (error) {
+                        console.error('Failed to send form notification:', error);
+                    }
                 }
             }
         }
@@ -52,24 +64,27 @@ Deno.serve(async (req) => {
                 const dueDate = new Date(checklist.due_date);
                 
                 if (dueDate <= tomorrow && dueDate > now) {
-                    await base44.asServiceRole.entities.Notification.create({
-                        user_email: checklist.assigned_to_email,
-                        title: 'Checklist Due Soon',
-                        message: `Checklist "${checklist.checklist_title}" is due within 24 hours`,
-                        type: 'task_due_soon',
-                        link_page: 'ViewChecklistSubmission',
-                        link_params: `id=${checklist.id}`,
-                        read: false
-                    });
+                    try {
+                        await retryOperation(() => base44.asServiceRole.entities.Notification.create({
+                            user_email: checklist.assigned_to_email,
+                            title: 'Checklist Due Soon',
+                            message: `Checklist "${checklist.checklist_title}" is due within 24 hours`,
+                            type: 'task_due_soon',
+                            link_page: 'ViewChecklistSubmission',
+                            link_params: `id=${checklist.id}`,
+                            read: false
+                        }));
 
-                    await base44.functions.invoke('sendNotificationEmail', {
-                        recipient_email: checklist.assigned_to_email,
-                        subject: 'Checklist Due Soon - InForm Me',
-                        message: `Your checklist "${checklist.checklist_title}" is due within 24 hours.`,
-                        action_url: `${Deno.env.get('APP_URL')}/app/ViewChecklistSubmission?id=${checklist.id}`
-                    });
+                        await retryOperation(() => base44.asServiceRole.functions.invoke('sendNotificationEmail', {
+                            recipient_email: checklist.assigned_to_email,
+                            subject: 'Checklist Due Soon - InForm Me',
+                            message: `Your checklist "${checklist.checklist_title}" is due within 24 hours.`
+                        }));
 
-                    notificationsSent.push({ type: 'checklist', id: checklist.id, user: checklist.assigned_to_email });
+                        notificationsSent.push({ type: 'checklist', id: checklist.id, user: checklist.assigned_to_email });
+                    } catch (error) {
+                        console.error('Failed to send checklist notification:', error);
+                    }
                 }
             }
         }
@@ -81,24 +96,27 @@ Deno.serve(async (req) => {
                 const dueDate = new Date(task.due_date);
                 
                 if (dueDate <= tomorrow && dueDate > now) {
-                    await base44.asServiceRole.entities.Notification.create({
-                        user_email: task.assigned_to_email,
-                        title: 'Task Due Soon',
-                        message: `Task "${task.title}" is due within 24 hours`,
-                        type: 'task_due_soon',
-                        link_page: 'MyTasks',
-                        link_params: '',
-                        read: false
-                    });
+                    try {
+                        await retryOperation(() => base44.asServiceRole.entities.Notification.create({
+                            user_email: task.assigned_to_email,
+                            title: 'Task Due Soon',
+                            message: `Task "${task.title}" is due within 24 hours`,
+                            type: 'task_due_soon',
+                            link_page: 'MyTasks',
+                            link_params: '',
+                            read: false
+                        }));
 
-                    await base44.functions.invoke('sendNotificationEmail', {
-                        recipient_email: task.assigned_to_email,
-                        subject: 'Task Due Soon - InForm Me',
-                        message: `Your task "${task.title}" is due within 24 hours.`,
-                        action_url: `${Deno.env.get('APP_URL')}/app/MyTasks`
-                    });
+                        await retryOperation(() => base44.asServiceRole.functions.invoke('sendNotificationEmail', {
+                            recipient_email: task.assigned_to_email,
+                            subject: 'Task Due Soon - InForm Me',
+                            message: `Your task "${task.title}" is due within 24 hours.`
+                        }));
 
-                    notificationsSent.push({ type: 'task', id: task.id, user: task.assigned_to_email });
+                        notificationsSent.push({ type: 'task', id: task.id, user: task.assigned_to_email });
+                    } catch (error) {
+                        console.error('Failed to send task notification:', error);
+                    }
                 }
             }
         }
