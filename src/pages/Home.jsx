@@ -19,6 +19,7 @@ import LanguageSwitcher from '@/components/language/LanguageSwitcher';
 import GlobalSearch from '@/components/search/GlobalSearch';
 import CategorySidebar from '@/components/navigation/CategorySidebar';
 import ThemeToggle from '@/components/theme/ThemeToggle';
+import { offlineStorage } from '@/components/mobile/OfflineStorage';
 
 export default function Home() {
     const { isAdmin, canViewAll, canCreateForms } = useUserRole();
@@ -30,13 +31,45 @@ export default function Home() {
     
     const { data: forms = [], isLoading: formsLoading } = useQuery({
         queryKey: ['forms'],
-        queryFn: () => base44.entities.FormTemplate.filter({ status: 'active' }),
+        queryFn: async () => {
+            try {
+                const data = await base44.entities.FormTemplate.filter({ status: 'active' });
+                // Cache for offline
+                if (navigator.onLine) {
+                    await offlineStorage.saveMany('forms', data);
+                }
+                return data;
+            } catch (error) {
+                // Load from offline cache if online request fails
+                if (!navigator.onLine) {
+                    const cached = await offlineStorage.getAllData('forms');
+                    return cached || [];
+                }
+                throw error;
+            }
+        },
         staleTime: 30000
     });
     
     const { data: checklists = [], isLoading: checklistsLoading } = useQuery({
         queryKey: ['checklists'],
-        queryFn: () => base44.entities.ChecklistTemplate.filter({ status: 'active' }),
+        queryFn: async () => {
+            try {
+                const data = await base44.entities.ChecklistTemplate.filter({ status: 'active' });
+                // Cache for offline
+                if (navigator.onLine) {
+                    await offlineStorage.saveMany('checklists', data);
+                }
+                return data;
+            } catch (error) {
+                // Load from offline cache if online request fails
+                if (!navigator.onLine) {
+                    const cached = await offlineStorage.getAllData('checklists');
+                    return cached || [];
+                }
+                throw error;
+            }
+        },
         staleTime: 30000
     });
     

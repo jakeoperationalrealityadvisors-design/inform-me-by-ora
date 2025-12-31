@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import { logActivity } from '@/components/activity/ActivityLogger';
 import DocumentLinkSelector from '@/components/documents/DocumentLinkSelector';
 import DocumentPermissionsEditor from '@/components/documents/DocumentPermissionsEditor';
+import MobileCamera from '@/components/mobile/MobileCamera';
+import { Camera } from 'lucide-react';
 
 export default function UploadDocument() {
     const navigate = useNavigate();
@@ -149,7 +151,25 @@ export default function UploadDocument() {
                     {/* File Upload */}
                     <div>
                         <Label>File</Label>
-                        <div className="mt-2">
+                        <div className="mt-2 space-y-3">
+                            {/* Mobile Camera Button */}
+                            <div className="sm:hidden">
+                                <MobileCamera
+                                    onCapture={(file) => {
+                                        setFile(file);
+                                        if (!formData.title) {
+                                            setFormData({ ...formData, title: file.name });
+                                        }
+                                    }}
+                                    trigger={
+                                        <Button type="button" variant="outline" className="w-full gap-2" size="lg">
+                                            <Camera className="w-5 h-5" />
+                                            Take Photo
+                                        </Button>
+                                    }
+                                />
+                            </div>
+                            
                             <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-blue-400 transition-colors">
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     {file ? (

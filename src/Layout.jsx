@@ -1,11 +1,24 @@
 import React from 'react';
 import { LanguageProvider } from './components/language/LanguageContext';
 import { ThemeProvider } from './components/theme/ThemeContext';
+import OfflineIndicator from './components/mobile/OfflineIndicator';
+import InstallPWA from './components/mobile/InstallPWA';
 
 export default function Layout({ children, currentPageName }) {
+    // Register service worker for PWA
+    React.useEffect(() => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => console.log('SW registered'))
+                .catch(err => console.log('SW registration failed', err));
+        }
+    }, []);
+
     return (
         <ThemeProvider>
             <LanguageProvider>
+                <OfflineIndicator />
+                <InstallPWA />
                 <div className="ora-theme">
                     <style>{`
                         /* Dark Mode (Default) */
