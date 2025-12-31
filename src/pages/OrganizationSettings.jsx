@@ -9,13 +9,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Building2, Copy, Users, Calendar, ArrowLeft, Crown, Trash2 } from 'lucide-react';
+import { Building2, Copy, Users, Calendar, ArrowLeft, Crown, Trash2, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function OrganizationSettings() {
     const queryClient = useQueryClient();
     const [copied, setCopied] = useState(false);
+    const [showInviteDialog, setShowInviteDialog] = useState(false);
+    const [newUserEmail, setNewUserEmail] = useState('');
+    const [newUserName, setNewUserName] = useState('');
+    const [newUserRole, setNewUserRole] = useState('member');
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
@@ -61,6 +67,30 @@ export default function OrganizationSettings() {
         onSuccess: () => {
             queryClient.invalidateQueries(['org-members']);
             toast.success('Member removed');
+        }
+    });
+    
+    const inviteUserMutation = useMutation({
+        mutationFn: async ({ email, name, role }) => {
+            // Check if user limit reached
+            if (members.length >= organization.max_users) {
+                throw new Error('Organization has reached maximum users');
+            }
+            
+            // Invite user using Base44's built-in invitation system
+            await base44.users.inviteUser(email, 'user');
+            
+            toast.success(`Invitation sent to ${email}. They will be added to the organization upon first login.`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['org-members']);
+            setShowInviteDialog(false);
+            setNewUserEmail('');
+            setNewUserName('');
+            setNewUserRole('member');
+        },
+        onError: (error) => {
+            toast.error(error.message);
         }
     });
     
@@ -152,10 +182,79 @@ export default function OrganizationSettings() {
                 {/* Members List */}
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>
-                        <CardTitle className="text-white flex items-center gap-2">
-                            <Users className="w-5 h-5 text-blue-500" />
-                            Team Members
-                        </CardTitle>
+                        <div className="flex items-center justify-between">
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <Users className="w-5 h-5 text-blue-500" />
+                                Team Members
+                            </CardTitle>
+                            {isOwner && (
+                                <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
+                                    <DialogTrigger asChild>
+                                        <Button size="sm" className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]">
+                                            <UserPlus className="w-4 h-4 mr-2" />
+                                            Invite User
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="bg-[#0f1419] border-blue-900/20">
+                                        <DialogHeader>
+                                            <DialogTitle className="text-white">Invite Team Member</DialogTitle>
+                                        </DialogHeader>
+                                        <div className="space-y-4 py-4">
+                                            <div>
+                                                <Label className="text-blue-300">Email Address</Label>
+                                                <Input
+                                                    type="email"
+                                                    value={newUserEmail}
+                                                    onChange={(e) => setNewUserEmail(e.target.value)}
+                                                    placeholder="user@example.com"
+                                                    className="bg-[#0a0e17] text-white border-blue-900/30"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label className="text-blue-300">Full Name (Optional)</Label>
+                                                <Input
+                                                    value={newUserName}
+                                                    onChange={(e) => setNewUserName(e.target.value)}
+                                                    placeholder="John Doe"
+                                                    className="bg-[#0a0e17] text-white border-blue-900/30"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label className="text-blue-300">Role</Label>
+                                                <Select value={newUserRole} onValueChange={setNewUserRole}>
+                                                    <SelectTrigger className="bg-[#0a0e17] text-white border-blue-900/30">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="member">Member</SelectItem>
+                                                        <SelectItem value="manager">Manager</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className="bg-blue-950/30 border border-blue-900/30 rounded-lg p-3 text-xs text-blue-300">
+                                                An invitation email will be sent. The user will be automatically added to your organization upon first login.
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <Button variant="outline" onClick={() => setShowInviteDialog(false)} className="border-blue-900/30">
+                                                Cancel
+                                            </Button>
+                                            <Button 
+                                                onClick={() => inviteUserMutation.mutate({ 
+                                                    email: newUserEmail, 
+                                                    name: newUserName,
+                                                    role: newUserRole 
+                                                })}
+                                                disabled={!newUserEmail || inviteUserMutation.isPending}
+                                                className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"
+                                            >
+                                                Send Invitation
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            )}
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-2">
