@@ -4,21 +4,23 @@ import { createPageUrl } from '@/utils';
 import { Home, Calendar, FolderOpen, BarChart3, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUserRole } from '@/components/auth/RoleGuard';
+import { useLanguage } from '@/components/language/LanguageContext';
 
 export default function BottomNav() {
     const location = useLocation();
     const { canViewAll } = useUserRole();
+    const { t } = useLanguage();
     
     const isActive = (pageName) => {
         return location.pathname.includes(pageName);
     };
     
     const navItems = [
-        { name: 'Home', icon: Home, path: 'Home' },
-        { name: 'Calendar', icon: Calendar, path: 'Calendar' },
-        { name: 'Documents', icon: FolderOpen, path: 'Documents' },
-        ...(canViewAll ? [{ name: 'Reports', icon: BarChart3, path: 'Reports' }] : []),
-        { name: 'Settings', icon: Settings, path: 'Settings' }
+        { name: t('common.forms'), nameKey: 'Home', icon: Home, path: 'Home' },
+        { name: t('common.calendar'), nameKey: 'Calendar', icon: Calendar, path: 'Calendar' },
+        { name: t('common.documents'), nameKey: 'Documents', icon: FolderOpen, path: 'Documents' },
+        ...(canViewAll ? [{ name: t('common.reports'), nameKey: 'Reports', icon: BarChart3, path: 'Reports' }] : []),
+        { name: t('common.settings'), nameKey: 'Settings', icon: Settings, path: 'Settings' }
     ];
     
     return (

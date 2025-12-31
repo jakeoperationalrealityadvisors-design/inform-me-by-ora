@@ -14,9 +14,12 @@ import EmptyState from '@/components/common/EmptyState';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import BottomNav from '@/components/navigation/BottomNav';
+import { useLanguage } from '@/components/language/LanguageContext';
+import LanguageSwitcher from '@/components/language/LanguageSwitcher';
 
 export default function Home() {
     const { isAdmin, canViewAll } = useUserRole();
+    const { t } = useLanguage();
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeTab, setActiveTab] = useState('forms');
@@ -69,13 +72,14 @@ export default function Home() {
                             />
                             <div className="min-w-0">
                                 <h1 className="text-sm sm:text-xl font-bold text-slate-900 truncate">
-                                    Inform Me by <span className="text-[#1e90ff]">ORA</span>
+                                    {t('home.title')}
                                 </h1>
-                                <p className="text-xs text-slate-600 hidden sm:block">Operational Reality Advisors</p>
+                                <p className="text-xs text-slate-600 hidden sm:block">{t('home.subtitle')}</p>
                             </div>
                         </div>
                         <div className="flex gap-1 sm:gap-2 flex-shrink-0">
                             <NotificationBell />
+                            <LanguageSwitcher />
                             <Link to={createPageUrl('MyTasks')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-600 h-9 w-9 sm:h-10 sm:w-10">
                                     <ListTodo className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -92,7 +96,7 @@ export default function Home() {
                     <SearchBar
                         value={search}
                         onChange={setSearch}
-                        placeholder="Search forms and checklists..."
+                        placeholder={t('home.searchPlaceholder')}
                     />
                 </div>
             </div>
@@ -109,7 +113,7 @@ export default function Home() {
                         }`}
                     >
                         <FileText className="w-4 h-4" />
-                        <span className="hidden xs:inline">Forms</span> ({forms.length})
+                        <span className="hidden xs:inline">{t('common.forms')}</span> ({forms.length})
                     </button>
                     <button
                         onClick={() => setActiveTab('checklists')}
@@ -120,7 +124,7 @@ export default function Home() {
                         }`}
                     >
                         <CheckSquare className="w-4 h-4" />
-                        <span className="hidden xs:inline">Checklists</span> ({checklists.length})
+                        <span className="hidden xs:inline">{t('common.checklists')}</span> ({checklists.length})
                     </button>
                 </div>
                 
@@ -170,8 +174,8 @@ export default function Home() {
                     ) : (
                         <EmptyState
                             icon={FileText}
-                            title="No forms found"
-                            description={search ? "Try adjusting your search" : "Forms will appear here once created"}
+                            title={t('home.noFormsFound')}
+                            description={search ? t('home.tryAdjusting') : "Forms will appear here once created"}
                         />
                     )
                 ) : (
@@ -198,8 +202,8 @@ export default function Home() {
                     ) : (
                         <EmptyState
                             icon={CheckSquare}
-                            title="No checklists found"
-                            description={search ? "Try adjusting your search" : "Checklists will appear here once created"}
+                            title={t('home.noChecklistsFound')}
+                            description={search ? t('home.tryAdjusting') : "Checklists will appear here once created"}
                         />
                     )
                     )}
