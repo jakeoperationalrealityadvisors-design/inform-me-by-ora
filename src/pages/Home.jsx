@@ -21,7 +21,7 @@ import CategorySidebar from '@/components/navigation/CategorySidebar';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 
 export default function Home() {
-    const { isAdmin, canViewAll } = useUserRole();
+    const { isAdmin, canViewAll, canCreateForms } = useUserRole();
     const { t } = useLanguage();
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -85,11 +85,13 @@ export default function Home() {
                             <NotificationBell />
                             <ThemeToggle />
                             <LanguageSwitcher />
-                            <Link to={createPageUrl('CreateForm')}>
-                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-900/30 text-[#FF8C00] h-9 w-9 sm:h-10 sm:w-10">
-                                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                                </Button>
-                            </Link>
+                            {canCreateForms && (
+                                <Link to={createPageUrl('CreateForm')}>
+                                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-900/30 text-[#FF8C00] h-9 w-9 sm:h-10 sm:w-10">
+                                        <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    </Button>
+                                </Link>
+                            )}
                             <Link to={createPageUrl('MyTasks')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-900/30 text-[#FF8C00] h-9 w-9 sm:h-10 sm:w-10">
                                     <ListTodo className="w-4 h-4 sm:w-5 sm:h-5" />

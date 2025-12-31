@@ -12,8 +12,9 @@ import { ArrowLeft, Plus, Trash2, Upload, Camera, FileText, Loader2, X, Sparkles
 import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
 import { useLanguage } from '@/components/language/LanguageContext';
+import RoleGuard from '@/components/auth/RoleGuard';
 
-export default function CreateForm() {
+function CreateFormContent() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { t } = useLanguage();
@@ -413,5 +414,13 @@ Return JSON with: { title, description, fields: [...] }`,
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function CreateForm() {
+    return (
+        <RoleGuard requiredPermission="can_create_forms">
+            <CreateFormContent />
+        </RoleGuard>
     );
 }
