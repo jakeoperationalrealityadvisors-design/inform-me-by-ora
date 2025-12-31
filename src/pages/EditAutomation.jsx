@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import RoleGuard from '@/components/auth/RoleGuard';
 import { toast } from 'sonner';
 import AutomationTester from '@/components/automation/AutomationTester';
+import AIAutomationHelper from '@/components/automation/AIAutomationHelper';
 
 function EditAutomationContent() {
     const navigate = useNavigate();
@@ -127,6 +128,21 @@ function EditAutomationContent() {
         e.preventDefault();
         saveMutation.mutate(formData);
     };
+    
+    const handleApplySuggestion = (suggestion) => {
+        setFormData({
+            ...formData,
+            name: suggestion.rule_name || formData.name,
+            description: suggestion.description || formData.description,
+            trigger_type: suggestion.trigger_type || formData.trigger_type,
+            conditions: suggestion.conditions || formData.conditions,
+            actions: suggestion.actions?.map(a => ({
+                type: a.type,
+                config: a.sample_config || {}
+            })) || formData.actions
+        });
+        toast.success('AI suggestions applied to form');
+    };
 
     return (
         <div className="min-h-screen bg-slate-100">
@@ -150,6 +166,14 @@ function EditAutomationContent() {
             </div>
 
             <div className="max-w-4xl mx-auto px-4 py-6">
+                {/* AI Assistant */}
+                <div className="mb-6">
+                    <AIAutomationHelper 
+                        currentRule={formData}
+                        onSuggestionApply={handleApplySuggestion}
+                    />
+                </div>
+                
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Basic Info */}
                     <Card>
