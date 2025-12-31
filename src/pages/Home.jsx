@@ -17,6 +17,7 @@ import BottomNav from '@/components/navigation/BottomNav';
 import { useLanguage } from '@/components/language/LanguageContext';
 import LanguageSwitcher from '@/components/language/LanguageSwitcher';
 import GlobalSearch from '@/components/search/GlobalSearch';
+import CategorySidebar from '@/components/navigation/CategorySidebar';
 
 export default function Home() {
     const { isAdmin, canViewAll } = useUserRole();
@@ -109,9 +110,20 @@ export default function Home() {
                         </button>
                     </div>
                 </div>
-            </div>
-            
-            <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-20 sm:pb-6">
+                </div>
+
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-20 sm:pb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    {/* Sidebar - Desktop Only */}
+                    <div className="hidden lg:block lg:col-span-1">
+                        <CategorySidebar 
+                            selectedCategory={selectedCategory}
+                            onSelectCategory={setSelectedCategory}
+                        />
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="lg:col-span-3">
                 {/* Tab Switcher */}
                 <div className="flex gap-2 p-1 bg-white rounded-xl mb-4 sm:mb-6 border border-slate-200 shadow-sm">
                     <button
@@ -217,6 +229,8 @@ export default function Home() {
                         />
                     )
                     )}
+                    </div>
+                    </div>
                     </div>
                     <GlobalSearch open={showGlobalSearch} onOpenChange={setShowGlobalSearch} />
                     <BottomNav />
