@@ -1,5 +1,4 @@
 import React from 'react';
-import React from 'react';
 import { base44 } from '@/api/base44Client';
 import { LanguageProvider } from './components/language/LanguageContext';
 import { ThemeProvider } from './components/theme/ThemeContext';
