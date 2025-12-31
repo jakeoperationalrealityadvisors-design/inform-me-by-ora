@@ -184,7 +184,7 @@ function EditAutomationContent() {
                                     Save as Template
                                 </Button>
                             )}
-                        <Tabs value={viewMode} onValueChange={setViewMode} className="w-auto">
+                            <Tabs value={viewMode} onValueChange={setViewMode} className="w-auto">
                             <TabsList>
                                 <TabsTrigger value="builder">Builder</TabsTrigger>
                                 <TabsTrigger value="visual">
@@ -192,10 +192,11 @@ function EditAutomationContent() {
                                     Visual
                                 </TabsTrigger>
                             </TabsList>
-                        </Tabs>
-                    </div>
-                </div>
-            </div>
+                            </Tabs>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
 
             <div className="max-w-4xl mx-auto px-4 py-6">
                 {viewMode === 'visual' && formData.name && (
