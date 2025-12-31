@@ -9,26 +9,53 @@ import { Calendar, User, AlertCircle } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { useUserRole } from '@/components/auth/RoleGuard';
 
-export default function AssignmentPanel({ submission, onUpdate }) {
+export default function AssignmentPanel({ submission, onUpdate, submissionType = 'form' }) {
     const [isEditing, setIsEditing] = useState(false);
     const { canManage } = useUserRole();
     const [assignee, setAssignee] = useState(submission.assigned_to_email || '');
     const [dueDate, setDueDate] = useState(submission.due_date || '');
     const [priority, setPriority] = useState(submission.priority || 'medium');
+    const [sending, setSending] = useState(false);
     
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
         queryFn: () => base44.entities.User.list()
     });
     
-    const handleSave = () => {
+    const handleSave = async () => {
+        setSending(true);
+        
         const updates = {
             assigned_to_email: assignee,
             due_date: dueDate,
             priority: priority
         };
         
-        onUpdate(updates);
+        // Send notification if assignee changed
+        const previousAssignee = submission.assigned_to_email;
+        if (assignee && assignee !== previousAssignee) {
+            try {
+                const assignedUser = users.find(u => u.email === assignee);
+                const taskTitle = submission.form_title || submission.checklist_title || 'Task';
+                
+                await base44.integrations.Core.SendEmail({
+                    to: assignee,
+                    subject: `New Task Assigned: ${taskTitle}`,
+                    body: `
+                        <h2>You've been assigned a new task</h2>
+                        <p><strong>Task:</strong> ${taskTitle}</p>
+                        ${dueDate ? `<p><strong>Due Date:</strong> ${new Date(dueDate).toLocaleDateString()}</p>` : ''}
+                        <p><strong>Priority:</strong> ${priority}</p>
+                        <p>Please log in to view and complete this task.</p>
+                    `
+                });
+            } catch (error) {
+                console.error('Failed to send notification:', error);
+            }
+        }
+        
+        await onUpdate(updates);
+        setSending(false);
         setIsEditing(false);
     };
     
@@ -150,13 +177,15 @@ export default function AssignmentPanel({ submission, onUpdate }) {
             <div className="flex gap-2">
                 <Button 
                     onClick={handleSave}
+                    disabled={sending}
                     className="flex-1 bg-blue-600 hover:bg-blue-700"
                 >
-                    Save
+                    {sending ? 'Saving...' : 'Save'}
                 </Button>
                 <Button 
                     onClick={() => setIsEditing(false)}
                     variant="outline"
+                    disabled={sending}
                     className="flex-1 border-blue-800 text-blue-300 hover:bg-blue-950/50"
                 >
                     Cancel
