@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import CommentSection from '@/components/collaboration/CommentSection';
 import AssignmentPanel from '@/components/collaboration/AssignmentPanel';
 import ExportButton from '@/components/pdf/ExportButton';
+import AICompletionAssistant from '@/components/ai/AICompletionAssistant';
 
 export default function ViewChecklistSubmission() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -113,6 +114,9 @@ export default function ViewChecklistSubmission() {
             </div>
             
             <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
+                {/* AI Completion Assistant */}
+                <AICompletionAssistant entity="checklist" data={submission} />
+                
                 {/* Meta Info */}
                 <div className="bg-[#0f1419] rounded-2xl border border-blue-900/20 p-6">
                     <div className="grid grid-cols-2 gap-4">
