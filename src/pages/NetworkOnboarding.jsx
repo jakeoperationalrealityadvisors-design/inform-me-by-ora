@@ -68,27 +68,31 @@ export default function NetworkOnboarding() {
     
     const technicalLevels = [
         { 
-            value: 'beginner', 
-            label: 'Keep It Simple', 
-            desc: 'I need clear instructions and simple language for everything',
+            value: 'simple', 
+            label: 'Simple & Easy', 
+            desc: 'Large buttons, simple words, step-by-step help. Perfect if technology isn\'t your thing.',
+            emoji: '🌟',
             color: 'from-green-500 to-emerald-600'
         },
         { 
-            value: 'intermediate', 
-            label: 'Balanced Mode', 
-            desc: 'Show me helpful tips when I need them, but don\'t overdo it',
+            value: 'beginner', 
+            label: 'Some Guidance', 
+            desc: 'I can figure things out but appreciate clear instructions and helpful tips.',
+            emoji: '📚',
             color: 'from-blue-500 to-cyan-600'
         },
         { 
-            value: 'advanced', 
-            label: 'I Know Tech', 
-            desc: 'I\'m comfortable with technology, just show me the essentials',
+            value: 'intermediate', 
+            label: 'I Know Apps', 
+            desc: 'I use apps all the time. Just show me what\'s different here.',
+            emoji: '💡',
             color: 'from-purple-500 to-pink-600'
         },
         { 
             value: 'expert', 
-            label: 'Full Power Mode', 
-            desc: 'No hand-holding. Give me all features and let me explore',
+            label: 'Full Bore Tech', 
+            desc: 'I\'m a power user. Give me everything, no training wheels.',
+            emoji: '⚡',
             color: 'from-orange-500 to-red-600'
         }
     ];
@@ -277,16 +281,11 @@ export default function NetworkOnboarding() {
                                     >
                                         <RadioGroupItem value={level.value} className="mt-1" />
                                         <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${level.color} flex items-center justify-center text-white text-xs font-bold`}>
-                                                    {level.value === 'beginner' && '👋'}
-                                                    {level.value === 'intermediate' && '✓'}
-                                                    {level.value === 'advanced' && '⚡'}
-                                                    {level.value === 'expert' && '🚀'}
-                                                </div>
-                                                <div className="font-bold text-lg text-slate-900">{level.label}</div>
-                                            </div>
-                                            <div className="text-sm text-slate-600 leading-relaxed">{level.desc}</div>
+                                           <div className="flex items-center gap-3 mb-2">
+                                               <div className="text-3xl">{level.emoji}</div>
+                                               <div className="font-bold text-xl text-slate-900">{level.label}</div>
+                                           </div>
+                                           <div className="text-base text-slate-700 leading-relaxed">{level.desc}</div>
                                         </div>
                                     </label>
                                 ))}
