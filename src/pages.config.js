@@ -1,9 +1,12 @@
+import AIWorkflowBuilder from './pages/AIWorkflowBuilder';
 import ActivityLog from './pages/ActivityLog';
 import Admin from './pages/Admin';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import AutomationOptimizer from './pages/AutomationOptimizer';
 import Calendar from './pages/Calendar';
 import CreateForm from './pages/CreateForm';
 import CreateTask from './pages/CreateTask';
+import CustomerPortal from './pages/CustomerPortal';
 import DailyTasks from './pages/DailyTasks';
 import Dashboard from './pages/Dashboard';
 import Documents from './pages/Documents';
@@ -14,10 +17,14 @@ import EditForm from './pages/EditForm';
 import FillChecklist from './pages/FillChecklist';
 import FillForm from './pages/FillForm';
 import Home from './pages/Home';
+import KnowledgeBase from './pages/KnowledgeBase';
 import ManageAutomations from './pages/ManageAutomations';
 import ManageDailyTasks from './pages/ManageDailyTasks';
 import ManageFolders from './pages/ManageFolders';
+import Messages from './pages/Messages';
 import MyTasks from './pages/MyTasks';
+import NetworkOnboarding from './pages/NetworkOnboarding';
+import OrganizationSettings from './pages/OrganizationSettings';
 import Reports from './pages/Reports';
 import RoleManagement from './pages/RoleManagement';
 import Settings from './pages/Settings';
@@ -28,23 +35,21 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import NetworkOnboarding from './pages/NetworkOnboarding';
-import OrganizationSettings from './pages/OrganizationSettings';
-import CustomerPortal from './pages/CustomerPortal';
-import AutomationOptimizer from './pages/AutomationOptimizer';
-import AIWorkflowBuilder from './pages/AIWorkflowBuilder';
-import Messages from './pages/Messages';
-import KnowledgeBase from './pages/KnowledgeBase';
+import PublicForm from './pages/PublicForm';
+import PublicChecklist from './pages/PublicChecklist';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AIWorkflowBuilder": AIWorkflowBuilder,
     "ActivityLog": ActivityLog,
     "Admin": Admin,
     "AnalyticsDashboard": AnalyticsDashboard,
+    "AutomationOptimizer": AutomationOptimizer,
     "Calendar": Calendar,
     "CreateForm": CreateForm,
     "CreateTask": CreateTask,
+    "CustomerPortal": CustomerPortal,
     "DailyTasks": DailyTasks,
     "Dashboard": Dashboard,
     "Documents": Documents,
@@ -55,10 +60,14 @@ export const PAGES = {
     "FillChecklist": FillChecklist,
     "FillForm": FillForm,
     "Home": Home,
+    "KnowledgeBase": KnowledgeBase,
     "ManageAutomations": ManageAutomations,
     "ManageDailyTasks": ManageDailyTasks,
     "ManageFolders": ManageFolders,
+    "Messages": Messages,
     "MyTasks": MyTasks,
+    "NetworkOnboarding": NetworkOnboarding,
+    "OrganizationSettings": OrganizationSettings,
     "Reports": Reports,
     "RoleManagement": RoleManagement,
     "Settings": Settings,
@@ -69,13 +78,8 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "NetworkOnboarding": NetworkOnboarding,
-    "OrganizationSettings": OrganizationSettings,
-    "CustomerPortal": CustomerPortal,
-    "AutomationOptimizer": AutomationOptimizer,
-    "AIWorkflowBuilder": AIWorkflowBuilder,
-    "Messages": Messages,
-    "KnowledgeBase": KnowledgeBase,
+    "PublicForm": PublicForm,
+    "PublicChecklist": PublicChecklist,
 }
 
 export const pagesConfig = {
