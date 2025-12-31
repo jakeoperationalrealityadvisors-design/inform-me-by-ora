@@ -4,11 +4,13 @@ import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Upload, Loader2 } from 'lucide-react';
+import { Textarea } from "@/components/ui/textarea";
+import { Upload, Loader2, FileUp } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function NewVersionDialog({ open, onOpenChange, document, currentFolderId }) {
+export default function NewVersionDialog({ open, onOpenChange, document }) {
     const [file, setFile] = useState(null);
+    const [changeNotes, setChangeNotes] = useState('');
     const [uploading, setUploading] = useState(false);
 
     const queryClient = useQueryClient();
@@ -19,33 +21,38 @@ export default function NewVersionDialog({ open, onOpenChange, document, current
     });
 
     const uploadMutation = useMutation({
-        mutationFn: async (newFile) => {
+        mutationFn: async ({ newFile, notes }) => {
             setUploading(true);
             
             // Upload new file
             const { file_url } = await base44.integrations.Core.UploadFile({ file: newFile });
             
-            // Mark old version as not latest
-            await base44.entities.Document.update(document.id, {
-                is_latest_version: false
+            const newVersion = (document.version || 1) + 1;
+            
+            // Create version record for old file
+            await base44.entities.DocumentVersion.create({
+                document_id: document.id,
+                version_number: document.version || 1,
+                file_url: document.file_url,
+                file_name: document.file_name,
+                file_size: document.file_size,
+                uploaded_by_name: document.uploaded_by_name || document.created_by,
+                change_notes: notes
             });
             
-            // Create new version
-            return base44.entities.Document.create({
-                name: document.name,
-                description: document.description,
+            // Update document with new version
+            return base44.entities.Document.update(document.id, {
                 file_url,
-                file_type: newFile.type,
+                file_name: newFile.name,
                 file_size: newFile.size,
-                folder_id: currentFolderId,
-                tags: document.tags,
-                uploaded_by_name: user?.full_name || user?.email,
-                version: document.version + 1,
-                parent_document_id: document.id,
-                is_latest_version: true
+                file_type: newFile.type,
+                version: newVersion,
+                uploaded_by_name: user?.full_name || user?.email
             });
         },
         onSuccess: () => {
+            queryClient.invalidateQueries(['document', document.id]);
+            queryClient.invalidateQueries(['document-versions', document.id]);
             queryClient.invalidateQueries(['documents']);
             toast.success('New version uploaded successfully');
             handleClose();
@@ -69,45 +76,64 @@ export default function NewVersionDialog({ open, onOpenChange, document, current
             return;
         }
 
-        uploadMutation.mutate(file);
+        uploadMutation.mutate({ newFile: file, notes: changeNotes });
     };
 
     const handleClose = () => {
         setFile(null);
+        setChangeNotes('');
         setUploading(false);
         onOpenChange(false);
     };
 
+    const formatFileSize = (bytes) => {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    };
+
     return (
         <Dialog open={open} onOpenChange={uploading ? undefined : handleClose}>
-            <DialogContent>
+            <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>Upload New Version</DialogTitle>
                 </DialogHeader>
 
                 <div className="space-y-4">
-                    <div>
-                        <p className="text-sm text-slate-600 mb-4">
-                            Current version: <strong>v{document?.version}</strong>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <p className="text-sm text-blue-900">
+                            Current version: <strong>v{document?.version || 1}</strong>
                         </p>
-                        <p className="text-sm text-slate-600 mb-4">
-                            Upload a new file to create version <strong>v{document?.version + 1}</strong>
+                        <p className="text-sm text-blue-700 mt-1">
+                            New version will be: <strong>v{(document?.version || 1) + 1}</strong>
                         </p>
                     </div>
 
                     <div>
-                        <Label>Select File</Label>
+                        <Label>Select File *</Label>
                         <div className="mt-2">
-                            <label className="flex items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-[#1e90ff] transition-colors">
-                                <div className="text-center">
-                                    <Upload className="w-8 h-8 mx-auto text-slate-400 mb-2" />
-                                    <p className="text-sm text-slate-600">
-                                        {file ? file.name : 'Click to select file'}
-                                    </p>
-                                    {file && (
-                                        <p className="text-xs text-slate-500 mt-1">
-                                            {(file.size / 1024 / 1024).toFixed(2)} MB
-                                        </p>
+                            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-[#1e90ff] hover:bg-blue-50/50 transition-all">
+                                <div className="text-center p-4">
+                                    {file ? (
+                                        <>
+                                            <FileUp className="w-8 h-8 mx-auto text-green-600 mb-2" />
+                                            <p className="text-sm font-medium text-slate-900">
+                                                {file.name}
+                                            </p>
+                                            <p className="text-xs text-slate-500 mt-1">
+                                                {formatFileSize(file.size)}
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Upload className="w-8 h-8 mx-auto text-slate-400 mb-2" />
+                                            <p className="text-sm text-slate-600">
+                                                Click to select file
+                                            </p>
+                                            <p className="text-xs text-slate-500 mt-1">
+                                                Any file type accepted
+                                            </p>
+                                        </>
                                     )}
                                 </div>
                                 <input 
@@ -118,6 +144,18 @@ export default function NewVersionDialog({ open, onOpenChange, document, current
                                 />
                             </label>
                         </div>
+                    </div>
+                    
+                    <div>
+                        <Label>Change Notes (optional)</Label>
+                        <Textarea
+                            value={changeNotes}
+                            onChange={(e) => setChangeNotes(e.target.value)}
+                            placeholder="Describe what changed in this version..."
+                            className="mt-2 resize-none"
+                            rows={3}
+                            disabled={uploading}
+                        />
                     </div>
                 </div>
 
