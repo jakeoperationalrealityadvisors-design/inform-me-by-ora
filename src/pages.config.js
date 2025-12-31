@@ -19,6 +19,7 @@ import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import Calendar from './pages/Calendar';
+import TikTokDashboard from './pages/TikTokDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -44,6 +45,7 @@ export const PAGES = {
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
     "Calendar": Calendar,
+    "TikTokDashboard": TikTokDashboard,
 }
 
 export const pagesConfig = {
