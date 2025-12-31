@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, Calendar, FolderOpen, BarChart3, Settings } from 'lucide-react';
+import { Home, Calendar, FolderOpen, BarChart3, Settings, LayoutDashboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import { useLanguage } from '@/components/language/LanguageContext';
@@ -16,10 +16,10 @@ export default function BottomNav() {
     };
     
     const navItems = [
+        { name: 'Dashboard', nameKey: 'Dashboard', icon: LayoutDashboard, path: 'Dashboard' },
         { name: t('common.forms'), nameKey: 'Home', icon: Home, path: 'Home' },
         { name: t('common.calendar'), nameKey: 'Calendar', icon: Calendar, path: 'Calendar' },
         { name: t('common.documents'), nameKey: 'Documents', icon: FolderOpen, path: 'Documents' },
-        ...(canViewAll ? [{ name: t('common.reports'), nameKey: 'Reports', icon: BarChart3, path: 'Reports' }] : []),
         { name: t('common.settings'), nameKey: 'Settings', icon: Settings, path: 'Settings' }
     ];
     

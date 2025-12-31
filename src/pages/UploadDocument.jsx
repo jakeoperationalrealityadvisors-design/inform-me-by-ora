@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { logActivity } from '@/components/activity/ActivityLogger';
 
 export default function UploadDocument() {
     const navigate = useNavigate();
@@ -91,7 +92,7 @@ export default function UploadDocument() {
             const uploadResult = await base44.integrations.Core.UploadFile({ file });
             
             // Create document record
-            await createDocMutation.mutateAsync({
+            const newDoc = await createDocMutation.mutateAsync({
                 title: formData.title,
                 description: formData.description,
                 file_url: uploadResult.file_url,
@@ -102,6 +103,15 @@ export default function UploadDocument() {
                 tags: formData.tags,
                 version: 1,
                 uploaded_by_name: user?.full_name || user?.email
+            });
+            
+            await logActivity({
+                action_type: 'document_uploaded',
+                entity_type: 'document',
+                entity_id: newDoc.id,
+                entity_title: formData.title,
+                description: `Uploaded document: ${formData.title}`,
+                metadata: { file_name: file.name, file_size: file.size }
             });
         } catch (error) {
             toast.error('Failed to upload document');

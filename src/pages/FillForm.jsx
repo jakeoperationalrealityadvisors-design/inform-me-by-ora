@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion, AnimatePresence } from 'framer-motion';
 import DynamicField from '@/components/forms/DynamicField';
+import { logActivity } from '@/components/activity/ActivityLogger';
 
 export default function FillForm() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -33,6 +34,14 @@ export default function FillForm() {
     const submitMutation = useMutation({
         mutationFn: async (data) => {
             const submission = await base44.entities.FormSubmission.create(data);
+            
+            await logActivity({
+                action_type: 'form_submitted',
+                entity_type: 'form',
+                entity_id: submission.id,
+                entity_title: form.title,
+                description: `Submitted form: ${form.title}`
+            });
             
             // Trigger automations
             await base44.functions.invoke('executeAutomations', {

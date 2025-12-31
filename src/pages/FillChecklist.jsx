@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from "@/lib/utils";
+import { logActivity } from '@/components/activity/ActivityLogger';
 
 export default function FillChecklist() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -36,6 +37,14 @@ export default function FillChecklist() {
     const submitMutation = useMutation({
         mutationFn: async (data) => {
             const submission = await base44.entities.ChecklistSubmission.create(data);
+            
+            await logActivity({
+                action_type: 'checklist_submitted',
+                entity_type: 'checklist',
+                entity_id: submission.id,
+                entity_title: checklist.title,
+                description: `Submitted checklist: ${checklist.title} (${data.completion_percentage}% complete)`
+            });
             
             // Trigger automations
             if (data.status === 'completed') {
