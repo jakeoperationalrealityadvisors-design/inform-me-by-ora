@@ -348,6 +348,46 @@ export default function Settings() {
                         </CardContent>
                     </Card>
                 )}
+
+                {/* Data Export */}
+                <Card className="bg-[#0f1419] border-blue-900/20">
+                    <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                            <Activity className="w-5 h-5 text-green-500" />
+                            Export Data
+                        </CardTitle>
+                        <CardDescription className="text-blue-400">
+                            Download a complete copy of your data
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Link to={createPageUrl('ExportData')}>
+                            <Button variant="outline" className="w-full border-green-900/30 text-green-300 hover:bg-green-950/50">
+                                Export My Data
+                            </Button>
+                        </Link>
+                    </CardContent>
+                </Card>
+
+                {/* Support */}
+                <Card className="bg-[#0f1419] border-blue-900/20">
+                    <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                            <Activity className="w-5 h-5 text-purple-500" />
+                            Support
+                        </CardTitle>
+                        <CardDescription className="text-blue-400">
+                            Get help or report an issue
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Link to={createPageUrl('Support')}>
+                            <Button variant="outline" className="w-full border-purple-900/30 text-purple-300 hover:bg-purple-950/50">
+                                Contact Support
+                            </Button>
+                        </Link>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );

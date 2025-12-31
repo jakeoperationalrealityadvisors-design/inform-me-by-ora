@@ -49,6 +49,10 @@ import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import HopCode from './pages/HopCode';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Support from './pages/Support';
+import ExportData from './pages/ExportData';
 import __Layout from './Layout.jsx';
 
 
@@ -104,6 +108,10 @@ export const PAGES = {
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
     "HopCode": HopCode,
+    "TermsOfService": TermsOfService,
+    "PrivacyPolicy": PrivacyPolicy,
+    "Support": Support,
+    "ExportData": ExportData,
 }
 
 export const pagesConfig = {
