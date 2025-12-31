@@ -31,6 +31,7 @@ import { Link } from 'react-router-dom';
 import DocumentLinkSelector from '@/components/documents/DocumentLinkSelector';
 import DocumentPermissionsEditor from '@/components/documents/DocumentPermissionsEditor';
 import { FileText as FormIcon, CheckSquare as ChecklistIcon, ListTodo as TaskIcon, ExternalLink } from 'lucide-react';
+import AIDocumentAnalysis from '@/components/ai/AIDocumentAnalysis';
 
 export default function ViewDocument() {
     const navigate = useNavigate();
@@ -249,6 +250,8 @@ export default function ViewDocument() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Main Content */}
                     <div className="lg:col-span-2 space-y-6">
+                        {/* AI Document Analysis */}
+                        <AIDocumentAnalysis document={document} />
                         {/* Document Info */}
                         <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
                             <h2 className="text-lg font-semibold text-slate-900 mb-4">Document Information</h2>

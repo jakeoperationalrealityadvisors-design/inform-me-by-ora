@@ -14,6 +14,7 @@ import { useUserRole } from '@/components/auth/RoleGuard';
 import TaskCalendar from '@/components/tasks/TaskCalendar';
 import TaskReminderBadge from '@/components/tasks/TaskReminderBadge';
 import TaskCard from '@/components/tasks/TaskCard';
+import ProjectManagementAI from '@/components/ai/ProjectManagementAI';
 
 export default function MyTasks() {
     const navigate = useNavigate();
@@ -129,6 +130,14 @@ export default function MyTasks() {
             </div>
             
             <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+                {/* AI Project Management Assistant */}
+                <ProjectManagementAI
+                    tasks={standaloneTasks}
+                    users={[]}
+                    formSubmissions={formTasks}
+                    checklistSubmissions={checklistTasks}
+                />
+                
                 {/* Controls */}
                 <div className="flex flex-col sm:flex-row gap-4">
                     {/* View Toggle */}
