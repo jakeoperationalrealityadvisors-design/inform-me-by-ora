@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Plus, Trash2, Save, Workflow, BookTemplate } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Save, Workflow, BookTemplate, History, Share2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +21,9 @@ import CodeSnippetEditor from '@/components/automation/CodeSnippetEditor';
 import AutomationDebugger from '@/components/automation/AutomationDebugger';
 import AutomationTemplateLibrary from '@/components/automation/AutomationTemplateLibrary';
 import SaveAsTemplateDialog from '@/components/automation/SaveAsTemplateDialog';
+import VersionHistoryDialog from '@/components/automation/VersionHistoryDialog';
+import ShareAutomationDialog from '@/components/automation/ShareAutomationDialog';
+import AutomationAnalytics from '@/components/automation/AutomationAnalytics';
 
 function EditAutomationContent() {
     const navigate = useNavigate();
@@ -62,6 +65,9 @@ function EditAutomationContent() {
     const [viewMode, setViewMode] = useState('builder');
     const [showTemplateLibrary, setShowTemplateLibrary] = useState(!ruleId);
     const [showSaveTemplate, setShowSaveTemplate] = useState(false);
+    const [showVersionHistory, setShowVersionHistory] = useState(false);
+    const [showShareDialog, setShowShareDialog] = useState(false);
+    const [changeNotes, setChangeNotes] = useState('');
 
     React.useEffect(() => {
         if (rule) {
@@ -78,15 +84,59 @@ function EditAutomationContent() {
     }, [rule]);
 
     const saveMutation = useMutation({
-        mutationFn: (data) => {
+        mutationFn: async (data) => {
+            let savedRule;
             if (ruleId) {
-                return base44.entities.AutomationRule.update(ruleId, data);
+                savedRule = await base44.entities.AutomationRule.update(ruleId, data);
+                
+                // Get current version count
+                const versions = await base44.entities.AutomationRuleVersion.filter({ rule_id: ruleId });
+                const versionNumber = versions.length + 1;
+                
+                // Mark all previous versions as inactive
+                for (const v of versions) {
+                    if (v.is_active) {
+                        await base44.entities.AutomationRuleVersion.update(v.id, { is_active: false });
+                    }
+                }
+                
+                // Create new version
+                await base44.entities.AutomationRuleVersion.create({
+                    rule_id: ruleId,
+                    version_number: versionNumber,
+                    name: data.name,
+                    description: data.description,
+                    trigger_type: data.trigger_type,
+                    trigger_config: data.trigger_config,
+                    condition_logic: data.condition_logic,
+                    actions: data.actions,
+                    change_notes: changeNotes || `Version ${versionNumber}`,
+                    is_active: true
+                });
+            } else {
+                savedRule = await base44.entities.AutomationRule.create(data);
+                
+                // Create initial version
+                await base44.entities.AutomationRuleVersion.create({
+                    rule_id: savedRule.id,
+                    version_number: 1,
+                    name: data.name,
+                    description: data.description,
+                    trigger_type: data.trigger_type,
+                    trigger_config: data.trigger_config,
+                    condition_logic: data.condition_logic,
+                    actions: data.actions,
+                    change_notes: 'Initial version',
+                    is_active: true
+                });
             }
-            return base44.entities.AutomationRule.create(data);
+            return savedRule;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['automation-rules'] });
-            toast.success('Automation rule saved');
+            queryClient.invalidateQueries({ queryKey: ['automation-versions'] });
+            toast.success('Automation rule saved with version history');
+            setChangeNotes('');
             navigate(createPageUrl('ManageAutomations'));
         }
     });
@@ -173,16 +223,40 @@ function EditAutomationContent() {
                                     Templates
                                 </Button>
                             )}
-                            {formData.name && formData.actions.length > 0 && (
+                            {ruleId && (
                                 <Button 
                                     type="button"
                                     variant="outline"
-                                    onClick={() => setShowSaveTemplate(true)}
+                                    onClick={() => setShowVersionHistory(true)}
                                     size="sm"
                                 >
-                                    <Save className="w-4 h-4 mr-2" />
-                                    Save as Template
+                                    <History className="w-4 h-4 mr-2" />
+                                    Versions
                                 </Button>
+                            )}
+                            {formData.name && formData.actions.length > 0 && (
+                                <>
+                                    <Button 
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => setShowSaveTemplate(true)}
+                                        size="sm"
+                                    >
+                                        <Save className="w-4 h-4 mr-2" />
+                                        Template
+                                    </Button>
+                                    {ruleId && (
+                                        <Button 
+                                            type="button"
+                                            variant="outline"
+                                            onClick={() => setShowShareDialog(true)}
+                                            size="sm"
+                                        >
+                                            <Share2 className="w-4 h-4 mr-2" />
+                                            Share
+                                        </Button>
+                                    )}
+                                </>
                             )}
                             <Tabs value={viewMode} onValueChange={setViewMode} className="w-auto">
                             <TabsList>
@@ -215,6 +289,13 @@ function EditAutomationContent() {
 
                 {viewMode === 'builder' && (
                     <>
+                {/* Analytics - Only for existing rules */}
+                {ruleId && (
+                    <div className="mb-6">
+                        <AutomationAnalytics ruleId={ruleId} />
+                    </div>
+                )}
+
                 {/* AI Assistant */}
                 <div className="mb-6">
                     <AIAutomationHelper 
@@ -651,6 +732,23 @@ function EditAutomationContent() {
                                     </CardContent>
                                     </Card>
 
+                    {/* Version Notes - Only show when editing */}
+                    {ruleId && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-sm">Version Notes (Optional)</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <Textarea
+                                    value={changeNotes}
+                                    onChange={(e) => setChangeNotes(e.target.value)}
+                                    placeholder="Describe what changed in this version..."
+                                    rows={2}
+                                />
+                            </CardContent>
+                        </Card>
+                    )}
+
                     {/* Submit */}
                     <div className="flex gap-3 justify-end">
                         <Link to={createPageUrl('ManageAutomations')}>
@@ -697,6 +795,21 @@ function EditAutomationContent() {
             <SaveAsTemplateDialog
                 open={showSaveTemplate}
                 onOpenChange={setShowSaveTemplate}
+                automation={formData}
+            />
+            
+            {/* Version History */}
+            <VersionHistoryDialog
+                open={showVersionHistory}
+                onOpenChange={setShowVersionHistory}
+                ruleId={ruleId}
+                onRevert={() => window.location.reload()}
+            />
+            
+            {/* Share Dialog */}
+            <ShareAutomationDialog
+                open={showShareDialog}
+                onOpenChange={setShowShareDialog}
                 automation={formData}
             />
         </div>

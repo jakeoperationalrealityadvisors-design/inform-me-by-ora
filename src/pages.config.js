@@ -1,5 +1,6 @@
 import ActivityLog from './pages/ActivityLog';
 import Admin from './pages/Admin';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import Calendar from './pages/Calendar';
 import CreateForm from './pages/CreateForm';
 import CreateTask from './pages/CreateTask';
@@ -18,6 +19,7 @@ import ManageDailyTasks from './pages/ManageDailyTasks';
 import ManageFolders from './pages/ManageFolders';
 import MyTasks from './pages/MyTasks';
 import Reports from './pages/Reports';
+import RoleManagement from './pages/RoleManagement';
 import Settings from './pages/Settings';
 import Submissions from './pages/Submissions';
 import TikTokDashboard from './pages/TikTokDashboard';
@@ -26,14 +28,13 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import RoleManagement from './pages/RoleManagement';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "ActivityLog": ActivityLog,
     "Admin": Admin,
+    "AnalyticsDashboard": AnalyticsDashboard,
     "Calendar": Calendar,
     "CreateForm": CreateForm,
     "CreateTask": CreateTask,
@@ -52,6 +53,7 @@ export const PAGES = {
     "ManageFolders": ManageFolders,
     "MyTasks": MyTasks,
     "Reports": Reports,
+    "RoleManagement": RoleManagement,
     "Settings": Settings,
     "Submissions": Submissions,
     "TikTokDashboard": TikTokDashboard,
@@ -60,8 +62,6 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "AnalyticsDashboard": AnalyticsDashboard,
-    "RoleManagement": RoleManagement,
 }
 
 export const pagesConfig = {
