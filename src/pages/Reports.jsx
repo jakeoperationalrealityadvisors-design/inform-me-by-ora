@@ -13,6 +13,7 @@ import ReportFilters from '@/components/reports/ReportFilters';
 import BottomNav from '@/components/navigation/BottomNav';
 import { format, isWithinInterval, startOfMonth, endOfMonth, subMonths, parseISO } from 'date-fns';
 import { toast } from 'sonner';
+import AIReportGenerator from '@/components/ai/AIReportGenerator';
 
 function ReportsContent() {
     const [dateRange, setDateRange] = useState({
@@ -224,6 +225,21 @@ function ReportsContent() {
 
                     {/* Main Content */}
                     <div className="lg:col-span-3 space-y-6">
+                        {/* AI Report Generator */}
+                        <AIReportGenerator
+                            data={{
+                                metrics,
+                                submissionsOverTime,
+                                statusDistribution,
+                                categoryBreakdown,
+                                dateRange: {
+                                    from: format(dateRange.from, 'yyyy-MM-dd'),
+                                    to: format(dateRange.to, 'yyyy-MM-dd')
+                                }
+                            }}
+                            reportType="submissions_analysis"
+                        />
+                        
                         {/* Metrics Cards */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <MetricCard

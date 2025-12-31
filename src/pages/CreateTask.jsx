@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Loader2, Plus } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
+import AITaskEnhancer from '@/components/ai/AITaskEnhancer';
 
 export default function CreateTask() {
     const navigate = useNavigate();
@@ -119,7 +120,18 @@ export default function CreateTask() {
                 </div>
             </div>
 
-            <div className="max-w-4xl mx-auto px-4 py-6">
+            <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+                {/* AI Task Enhancement */}
+                {taskData.title && (
+                    <AITaskEnhancer
+                        taskTitle={taskData.title}
+                        taskDescription={taskData.description}
+                        onApplySuggestions={(suggestions) => {
+                            setTaskData({ ...taskData, ...suggestions });
+                        }}
+                    />
+                )}
+                
                 <form onSubmit={handleSubmit}>
                     <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30">
                         <CardHeader>
