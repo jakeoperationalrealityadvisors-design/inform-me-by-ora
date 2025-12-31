@@ -193,6 +193,7 @@ function AnalyticsDashboardContent() {
                                 CSV
                             </Button>
                         </div>
+                        </div>
                     </div>
 
                     {/* Filters */}
