@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity, Shield, Building2, Book } from 'lucide-react';
+import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity, Shield, Building2, Book, TrendingUp } from 'lucide-react';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,9 +14,10 @@ import NotificationPreferences from '@/components/notifications/NotificationPref
 
 export default function Settings() {
     const queryClient = useQueryClient();
-    const { canManage, isAdmin } = useUserRole();
+    const { canManage, isAdmin, user } = useUserRole();
     const [offlineEnabled, setOfflineEnabled] = useState(false);
     const [cacheSize, setCacheSize] = useState(0);
+    const [technicalLevel, setTechnicalLevel] = useState(user?.technical_level || 'intermediate');
     
     useEffect(() => {
         const enabled = localStorage.getItem('offlineMode') === 'true';
@@ -81,6 +82,53 @@ export default function Settings() {
             </div>
             
             <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+                {/* Experience Level */}
+                <Card className="bg-[#0f1419] border-blue-900/20">
+                    <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                            <TrendingUp className="w-5 h-5 text-[#FF8C00]" />
+                            Experience Level
+                        </CardTitle>
+                        <CardDescription className="text-blue-400">
+                            Adjust how much guidance and help you receive
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        {[
+                            { value: 'beginner', label: 'Keep It Simple', emoji: '👋', desc: 'Clear instructions and simple language' },
+                            { value: 'intermediate', label: 'Balanced Mode', emoji: '✓', desc: 'Helpful tips when needed' },
+                            { value: 'advanced', label: 'I Know Tech', emoji: '⚡', desc: 'Just the essentials' },
+                            { value: 'expert', label: 'Full Power Mode', emoji: '🚀', desc: 'No hand-holding, all features' }
+                        ].map((level) => (
+                            <button
+                                key={level.value}
+                                onClick={async () => {
+                                    setTechnicalLevel(level.value);
+                                    await base44.auth.updateMe({ 
+                                        technical_level: level.value,
+                                        preferred_tutorial_style: level.value === 'expert' ? 'none' : 'tooltips'
+                                    });
+                                    queryClient.invalidateQueries(['current-user']);
+                                }}
+                                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all text-left ${
+                                    technicalLevel === level.value
+                                        ? 'border-[#FF8C00] bg-gradient-to-r from-orange-950/30 to-blue-950/30'
+                                        : 'border-blue-900/20 hover:border-blue-700/30'
+                                }`}
+                            >
+                                <div className="text-2xl">{level.emoji}</div>
+                                <div className="flex-1">
+                                    <div className="font-semibold text-white">{level.label}</div>
+                                    <div className="text-xs text-blue-400">{level.desc}</div>
+                                </div>
+                                {technicalLevel === level.value && (
+                                    <div className="text-[#FF8C00]">✓</div>
+                                )}
+                            </button>
+                        ))}
+                    </CardContent>
+                </Card>
+
                 {/* Offline Mode */}
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>
