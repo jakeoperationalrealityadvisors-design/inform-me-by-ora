@@ -18,6 +18,7 @@ import AIAutomationHelper from '@/components/automation/AIAutomationHelper';
 import VisualWorkflowBuilder from '@/components/automation/VisualWorkflowBuilder';
 import ComplexConditionBuilder from '@/components/automation/ComplexConditionBuilder';
 import CodeSnippetEditor from '@/components/automation/CodeSnippetEditor';
+import AutomationDebugger from '@/components/automation/AutomationDebugger';
 
 function EditAutomationContent() {
     const navigate = useNavigate();
@@ -631,13 +632,19 @@ function EditAutomationContent() {
                     </div>
                 </form>
                 
-                {/* Test Automation - Only show for existing rules */}
-                {ruleId && (
-                    <div className="mt-6">
-                        <AutomationTester 
-                            ruleId={ruleId} 
-                            triggerType={formData.trigger_type}
+                {/* Debug & Test Automation */}
+                {formData.name && (
+                    <div className="mt-6 space-y-6">
+                        <AutomationDebugger 
+                            automation={formData}
                         />
+                        
+                        {ruleId && (
+                            <AutomationTester 
+                                ruleId={ruleId} 
+                                triggerType={formData.trigger_type}
+                            />
+                        )}
                     </div>
                 )}
                 </>
