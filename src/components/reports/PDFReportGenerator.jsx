@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { FileDown, Loader2 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -58,148 +57,71 @@ export default function PDFReportGenerator({
             doc.setFontSize(14);
             doc.setTextColor(30, 64, 175);
             doc.text('Executive Summary', 20, yPos);
-            yPos += 8;
+            yPos += 10;
 
-            const summaryData = [
-                ['Form Submissions', forms.length.toString()],
-                ['Checklist Submissions', checklists.length.toString()],
-                ['Completed Checklists', checklists.filter(c => c.status === 'completed').length.toString()],
-                ['Total Tasks', tasks.length.toString()],
-                ['Completed Tasks', tasks.filter(t => t.status === 'completed').length.toString()],
-                ['Overdue Tasks', tasks.filter(t => t.due_date && new Date(t.due_date) < new Date() && t.status !== 'completed').length.toString()],
-                ['Total Documents', documents.length.toString()],
-                ['Active Automations', automations.filter(a => a.enabled).length.toString()]
+            doc.setFontSize(10);
+            doc.setTextColor(0);
+            const metrics = [
+                ['Form Submissions:', forms.length],
+                ['Checklist Submissions:', checklists.length],
+                ['Completed Checklists:', checklists.filter(c => c.status === 'completed').length],
+                ['Total Tasks:', tasks.length],
+                ['Completed Tasks:', tasks.filter(t => t.status === 'completed').length],
+                ['Overdue Tasks:', tasks.filter(t => t.due_date && new Date(t.due_date) < new Date() && t.status !== 'completed').length],
+                ['Total Documents:', documents.length],
+                ['Active Automations:', automations.filter(a => a.enabled).length]
             ];
 
-            doc.autoTable({
-                startY: yPos,
-                head: [['Metric', 'Value']],
-                body: summaryData,
-                theme: 'grid',
-                headStyles: { fillColor: [30, 64, 175] },
-                margin: { left: 20, right: 20 }
+            metrics.forEach(([label, value]) => {
+                doc.text(`${label} ${value}`, 25, yPos);
+                yPos += 6;
             });
 
-            yPos = doc.lastAutoTable.finalY + 15;
+            yPos += 10;
 
-            // Task Breakdown
             if (yPos > 250) {
                 doc.addPage();
                 yPos = 20;
             }
 
+            // Task Performance
             doc.setFontSize(14);
             doc.setTextColor(30, 64, 175);
             doc.text('Task Performance', 20, yPos);
-            yPos += 8;
+            yPos += 10;
 
-            const taskBreakdown = [
-                ['Status', 'Count', 'Percentage'],
-                ['To Do', tasks.filter(t => t.status === 'todo').length.toString(), `${((tasks.filter(t => t.status === 'todo').length / tasks.length) * 100 || 0).toFixed(1)}%`],
-                ['In Progress', tasks.filter(t => t.status === 'in_progress').length.toString(), `${((tasks.filter(t => t.status === 'in_progress').length / tasks.length) * 100 || 0).toFixed(1)}%`],
-                ['Completed', tasks.filter(t => t.status === 'completed').length.toString(), `${((tasks.filter(t => t.status === 'completed').length / tasks.length) * 100 || 0).toFixed(1)}%`],
-                ['Cancelled', tasks.filter(t => t.status === 'cancelled').length.toString(), `${((tasks.filter(t => t.status === 'cancelled').length / tasks.length) * 100 || 0).toFixed(1)}%`]
+            doc.setFontSize(10);
+            doc.setTextColor(0);
+            const taskStats = [
+                ['To Do:', tasks.filter(t => t.status === 'todo').length, `(${((tasks.filter(t => t.status === 'todo').length / tasks.length) * 100 || 0).toFixed(1)}%)`],
+                ['In Progress:', tasks.filter(t => t.status === 'in_progress').length, `(${((tasks.filter(t => t.status === 'in_progress').length / tasks.length) * 100 || 0).toFixed(1)}%)`],
+                ['Completed:', tasks.filter(t => t.status === 'completed').length, `(${((tasks.filter(t => t.status === 'completed').length / tasks.length) * 100 || 0).toFixed(1)}%)`]
             ];
 
-            doc.autoTable({
-                startY: yPos,
-                head: [taskBreakdown[0]],
-                body: taskBreakdown.slice(1),
-                theme: 'striped',
-                headStyles: { fillColor: [30, 64, 175] },
-                margin: { left: 20, right: 20 }
+            taskStats.forEach(([label, count, pct]) => {
+                doc.text(`${label} ${count} ${pct}`, 25, yPos);
+                yPos += 6;
             });
 
-            yPos = doc.lastAutoTable.finalY + 15;
+            yPos += 10;
+
+            if (yPos > 250) {
+                doc.addPage();
+                yPos = 20;
+            }
 
             // Priority Distribution
-            if (yPos > 250) {
-                doc.addPage();
-                yPos = 20;
-            }
-
-            doc.setFontSize(14);
-            doc.text('Task Priority Distribution', 20, yPos);
-            yPos += 8;
-
-            const priorityData = [
-                ['Priority', 'Count'],
-                ['Low', tasks.filter(t => t.priority === 'low').length.toString()],
-                ['Medium', tasks.filter(t => t.priority === 'medium').length.toString()],
-                ['High', tasks.filter(t => t.priority === 'high').length.toString()],
-                ['Urgent', tasks.filter(t => t.priority === 'urgent').length.toString()]
-            ];
-
-            doc.autoTable({
-                startY: yPos,
-                head: [priorityData[0]],
-                body: priorityData.slice(1),
-                theme: 'grid',
-                headStyles: { fillColor: [245, 158, 11] },
-                margin: { left: 20, right: 20 }
-            });
-
-            yPos = doc.lastAutoTable.finalY + 15;
-
-            // Document Usage
-            if (yPos > 250) {
-                doc.addPage();
-                yPos = 20;
-            }
-
             doc.setFontSize(14);
             doc.setTextColor(30, 64, 175);
-            doc.text('Document Usage', 20, yPos);
-            yPos += 8;
+            doc.text('Task Priority', 20, yPos);
+            yPos += 10;
 
-            const totalStorage = documents.reduce((sum, d) => sum + (d.file_size || 0), 0);
-            const avgSize = documents.length > 0 ? totalStorage / documents.length : 0;
-
-            const docData = [
-                ['Total Documents', documents.length.toString()],
-                ['Total Storage', `${(totalStorage / 1024 / 1024).toFixed(2)} MB`],
-                ['Average File Size', `${(avgSize / 1024).toFixed(2)} KB`],
-                ['Active Documents', documents.filter(d => d.status === 'active').length.toString()],
-                ['Archived Documents', documents.filter(d => d.status === 'archived').length.toString()]
-            ];
-
-            doc.autoTable({
-                startY: yPos,
-                head: [['Metric', 'Value']],
-                body: docData,
-                theme: 'striped',
-                headStyles: { fillColor: [249, 115, 22] },
-                margin: { left: 20, right: 20 }
-            });
-
-            yPos = doc.lastAutoTable.finalY + 15;
-
-            // Automation Summary
-            if (yPos > 250) {
-                doc.addPage();
-                yPos = 20;
-            }
-
-            doc.setFontSize(14);
-            doc.text('Automation Performance', 20, yPos);
-            yPos += 8;
-
-            const totalExecutions = automations.reduce((sum, a) => sum + (a.execution_count || 0), 0);
-            const automationData = [
-                ['Total Automations', automations.length.toString()],
-                ['Active Automations', automations.filter(a => a.enabled).length.toString()],
-                ['Inactive Automations', automations.filter(a => !a.enabled).length.toString()],
-                ['Total Executions', totalExecutions.toString()],
-                ['Avg. Executions per Rule', automations.length > 0 ? (totalExecutions / automations.length).toFixed(1) : '0']
-            ];
-
-            doc.autoTable({
-                startY: yPos,
-                head: [['Metric', 'Value']],
-                body: automationData,
-                theme: 'grid',
-                headStyles: { fillColor: [234, 179, 8] },
-                margin: { left: 20, right: 20 }
+            doc.setFontSize(10);
+            doc.setTextColor(0);
+            ['Low', 'Medium', 'High', 'Urgent'].forEach(priority => {
+                const count = tasks.filter(t => t.priority === priority.toLowerCase()).length;
+                doc.text(`${priority}: ${count}`, 25, yPos);
+                yPos += 6;
             });
 
             // Footer
