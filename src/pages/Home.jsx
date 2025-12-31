@@ -63,9 +63,9 @@ export default function Home() {
     const isLoading = formsLoading || checklistsLoading;
     
     return (
-        <div className="min-h-screen bg-slate-100 dark:bg-black transition-colors">
+        <div className="min-h-screen bg-[#0a0e17] transition-colors">
             {/* Header */}
-            <div className="bg-white dark:bg-[#0a0a0a] border-b border-slate-200 dark:border-[#1a1a1a] sticky top-0 z-10 shadow-sm transition-colors">
+            <div className="bg-[#0a0e17] border-b border-blue-900/30 sticky top-0 z-10 shadow-sm transition-colors">
                 <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
                         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -75,10 +75,10 @@ export default function Home() {
                                 className="h-8 sm:h-12 flex-shrink-0 rounded-lg"
                             />
                             <div className="min-w-0">
-                                <h1 className="text-sm sm:text-xl font-bold text-slate-900 dark:text-white truncate">
+                                <h1 className="text-sm sm:text-xl font-bold text-[#FF8C00] truncate">
                                     {t('home.title')}
                                 </h1>
-                                <p className="text-xs text-slate-600 dark:text-slate-400 hidden sm:block">{t('home.subtitle')}</p>
+                                <p className="text-xs text-[#FF8C00]/70 hidden sm:block">{t('home.subtitle')}</p>
                             </div>
                         </div>
                         <div className="flex gap-1 sm:gap-2 flex-shrink-0">
@@ -132,13 +132,13 @@ export default function Home() {
                     {/* Main Content */}
                     <div className="lg:col-span-3">
                 {/* Tab Switcher */}
-                <div className="flex gap-2 p-1 bg-white dark:bg-[#0a0a0a] rounded-xl mb-4 sm:mb-6 border border-slate-200 dark:border-[#1a1a1a] shadow-sm transition-colors">
+                <div className="flex gap-2 p-1 bg-[#0a0e17] rounded-xl mb-4 sm:mb-6 border border-blue-900/30 shadow-sm transition-colors">
                     <button
                         onClick={() => setActiveTab('forms')}
                         className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all ${
                             activeTab === 'forms' 
-                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E90FF] text-white shadow-md shadow-orange-500/20' 
-                                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black shadow-md shadow-orange-500/20' 
+                                : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
                         }`}
                     >
                         <FileText className="w-4 h-4" />
@@ -148,8 +148,8 @@ export default function Home() {
                         onClick={() => setActiveTab('checklists')}
                         className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all ${
                             activeTab === 'checklists' 
-                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E90FF] text-white shadow-md shadow-orange-500/20' 
-                                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black shadow-md shadow-orange-500/20' 
+                                : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
                         }`}
                     >
                         <CheckSquare className="w-4 h-4" />
@@ -172,10 +172,10 @@ export default function Home() {
                 {isLoading ? (
                     <div className="grid gap-3 sm:gap-4">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="bg-white dark:bg-[#0a0a0a] rounded-lg border border-slate-200 dark:border-[#1a1a1a] p-4 sm:p-5 animate-pulse shadow-lg transition-colors">
-                                <div className="h-8 sm:h-10 bg-slate-200 dark:bg-[#1a1a1a] rounded mb-3 sm:mb-4" />
-                                <div className="h-4 sm:h-5 w-3/4 bg-slate-200 dark:bg-[#1a1a1a] rounded mb-2" />
-                                <div className="h-3 sm:h-4 w-1/2 bg-slate-100 dark:bg-[#151515] rounded" />
+                            <div key={i} className="bg-[#0a0e17] rounded-lg border border-blue-900/30 p-4 sm:p-5 animate-pulse shadow-lg transition-colors">
+                                <div className="h-8 sm:h-10 bg-blue-900/30 rounded mb-3 sm:mb-4" />
+                                <div className="h-4 sm:h-5 w-3/4 bg-blue-900/20 rounded mb-2" />
+                                <div className="h-3 sm:h-4 w-1/2 bg-blue-900/10 rounded" />
                             </div>
                         ))}
                     </div>
