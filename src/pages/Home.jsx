@@ -161,6 +161,20 @@ export default function Home() {
                             Advanced
                         </button>
                     </div>
+                    
+                    {/* Mobile Category Dropdown */}
+                    <div className="lg:hidden mt-3">
+                        <select
+                            value={selectedCategory || ''}
+                            onChange={(e) => setSelectedCategory(e.target.value || null)}
+                            className="w-full bg-[#0f1419] text-white border border-blue-900/30 rounded-lg px-4 py-3 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-[#FF8C00]"
+                        >
+                            <option value="">All Categories</option>
+                            {categories.map(cat => (
+                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
                 </div>
 
@@ -177,15 +191,6 @@ export default function Home() {
 
                     {/* Main Content */}
                     <div className="lg:col-span-3">
-                {/* Mobile Category Filter */}
-                <div className="lg:hidden mb-4">
-                    <CategoryFilter 
-                        selectedCategory={selectedCategory}
-                        onSelectCategory={setSelectedCategory}
-                        categories={categories}
-                    />
-                </div>
-
                 {/* Tab Switcher */}
                 <div className="flex gap-3 sm:gap-2 mb-6">
                     <button
