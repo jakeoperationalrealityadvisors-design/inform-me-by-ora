@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { motion } from 'framer-motion';
 import RoleGuard from '@/components/auth/RoleGuard';
+import SampleDataGenerator from '@/components/admin/SampleDataGenerator';
 
 export default function Admin() {
     return (
@@ -109,6 +110,11 @@ function AdminContent() {
             </div>
             
             <div className="max-w-4xl mx-auto px-4 py-6">
+                {/* Sample Data Generator */}
+                <div className="mb-6">
+                    <SampleDataGenerator />
+                </div>
+                
                 <Tabs defaultValue="forms">
                     <TabsList className="w-full grid grid-cols-3 mb-6">
                         <TabsTrigger value="forms" className="gap-2">
