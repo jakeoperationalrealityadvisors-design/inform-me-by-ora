@@ -17,6 +17,7 @@ import BottomNav from '@/components/navigation/BottomNav';
 import { useLanguage } from '@/components/language/LanguageContext';
 import LanguageSwitcher from '@/components/language/LanguageSwitcher';
 import TooltipHelper from '@/components/tutorial/TooltipHelper';
+import { useSimpleMode } from '@/components/tutorial/SimpleModeWrapper';
 import GlobalSearch from '@/components/search/GlobalSearch';
 import CategorySidebar from '@/components/navigation/CategorySidebar';
 import ThemeToggle from '@/components/theme/ThemeToggle';
@@ -30,6 +31,7 @@ export default function Home() {
     const { isAdmin, canViewAll, canCreateForms, user } = useUserRole();
     const { t } = useLanguage();
     const navigate = useNavigate();
+    const { isSimpleMode } = useSimpleMode();
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeTab, setActiveTab] = useState('forms');
@@ -213,25 +215,33 @@ export default function Home() {
                 <div className="flex gap-2 p-1 bg-[#0a0e17] rounded-xl mb-4 sm:mb-6 border border-blue-900/30 shadow-sm transition-colors">
                     <button
                         onClick={() => setActiveTab('forms')}
-                        className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all ${
+                        className={`flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 rounded-lg font-medium transition-all ${
+                            isSimpleMode ? 'py-4 text-base' : 'py-2.5 sm:py-3 text-xs sm:text-sm'
+                        } ${
                             activeTab === 'forms' 
                                 ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black shadow-md shadow-orange-500/20' 
                                 : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
                         }`}
                     >
-                        <FileText className="w-4 h-4" />
-                        <span className="hidden xs:inline">{t('common.forms')}</span> ({forms.length})
+                        <FileText className={isSimpleMode ? 'w-6 h-6' : 'w-4 h-4'} />
+                        <span>{t('common.forms')}</span>
+                        {isSimpleMode && <span className="text-xs opacity-80">({forms.length} available)</span>}
+                        {!isSimpleMode && <span className="hidden xs:inline">({forms.length})</span>}
                     </button>
                     <button
                         onClick={() => setActiveTab('checklists')}
-                        className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all ${
+                        className={`flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 rounded-lg font-medium transition-all ${
+                            isSimpleMode ? 'py-4 text-base' : 'py-2.5 sm:py-3 text-xs sm:text-sm'
+                        } ${
                             activeTab === 'checklists' 
                                 ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black shadow-md shadow-orange-500/20' 
                                 : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
                         }`}
                     >
-                        <CheckSquare className="w-4 h-4" />
-                        <span className="hidden xs:inline">{t('common.checklists')}</span> ({checklists.length})
+                        <CheckSquare className={isSimpleMode ? 'w-6 h-6' : 'w-4 h-4'} />
+                        <span>{t('common.checklists')}</span>
+                        {isSimpleMode && <span className="text-xs opacity-80">({checklists.length} available)</span>}
+                        {!isSimpleMode && <span className="hidden xs:inline">({checklists.length})</span>}
                     </button>
                 </div>
                 

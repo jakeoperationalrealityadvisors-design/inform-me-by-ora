@@ -32,19 +32,27 @@ export default function TooltipHelper({ id, title, description, position = 'bott
         }
     };
     
-    if (user?.technical_level === 'expert' || user?.preferred_tutorial_style === 'none') {
+    // Show for simple and beginner, hide for expert
+    if (user?.technical_level === 'expert') {
         return null;
     }
     
-    if (dismissed) {
+    // Always show for simple mode users
+    const alwaysShow = user?.technical_level === 'simple';
+    
+    if (dismissed && !alwaysShow) {
         return null;
     }
     
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <button className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 transition-colors">
-                    <HelpCircle className="w-3.5 h-3.5" />
+                <button className={`inline-flex items-center justify-center rounded-full transition-colors ${
+                    alwaysShow 
+                        ? 'w-6 h-6 bg-[#FF8C00]/20 hover:bg-[#FF8C00]/30 text-[#FF8C00]'
+                        : 'w-5 h-5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400'
+                }`}>
+                    <HelpCircle className={alwaysShow ? 'w-4 h-4' : 'w-3.5 h-3.5'} />
                 </button>
             </PopoverTrigger>
             <PopoverContent 
@@ -63,14 +71,18 @@ export default function TooltipHelper({ id, title, description, position = 'bott
                             <X className="w-4 h-4" />
                         </button>
                     </div>
-                    <p className="text-sm text-blue-200 leading-relaxed">{description}</p>
-                    <Button
-                        onClick={handleDismiss}
-                        size="sm"
-                        className="w-full bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black"
-                    >
-                        Got it!
-                    </Button>
+                    <p className={`text-blue-200 leading-relaxed ${alwaysShow ? 'text-base' : 'text-sm'}`}>
+                        {description}
+                    </p>
+                    {!alwaysShow && (
+                        <Button
+                            onClick={handleDismiss}
+                            size="sm"
+                            className="w-full bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black"
+                        >
+                            Got it!
+                        </Button>
+                    )}
                 </div>
             </PopoverContent>
         </Popover>

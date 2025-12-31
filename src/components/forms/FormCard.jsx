@@ -4,6 +4,7 @@ import { createPageUrl } from '@/utils';
 import { FileText, ChevronDown, ChevronRight, Share2 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import ShareFormDialog from './ShareFormDialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function FormCard({ form, category, viewMode = 'list' }) {
     const [shareOpen, setShareOpen] = useState(false);
@@ -31,17 +32,35 @@ export default function FormCard({ form, category, viewMode = 'list' }) {
                     <div className="flex items-center justify-between pt-3 border-t border-blue-900/20">
                         <span className="text-xs text-blue-400">{fieldCount} fields</span>
                         <div className="flex gap-2">
-                            <button
-                                onClick={() => setShareOpen(true)}
-                                className="p-1.5 text-green-400 hover:bg-green-950/20 rounded transition-colors"
-                            >
-                                <Share2 className="w-4 h-4" />
-                            </button>
-                            <Link to={createPageUrl(`FillForm?id=${form.id}`)}>
-                                <button className="px-3 py-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black text-xs font-medium rounded hover:opacity-90">
-                                    Fill
-                                </button>
-                            </Link>
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <button
+                                            onClick={() => setShareOpen(true)}
+                                            className="p-1.5 text-green-400 hover:bg-green-950/20 rounded transition-colors"
+                                        >
+                                            <Share2 className="w-4 h-4" />
+                                        </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Share this form with others</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Link to={createPageUrl(`FillForm?id=${form.id}`)}>
+                                            <button className="px-3 py-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black text-xs font-medium rounded hover:opacity-90">
+                                                Fill
+                                            </button>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Start filling out this form</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         </div>
                     </div>
                 </div>
