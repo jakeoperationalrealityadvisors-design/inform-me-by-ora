@@ -51,9 +51,14 @@ function ManageAutomationsContent() {
     const triggerLabels = {
         form_submitted: 'Form Submitted',
         checklist_completed: 'Checklist Completed',
+        task_created: 'Task Created',
+        task_completed: 'Task Completed',
         task_overdue: 'Task Overdue',
         task_due_soon: 'Task Due Soon',
-        document_uploaded: 'Document Uploaded'
+        document_uploaded: 'Document Uploaded',
+        user_invited: 'User Invited',
+        status_changed: 'Status Changed',
+        manual_trigger: 'Manual Trigger'
     };
 
     const actionLabels = {
@@ -186,6 +191,9 @@ function ManageAutomationsContent() {
                                                 {rule.actions?.map((action, idx) => (
                                                     <Badge key={idx} variant="outline" className="bg-green-50 text-green-700 border-green-200">
                                                         {actionLabels[action.type] || action.type}
+                                                        {action.delay_minutes > 0 && (
+                                                            <span className="ml-1 text-xs opacity-70">({action.delay_minutes}m delay)</span>
+                                                        )}
                                                     </Badge>
                                                 ))}
                                             </div>

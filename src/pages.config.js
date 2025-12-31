@@ -1,6 +1,10 @@
+import ActivityLog from './pages/ActivityLog';
 import Admin from './pages/Admin';
 import Calendar from './pages/Calendar';
+import CreateForm from './pages/CreateForm';
+import CreateTask from './pages/CreateTask';
 import DailyTasks from './pages/DailyTasks';
+import Dashboard from './pages/Dashboard';
 import Documents from './pages/Documents';
 import EditAutomation from './pages/EditAutomation';
 import EditCategory from './pages/EditCategory';
@@ -22,17 +26,17 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import CreateForm from './pages/CreateForm';
-import CreateTask from './pages/CreateTask';
-import ActivityLog from './pages/ActivityLog';
-import Dashboard from './pages/Dashboard';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "ActivityLog": ActivityLog,
     "Admin": Admin,
     "Calendar": Calendar,
+    "CreateForm": CreateForm,
+    "CreateTask": CreateTask,
     "DailyTasks": DailyTasks,
+    "Dashboard": Dashboard,
     "Documents": Documents,
     "EditAutomation": EditAutomation,
     "EditCategory": EditCategory,
@@ -54,10 +58,6 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "CreateForm": CreateForm,
-    "CreateTask": CreateTask,
-    "ActivityLog": ActivityLog,
-    "Dashboard": Dashboard,
 }
 
 export const pagesConfig = {

@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import RoleGuard from '@/components/auth/RoleGuard';
 import { toast } from 'sonner';
+import AutomationTester from '@/components/automation/AutomationTester';
 
 function EditAutomationContent() {
     const navigate = useNavigate();
@@ -603,10 +604,35 @@ function EditAutomationContent() {
                                             />
                                         </div>
                                     )}
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
+
+                                    {/* Action Delay - Available for all action types */}
+                                    <div className="pt-3 border-t border-slate-200">
+                                        <Label>Delay Action (Optional)</Label>
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <Input
+                                                type="number"
+                                                value={action.delay_minutes || ''}
+                                                onChange={(e) => {
+                                                    const newActions = [...formData.actions];
+                                                    newActions[index].delay_minutes = e.target.value ? parseInt(e.target.value) : undefined;
+                                                    setFormData({ ...formData, actions: newActions });
+                                                }}
+                                                placeholder="0"
+                                                min="0"
+                                                className="w-24"
+                                            />
+                                            <span className="text-sm text-slate-600">minutes after trigger</span>
+                                        </div>
+                                        {action.delay_minutes > 0 && (
+                                            <p className="text-xs text-blue-600 mt-1">
+                                                This action will be delayed by {action.delay_minutes} minute{action.delay_minutes > 1 ? 's' : ''}
+                                            </p>
+                                        )}
+                                    </div>
+                                    </div>
+                                    ))}
+                                    </CardContent>
+                                    </Card>
 
                     {/* Submit */}
                     <div className="flex gap-3 justify-end">
@@ -623,6 +649,16 @@ function EditAutomationContent() {
                         </Button>
                     </div>
                 </form>
+                
+                {/* Test Automation - Only show for existing rules */}
+                {ruleId && (
+                    <div className="mt-6">
+                        <AutomationTester 
+                            ruleId={ruleId} 
+                            triggerType={formData.trigger_type}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );
