@@ -24,6 +24,17 @@ export default function CalendarPage() {
     const [showFilter, setShowFilter] = useState(false);
     const [eventTypeFilter, setEventTypeFilter] = useState('all');
     
+    const getEventIcon = (type) => {
+        const icons = {
+            inspection: '🔍',
+            meeting: '👥',
+            follow_up: '📞',
+            deadline: '⏰',
+            review: '📋'
+        };
+        return icons[type] || '📅';
+    };
+    
     // Fetch form tasks
     const { data: formTasks = [] } = useQuery({
         queryKey: ['form-submissions-calendar'],
@@ -118,18 +129,7 @@ export default function CalendarPage() {
         }
         
         return allEvents;
-    }, [formTasks, checklistTasks, scheduledEvents, eventTypeFilter]);
-    
-    const getEventIcon = (type) => {
-        const icons = {
-            inspection: '🔍',
-            meeting: '👥',
-            follow_up: '📞',
-            deadline: '⏰',
-            review: '📋'
-        };
-        return icons[type] || '📅';
-    };
+    }, [formTasks, checklistTasks, scheduledEvents, eventTypeFilter, getEventIcon]);
     
     const handleSelectEvent = (event) => {
         const { type, task, event: scheduledEvent } = event.resource;
