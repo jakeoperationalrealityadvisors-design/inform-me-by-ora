@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Plus, Trash2, Save, Workflow } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Save, Workflow, BookTemplate } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,6 +60,8 @@ function EditAutomationContent() {
     });
 
     const [viewMode, setViewMode] = useState('builder');
+    const [showTemplateLibrary, setShowTemplateLibrary] = useState(!ruleId);
+    const [showSaveTemplate, setShowSaveTemplate] = useState(false);
 
     React.useEffect(() => {
         if (rule) {
@@ -132,6 +134,13 @@ function EditAutomationContent() {
         });
         toast.success('AI suggestions applied to form');
     };
+    
+    const handleSelectTemplate = (templateData) => {
+        setFormData(prev => ({
+            ...prev,
+            ...templateData
+        }));
+    };
 
     return (
         <div className="min-h-screen bg-slate-100">
@@ -152,6 +161,29 @@ function EditAutomationContent() {
                                 <p className="text-sm text-slate-600">Configure triggers and actions</p>
                             </div>
                         </div>
+                        <div className="flex items-center gap-2">
+                            {!ruleId && (
+                                <Button 
+                                    type="button"
+                                    variant="outline" 
+                                    onClick={() => setShowTemplateLibrary(true)}
+                                    size="sm"
+                                >
+                                    <BookTemplate className="w-4 h-4 mr-2" />
+                                    Templates
+                                </Button>
+                            )}
+                            {formData.name && formData.actions.length > 0 && (
+                                <Button 
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setShowSaveTemplate(true)}
+                                    size="sm"
+                                >
+                                    <Save className="w-4 h-4 mr-2" />
+                                    Save as Template
+                                </Button>
+                            )}
                         <Tabs value={viewMode} onValueChange={setViewMode} className="w-auto">
                             <TabsList>
                                 <TabsTrigger value="builder">Builder</TabsTrigger>
@@ -652,6 +684,20 @@ function EditAutomationContent() {
                 </>
                 )}
             </div>
+            
+            {/* Template Library */}
+            <AutomationTemplateLibrary
+                open={showTemplateLibrary}
+                onOpenChange={setShowTemplateLibrary}
+                onSelectTemplate={handleSelectTemplate}
+            />
+            
+            {/* Save as Template */}
+            <SaveAsTemplateDialog
+                open={showSaveTemplate}
+                onOpenChange={setShowSaveTemplate}
+                automation={formData}
+            />
         </div>
     );
 }
