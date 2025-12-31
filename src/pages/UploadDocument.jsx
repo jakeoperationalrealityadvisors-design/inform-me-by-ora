@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { logActivity } from '@/components/activity/ActivityLogger';
+import DocumentLinkSelector from '@/components/documents/DocumentLinkSelector';
+import DocumentPermissionsEditor from '@/components/documents/DocumentPermissionsEditor';
 
 export default function UploadDocument() {
     const navigate = useNavigate();
@@ -22,7 +24,9 @@ export default function UploadDocument() {
         title: '',
         description: '',
         folder_id: '',
-        tags: []
+        tags: [],
+        linked_to: {},
+        permissions: { can_view: [], can_edit: [], can_delete: [], is_public: false }
     });
     const [tagInput, setTagInput] = useState('');
     
@@ -102,7 +106,9 @@ export default function UploadDocument() {
                 folder_id: formData.folder_id || null,
                 tags: formData.tags,
                 version: 1,
-                uploaded_by_name: user?.full_name || user?.email
+                uploaded_by_name: user?.full_name || user?.email,
+                linked_to: formData.linked_to,
+                permissions: formData.permissions
             });
             
             await logActivity({
@@ -218,6 +224,28 @@ export default function UploadDocument() {
                                 ))}
                             </SelectContent>
                         </Select>
+                    </div>
+                    
+                    {/* Links */}
+                    <div>
+                        <Label>Link to Items</Label>
+                        <div className="mt-2">
+                            <DocumentLinkSelector
+                                currentLinks={formData.linked_to}
+                                onLinksUpdate={(links) => setFormData({ ...formData, linked_to: links })}
+                            />
+                        </div>
+                    </div>
+                    
+                    {/* Permissions */}
+                    <div>
+                        <Label>Access Permissions</Label>
+                        <div className="mt-2">
+                            <DocumentPermissionsEditor
+                                currentPermissions={formData.permissions}
+                                onPermissionsUpdate={(perms) => setFormData({ ...formData, permissions: perms })}
+                            />
+                        </div>
                     </div>
                     
                     {/* Tags */}

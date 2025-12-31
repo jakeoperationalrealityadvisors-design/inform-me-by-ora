@@ -27,6 +27,10 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Link } from 'react-router-dom';
+import DocumentLinkSelector from '@/components/documents/DocumentLinkSelector';
+import DocumentPermissionsEditor from '@/components/documents/DocumentPermissionsEditor';
+import { FileText as FormIcon, CheckSquare as ChecklistIcon, ListTodo as TaskIcon, ExternalLink } from 'lucide-react';
 
 export default function ViewDocument() {
     const navigate = useNavigate();
@@ -60,6 +64,22 @@ export default function ViewDocument() {
     const { data: user } = useQuery({
         queryKey: ['current-user'],
         queryFn: () => base44.auth.me()
+    });
+    
+    const updateLinksMutation = useMutation({
+        mutationFn: (links) => base44.entities.Document.update(documentId, { linked_to: links }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['document', documentId]);
+            toast.success('Links updated');
+        }
+    });
+    
+    const updatePermissionsMutation = useMutation({
+        mutationFn: (perms) => base44.entities.Document.update(documentId, { permissions: perms }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['document', documentId]);
+            toast.success('Permissions updated');
+        }
     });
     
     const deleteMutation = useMutation({
@@ -375,7 +395,7 @@ export default function ViewDocument() {
                     </div>
                     
                     {/* Sidebar */}
-                    <div className="lg:col-span-1">
+                    <div className="lg:col-span-1 space-y-6">
                         {folder && (
                             <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
                                 <div className="flex items-center gap-2 mb-2">
@@ -388,6 +408,108 @@ export default function ViewDocument() {
                                 )}
                             </div>
                         )}
+                        
+                        {/* Linked Items */}
+                        <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-semibold text-slate-900">Linked Items</h3>
+                                <DocumentLinkSelector
+                                    currentLinks={document?.linked_to || {}}
+                                    onLinksUpdate={(links) => updateLinksMutation.mutate(links)}
+                                    trigger={
+                                        <Button variant="ghost" size="sm">
+                                            Edit
+                                        </Button>
+                                    }
+                                />
+                            </div>
+                            
+                            {document?.linked_to?.form_submission_id && (
+                                <Link 
+                                    to={createPageUrl(`ViewFormSubmission?id=${document.linked_to.form_submission_id}`)}
+                                    className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors mb-2"
+                                >
+                                    <FormIcon className="w-4 h-4 text-blue-600" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-blue-900 truncate">
+                                            {document.linked_to.form_title}
+                                        </p>
+                                        <p className="text-xs text-blue-600">Form Submission</p>
+                                    </div>
+                                    <ExternalLink className="w-4 h-4 text-blue-600" />
+                                </Link>
+                            )}
+                            
+                            {document?.linked_to?.checklist_submission_id && (
+                                <Link 
+                                    to={createPageUrl(`ViewChecklistSubmission?id=${document.linked_to.checklist_submission_id}`)}
+                                    className="flex items-center gap-2 p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors mb-2"
+                                >
+                                    <ChecklistIcon className="w-4 h-4 text-green-600" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-green-900 truncate">
+                                            {document.linked_to.checklist_title}
+                                        </p>
+                                        <p className="text-xs text-green-600">Checklist Submission</p>
+                                    </div>
+                                    <ExternalLink className="w-4 h-4 text-green-600" />
+                                </Link>
+                            )}
+                            
+                            {document?.linked_to?.task_id && (
+                                <Link 
+                                    to={createPageUrl(`MyTasks`)}
+                                    className="flex items-center gap-2 p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors mb-2"
+                                >
+                                    <TaskIcon className="w-4 h-4 text-purple-600" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-purple-900 truncate">
+                                            {document.linked_to.task_title}
+                                        </p>
+                                        <p className="text-xs text-purple-600">Task</p>
+                                    </div>
+                                    <ExternalLink className="w-4 h-4 text-purple-600" />
+                                </Link>
+                            )}
+                            
+                            {!document?.linked_to?.form_submission_id && 
+                             !document?.linked_to?.checklist_submission_id && 
+                             !document?.linked_to?.task_id && (
+                                <p className="text-sm text-slate-500 text-center py-4">No linked items</p>
+                            )}
+                        </div>
+                        
+                        {/* Permissions */}
+                        <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-semibold text-slate-900">Access</h3>
+                                <DocumentPermissionsEditor
+                                    currentPermissions={document?.permissions || {}}
+                                    onPermissionsUpdate={(perms) => updatePermissionsMutation.mutate(perms)}
+                                    trigger={
+                                        <Button variant="ghost" size="sm">
+                                            Edit
+                                        </Button>
+                                    }
+                                />
+                            </div>
+                            
+                            {document?.permissions?.is_public ? (
+                                <Badge className="bg-green-100 text-green-700 w-full justify-center">
+                                    Public Document
+                                </Badge>
+                            ) : (
+                                <div className="space-y-2">
+                                    {document?.permissions?.can_view?.length > 0 ? (
+                                        <>
+                                            <p className="text-xs text-slate-500">Shared with {document.permissions.can_view.length} user{document.permissions.can_view.length !== 1 ? 's' : ''}</p>
+                                        </>
+                                    ) : (
+                                        <p className="text-sm text-slate-500 text-center py-2">Private</p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
