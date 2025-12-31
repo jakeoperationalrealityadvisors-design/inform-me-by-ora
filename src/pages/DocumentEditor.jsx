@@ -171,77 +171,45 @@ export default function DocumentEditor() {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* Editor Controls */}
                     <Card className="bg-[#0f1419] border-blue-900/20 lg:col-span-1">
-                        <CardContent className="pt-6 space-y-6">
+                        <CardContent className="pt-6 space-y-4">
                             <div>
-                                <Label className="text-blue-100 mb-3 flex items-center gap-2">
-                                    <Sun className="w-4 h-4" />
-                                    Brightness
-                                </Label>
+                                <Label className="text-white mb-2">Brightness: {brightness}%</Label>
                                 <Slider
                                     value={[brightness]}
                                     onValueChange={([val]) => setBrightness(val)}
                                     min={0}
                                     max={200}
                                     step={1}
-                                    className="mt-2"
                                 />
-                                <div className="text-center text-sm text-blue-400 mt-2">{brightness}%</div>
                             </div>
 
                             <div>
-                                <Label className="text-blue-100 mb-3 flex items-center gap-2">
-                                    <Contrast className="w-4 h-4" />
-                                    Contrast
-                                </Label>
+                                <Label className="text-white mb-2">Contrast: {contrast}%</Label>
                                 <Slider
                                     value={[contrast]}
                                     onValueChange={([val]) => setContrast(val)}
                                     min={0}
                                     max={200}
                                     step={1}
-                                    className="mt-2"
                                 />
-                                <div className="text-center text-sm text-blue-400 mt-2">{contrast}%</div>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="grid grid-cols-2 gap-2 pt-4">
                                 <Button
                                     onClick={handleRotate}
                                     variant="outline"
-                                    className="w-full border-blue-900/30"
+                                    className="border-blue-900/30"
                                 >
                                     <RotateCw className="w-4 h-4 mr-2" />
-                                    Rotate 90°
+                                    Rotate
                                 </Button>
                                 <Button
                                     onClick={handleCrop}
                                     variant={cropMode ? 'default' : 'outline'}
-                                    className={cropMode ? 'w-full bg-[#FF8C00]' : 'w-full border-blue-900/30'}
+                                    className={cropMode ? 'bg-[#FF8C00]' : 'border-blue-900/30'}
                                 >
                                     <Crop className="w-4 h-4 mr-2" />
-                                    {cropMode ? 'Apply Crop' : 'Crop'}
-                                </Button>
-                                {cropMode && (
-                                    <Button
-                                        onClick={applyCrop}
-                                        className="w-full bg-green-600 hover:bg-green-700"
-                                    >
-                                        Apply Crop
-                                    </Button>
-                                )}
-                            </div>
-
-                            <div className="pt-4 border-t border-blue-900/20">
-                                <Button
-                                    onClick={() => {
-                                        setBrightness(100);
-                                        setContrast(100);
-                                        setRotation(0);
-                                    }}
-                                    variant="outline"
-                                    className="w-full border-red-900/30 text-red-400"
-                                >
-                                    Reset All
+                                    Crop
                                 </Button>
                             </div>
                         </CardContent>

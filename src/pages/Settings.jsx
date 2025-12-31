@@ -97,46 +97,33 @@ export default function Settings() {
                 {/* Experience Level */}
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>
-                        <CardTitle className="text-white flex items-center gap-2">
-                            <TrendingUp className="w-5 h-5 text-[#FF8C00]" />
-                            Experience Level
-                        </CardTitle>
-                        <CardDescription className="text-blue-400">
-                            Adjust how much guidance and help you receive
-                        </CardDescription>
+                        <CardTitle className="text-white">Experience Level</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-3">
+                    <CardContent className="space-y-2">
                         {[
-                            { value: 'senior', label: 'Extra Large & Simple', emoji: '👴', desc: 'Very large buttons, plain English, one step at a time' },
-                            { value: 'simple', label: 'Simple & Easy', emoji: '🌟', desc: 'Large buttons, simple words, step-by-step' },
-                            { value: 'beginner', label: 'Some Guidance', emoji: '📚', desc: 'Clear instructions and helpful tips' },
-                            { value: 'intermediate', label: 'I Know Apps', emoji: '💡', desc: 'Just show me what\'s different' },
-                            { value: 'expert', label: 'Full Features', emoji: '⚡', desc: 'Everything available' }
+                            { value: 'senior', label: 'Extra Large & Simple' },
+                            { value: 'simple', label: 'Simple & Easy' },
+                            { value: 'beginner', label: 'Some Guidance' },
+                            { value: 'intermediate', label: 'I Know Apps' },
+                            { value: 'expert', label: 'Full Features' }
                         ].map((level) => (
                             <button
                                 key={level.value}
                                 onClick={() => setTechnicalLevel(level.value)}
-                                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all text-left ${
+                                className={`w-full p-3 rounded-lg font-medium transition-all text-left ${
                                     technicalLevel === level.value
-                                        ? 'border-[#FF8C00] bg-gradient-to-r from-orange-950/30 to-blue-950/30'
-                                        : 'border-blue-900/20 hover:border-blue-700/30'
+                                        ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white'
+                                        : 'bg-[#0a0e17] text-blue-300 border border-blue-900/30'
                                 }`}
                             >
-                                <div className="text-2xl">{level.emoji}</div>
-                                <div className="flex-1">
-                                    <div className="font-semibold text-white">{level.label}</div>
-                                    <div className="text-xs text-blue-400">{level.desc}</div>
-                                </div>
-                                {technicalLevel === level.value && (
-                                    <div className="text-[#FF8C00]">✓</div>
-                                )}
+                                {level.label}
                             </button>
                         ))}
 
                         {hasUnsavedChanges && (
                             <Button
                                 onClick={applyChanges}
-                                className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] h-12 text-base font-semibold"
+                                className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] h-12 mt-4"
                             >
                                 Apply Changes
                             </Button>

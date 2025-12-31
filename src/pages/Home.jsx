@@ -132,72 +132,29 @@ export default function Home() {
             {/* Header */}
             <div className="bg-[#0a0e17] border-b border-blue-900/30 sticky top-0 z-10 shadow-sm transition-colors">
                 <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
-                        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                            <img 
-                                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png" 
-                                alt="InForm Me - Operational Reality Advisors"
-                                className={isSeniorMode ? "h-16 flex-shrink-0 rounded-lg" : isSimpleMode ? "h-12 flex-shrink-0 rounded-lg" : "h-8 sm:h-12 flex-shrink-0 rounded-lg"}
-                            />
-                            <div className="min-w-0">
-                                <h1 className={`font-bold text-[#FF8C00] truncate ${isSeniorMode ? 'text-2xl' : isSimpleMode ? 'text-xl' : 'text-sm sm:text-xl'}`}>
-                                    {isSeniorMode ? 'My Forms' : t('home.title')}
-                                </h1>
-                                {!isSimpleMode && !isSeniorMode && <p className="text-xs text-[#FF8C00]/70 hidden sm:block">{t('home.subtitle')}</p>}
-                            </div>
-                        </div>
-                        <div className="flex gap-1 sm:gap-2 flex-shrink-0 items-center">
-                            {!isExpertMode && (
-                                <TooltipHelper
-                                    id="home-notifications"
-                                    title="Notifications"
-                                    description="Stay updated with task assignments, form submissions, and important updates in real-time."
-                                />
-                            )}
-                            {!isSeniorMode && <NotificationBell />}
-                            {!isSimpleMode && !isSeniorMode && <PushNotificationToggle />}
-                            {!isSimpleMode && !isSeniorMode && <ThemeToggle />}
-                            {!isSimpleMode && !isSeniorMode && <LanguageSwitcher />}
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-xl font-bold text-[#FF8C00]">
+                            {isSeniorMode ? 'My Forms' : 'InForm Me'}
+                        </h1>
+                        <div className="flex gap-2">
+                            <NotificationBell />
                             <Link to={createPageUrl('Scanner')}>
-                                <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSeniorMode ? 'h-16 w-16' : isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
-                                    <Scan className={isSeniorMode ? 'w-8 h-8' : isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
+                                <Button variant="ghost" size="icon" className="rounded-full text-[#FF8C00]">
+                                    <Scan className="w-5 h-5" />
                                 </Button>
                             </Link>
                             {canCreateForms && (
-                                <>
-                                    {!isExpertMode && (
-                                        <TooltipHelper
-                                            id="home-create"
-                                            title="Create Forms"
-                                            description="Build custom forms and checklists for your team. Use templates or start from scratch with our AI-powered builder."
-                                        />
-                                    )}
-                                    <Link to={createPageUrl('CreateForm')}>
-                                        <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSeniorMode ? 'h-16 w-16' : isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
-                                            <Plus className={isSeniorMode ? 'w-8 h-8' : isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
-                                        </Button>
-                                    </Link>
-                                    </>
-                                    )}
-                                    {!isSeniorMode && !isExpertMode && (
-                                    <TooltipHelper
-                                    id="home-tasks"
-                                    title="My Tasks"
-                                    description="View all tasks assigned to you, track deadlines, and manage your workload efficiently."
-                                    />
-                                    )}
-                                    {!isSeniorMode && (
-                                    <Link to={createPageUrl('MyTasks')}>
-                                    <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
-                                        <ListTodo className={isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
+                                <Link to={createPageUrl('CreateForm')}>
+                                    <Button size="icon" className="rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]">
+                                        <Plus className="w-5 h-5" />
                                     </Button>
-                                    </Link>
-                                    )}
-                                    <Link to={createPageUrl('Settings')}>
-                                    <Button variant="ghost" size="icon" className={`rounded-full hover:bg-blue-900/30 text-[#FF8C00] ${isSeniorMode ? 'h-16 w-16' : isSimpleMode ? 'h-12 w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
-                                    <Settings className={isSeniorMode ? 'w-8 h-8' : isSimpleMode ? 'w-6 h-6' : 'w-4 h-4 sm:w-5 sm:h-5'} />
-                                    </Button>
-                                    </Link>
+                                </Link>
+                            )}
+                            <Link to={createPageUrl('Settings')}>
+                                <Button variant="ghost" size="icon" className="rounded-full text-[#FF8C00]">
+                                    <Settings className="w-5 h-5" />
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                     
@@ -231,86 +188,30 @@ export default function Home() {
                     {/* Main Content */}
                     <div className="lg:col-span-3">
                 {/* Tab Switcher */}
-                <div className="flex gap-2 p-1 bg-[#0a0e17] rounded-xl mb-4 sm:mb-6 border border-blue-900/30 shadow-sm transition-colors">
+                <div className="flex gap-2 mb-6">
                     <button
                         onClick={() => setActiveTab('forms')}
-                        className={`flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 rounded-lg font-medium transition-all ${
-                            isSeniorMode ? 'py-6 text-2xl' : isSimpleMode ? 'py-4 text-base' : 'py-2.5 sm:py-3 text-xs sm:text-sm'
-                        } ${
+                        className={`flex-1 py-3 rounded-lg font-medium transition-all ${
                             activeTab === 'forms' 
-                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black shadow-md shadow-orange-500/20' 
-                                : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
+                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white' 
+                                : 'bg-[#0f1419] text-[#FF8C00]/70 border border-blue-900/30'
                         }`}
                     >
-                        <FileText className={isSeniorMode ? 'w-10 h-10' : isSimpleMode ? 'w-6 h-6' : 'w-4 h-4'} />
-                        <span>{isSeniorMode ? 'Forms' : t('common.forms')}</span>
-                        {isSeniorMode && <span className="text-lg opacity-80">({forms.length})</span>}
-                        {isSimpleMode && !isSeniorMode && <span className="text-xs opacity-80">({forms.length} available)</span>}
-                        {!isSimpleMode && !isSeniorMode && <span className="hidden xs:inline">({forms.length})</span>}
+                        Forms ({forms.length})
                     </button>
                     <button
                         onClick={() => setActiveTab('checklists')}
-                        className={`flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 rounded-lg font-medium transition-all ${
-                            isSeniorMode ? 'py-6 text-2xl' : isSimpleMode ? 'py-4 text-base' : 'py-2.5 sm:py-3 text-xs sm:text-sm'
-                        } ${
+                        className={`flex-1 py-3 rounded-lg font-medium transition-all ${
                             activeTab === 'checklists' 
-                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black shadow-md shadow-orange-500/20' 
-                                : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
+                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white' 
+                                : 'bg-[#0f1419] text-[#FF8C00]/70 border border-blue-900/30'
                         }`}
                     >
-                        <CheckSquare className={isSeniorMode ? 'w-10 h-10' : isSimpleMode ? 'w-6 h-6' : 'w-4 h-4'} />
-                        <span>{isSeniorMode ? 'Checklists' : t('common.checklists')}</span>
-                        {isSeniorMode && <span className="text-lg opacity-80">({checklists.length})</span>}
-                        {isSimpleMode && !isSeniorMode && <span className="text-xs opacity-80">({checklists.length} available)</span>}
-                        {!isSimpleMode && !isSeniorMode && <span className="hidden xs:inline">({checklists.length})</span>}
+                        Checklists ({checklists.length})
                     </button>
                 </div>
                 
-                {/* View Mode Toggle & Category Filter */}
-                <div className="flex items-center justify-between mb-4 sm:mb-6">
-                    {categories.length > 0 && !isSimpleMode && !isSeniorMode && (
-                        <div className="flex-1">
-                            <CategoryFilter
-                                categories={categories}
-                                selected={selectedCategory}
-                                onSelect={setSelectedCategory}
-                            />
-                        </div>
-                    )}
-                    {!isSimpleMode && !isSeniorMode && (
-                        <div className="flex items-center gap-2">
-                            {!isExpertMode && (
-                                <TooltipHelper
-                                    id="home-view-toggle"
-                                    title="View Options"
-                                    description="Switch between list view for details or grid view for a visual overview of your forms and checklists."
-                                />
-                            )}
-                            <div className="flex gap-1 bg-[#0a0e17] rounded-lg border border-blue-900/30 p-1">
-                                <button
-                                    onClick={() => setViewMode('list')}
-                                    className={`p-2 rounded transition-colors ${
-                                        viewMode === 'list' 
-                                            ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black' 
-                                            : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
-                                    }`}
-                                >
-                                    <LayoutList className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={() => setViewMode('grid')}
-                                    className={`p-2 rounded transition-colors ${
-                                        viewMode === 'grid' 
-                                            ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black' 
-                                            : 'text-[#FF8C00]/70 hover:bg-blue-900/20'
-                                    }`}
-                                >
-                                    <LayoutGrid className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
+
                 
                 {/* Content */}
                 {isLoading ? (

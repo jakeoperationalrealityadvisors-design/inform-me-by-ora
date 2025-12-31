@@ -124,78 +124,63 @@ export default function Scanner() {
 
             <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
                 {/* Mode Selector */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="flex gap-2 overflow-x-auto pb-2">
                     {modes.map((mode) => {
                         const Icon = mode.icon;
                         return (
                             <button
                                 key={mode.id}
                                 onClick={() => setActiveMode(mode.id)}
-                                className={`p-4 rounded-xl border-2 transition-all ${
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
                                     activeMode === mode.id
-                                        ? 'border-[#FF8C00] bg-gradient-to-br from-orange-950/30 to-blue-950/30'
-                                        : 'border-blue-900/20 bg-[#0f1419] hover:border-blue-700/30'
+                                        ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white'
+                                        : 'bg-[#0f1419] text-blue-400 border border-blue-900/30'
                                 }`}
                             >
-                                <Icon className={`w-8 h-8 mx-auto mb-2 ${
-                                    activeMode === mode.id ? 'text-[#FF8C00]' : 'text-blue-400'
-                                }`} />
-                                <div className={`font-semibold text-white ${isSeniorMode ? 'text-lg' : 'text-sm'}`}>
-                                    {mode.label}
-                                </div>
-                                {!isSimpleMode && (
-                                    <div className="text-xs text-blue-400 mt-1">{mode.desc}</div>
-                                )}
+                                <Icon className="w-5 h-5" />
+                                <span className="font-medium">{mode.label}</span>
                             </button>
                         );
                     })}
                 </div>
 
                 {/* Capture Controls */}
-                <Card className="bg-[#0f1419] border-blue-900/20">
-                    <CardContent className="pt-6 space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <Button
-                                onClick={() => cameraInputRef.current?.click()}
-                                className={`bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] ${
-                                    isSeniorMode ? 'h-20 text-xl' : isSimpleMode ? 'h-16 text-lg' : 'h-12'
-                                }`}
-                                disabled={isProcessing}
-                            >
-                                <Camera className={`${isSeniorMode ? 'w-8 h-8' : 'w-5 h-5'} mr-2`} />
-                                {isSeniorMode ? 'Take Photo' : isSimpleMode ? 'Use Camera' : 'Camera'}
-                            </Button>
-                            <Button
-                                onClick={() => fileInputRef.current?.click()}
-                                variant="outline"
-                                className={`border-blue-900/30 text-blue-300 ${
-                                    isSeniorMode ? 'h-20 text-xl' : isSimpleMode ? 'h-16 text-lg' : 'h-12'
-                                }`}
-                                disabled={isProcessing}
-                            >
-                                <Upload className={`${isSeniorMode ? 'w-8 h-8' : 'w-5 h-5'} mr-2`} />
-                                {isSeniorMode ? 'Choose File' : isSimpleMode ? 'Upload File' : 'Upload'}
-                            </Button>
-                        </div>
-                        
-                        <input
-                            ref={cameraInputRef}
-                            type="file"
-                            accept="image/*"
-                            capture="environment"
-                            onChange={handleCameraCapture}
-                            className="hidden"
-                        />
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*,application/pdf"
-                            multiple
-                            onChange={handleFileUpload}
-                            className="hidden"
-                        />
-                    </CardContent>
-                </Card>
+                <div className="grid grid-cols-2 gap-3">
+                    <Button
+                        onClick={() => cameraInputRef.current?.click()}
+                        className="h-14 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"
+                        disabled={isProcessing}
+                    >
+                        <Camera className="w-5 h-5 mr-2" />
+                        Camera
+                    </Button>
+                    <Button
+                        onClick={() => fileInputRef.current?.click()}
+                        variant="outline"
+                        className="h-14 border-blue-900/30"
+                        disabled={isProcessing}
+                    >
+                        <Upload className="w-5 h-5 mr-2" />
+                        Upload
+                    </Button>
+                    
+                    <input
+                        ref={cameraInputRef}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={handleCameraCapture}
+                        className="hidden"
+                    />
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*,application/pdf"
+                        multiple
+                        onChange={handleFileUpload}
+                        className="hidden"
+                    />
+                </div>
 
                 {/* Captured Documents */}
                 {capturedImages.length > 0 && (

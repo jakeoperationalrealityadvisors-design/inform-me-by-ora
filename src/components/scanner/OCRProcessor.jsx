@@ -77,10 +77,7 @@ export default function OCRProcessor({ imageUrl, onTextExtracted }) {
     return (
         <Card className="bg-[#0f1419] border-blue-900/20">
             <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-[#FF8C00]" />
-                    Text Recognition (OCR)
-                </CardTitle>
+                <CardTitle className="text-white">Extract Text (OCR)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 {!extractedText ? (
