@@ -16,6 +16,7 @@ import NotificationBell from '@/components/notifications/NotificationBell';
 import BottomNav from '@/components/navigation/BottomNav';
 import { useLanguage } from '@/components/language/LanguageContext';
 import LanguageSwitcher from '@/components/language/LanguageSwitcher';
+import TooltipHelper from '@/components/tutorial/TooltipHelper';
 import GlobalSearch from '@/components/search/GlobalSearch';
 import CategorySidebar from '@/components/navigation/CategorySidebar';
 import ThemeToggle from '@/components/theme/ThemeToggle';
@@ -137,18 +138,35 @@ export default function Home() {
                                 <p className="text-xs text-[#FF8C00]/70 hidden sm:block">{t('home.subtitle')}</p>
                             </div>
                         </div>
-                        <div className="flex gap-1 sm:gap-2 flex-shrink-0">
+                        <div className="flex gap-1 sm:gap-2 flex-shrink-0 items-center">
+                            <TooltipHelper
+                                id="home-notifications"
+                                title="Notifications"
+                                description="Stay updated with task assignments, form submissions, and important updates in real-time."
+                            />
                             <NotificationBell />
                             <PushNotificationToggle />
                             <ThemeToggle />
                             <LanguageSwitcher />
                             {canCreateForms && (
-                                <Link to={createPageUrl('CreateForm')}>
-                                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-900/30 text-[#FF8C00] h-9 w-9 sm:h-10 sm:w-10">
-                                        <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    </Button>
-                                </Link>
+                                <>
+                                    <TooltipHelper
+                                        id="home-create"
+                                        title="Create Forms"
+                                        description="Build custom forms and checklists for your team. Use templates or start from scratch with our AI-powered builder."
+                                    />
+                                    <Link to={createPageUrl('CreateForm')}>
+                                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-900/30 text-[#FF8C00] h-9 w-9 sm:h-10 sm:w-10">
+                                            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        </Button>
+                                    </Link>
+                                </>
                             )}
+                            <TooltipHelper
+                                id="home-tasks"
+                                title="My Tasks"
+                                description="View all tasks assigned to you, track deadlines, and manage your workload efficiently."
+                            />
                             <Link to={createPageUrl('MyTasks')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-900/30 text-[#FF8C00] h-9 w-9 sm:h-10 sm:w-10">
                                     <ListTodo className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -228,7 +246,13 @@ export default function Home() {
                             />
                         </div>
                     )}
-                    <div className="flex gap-1 bg-[#0a0e17] rounded-lg border border-blue-900/30 p-1">
+                    <div className="flex items-center gap-2">
+                        <TooltipHelper
+                            id="home-view-toggle"
+                            title="View Options"
+                            description="Switch between list view for details or grid view for a visual overview of your forms and checklists."
+                        />
+                        <div className="flex gap-1 bg-[#0a0e17] rounded-lg border border-blue-900/30 p-1">
                         <button
                             onClick={() => setViewMode('list')}
                             className={`p-2 rounded transition-colors ${
@@ -248,9 +272,10 @@ export default function Home() {
                             }`}
                         >
                             <LayoutGrid className="w-4 h-4" />
-                        </button>
-                    </div>
-                </div>
+                            </button>
+                            </div>
+                            </div>
+                            </div>
                 
                 {/* Content */}
                 {isLoading ? (
