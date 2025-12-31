@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Download, FileDown, Loader2 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -43,7 +42,7 @@ export default function AuditExporter({ logs, dateRange, filters }) {
     const exportPDF = async () => {
         setExporting(true);
         try {
-            const doc = new jsPDF({ orientation: 'landscape' });
+            const doc = new jsPDF({ orientation: 'portrait' });
             let yPos = 20;
 
             // Header
@@ -70,7 +69,7 @@ export default function AuditExporter({ logs, dateRange, filters }) {
                 doc.text(`Action Filter: ${filters.action}`, 20, yPos);
                 yPos += 5;
             }
-            yPos += 5;
+            yPos += 10;
 
             // Summary
             doc.setFontSize(11);
@@ -78,24 +77,29 @@ export default function AuditExporter({ logs, dateRange, filters }) {
             doc.text(`Total Entries: ${logs.length}`, 20, yPos);
             yPos += 10;
 
-            // Table
-            const tableData = logs.map(log => [
-                format(new Date(log.created_date), 'MM/dd HH:mm'),
-                (log.user_name || log.user_email || 'Unknown').substring(0, 20),
-                log.action_type.replace(/_/g, ' ').substring(0, 25),
-                (log.entity_title || '').substring(0, 30),
-                log.description.substring(0, 40)
-            ]);
+            // Log entries
+            doc.setFontSize(8);
+            logs.slice(0, 50).forEach((log, index) => {
+                if (yPos > 270) {
+                    doc.addPage();
+                    yPos = 20;
+                }
 
-            doc.autoTable({
-                startY: yPos,
-                head: [['Timestamp', 'User', 'Action', 'Target', 'Description']],
-                body: tableData,
-                theme: 'striped',
-                headStyles: { fillColor: [30, 64, 175], fontSize: 8 },
-                bodyStyles: { fontSize: 7 },
-                margin: { left: 10, right: 10 },
-                styles: { cellPadding: 2 }
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(9);
+                doc.text(`${format(new Date(log.created_date), 'MM/dd HH:mm')} - ${log.user_name || log.user_email}`, 20, yPos);
+                yPos += 5;
+                
+                doc.setFontSize(8);
+                doc.setTextColor(60, 60, 60);
+                const actionText = log.action_type.replace(/_/g, ' ');
+                doc.text(actionText, 20, yPos);
+                yPos += 4;
+                
+                doc.setTextColor(100, 100, 100);
+                const description = log.description.substring(0, 80);
+                doc.text(description, 20, yPos);
+                yPos += 8;
             });
 
             // Footer
@@ -113,7 +117,7 @@ export default function AuditExporter({ logs, dateRange, filters }) {
             }
 
             doc.save(`audit-log-${format(new Date(), 'yyyy-MM-dd-HHmm')}.pdf`);
-            toast.success('Audit log exported to PDF');
+            toast.success('Audit log exported to PDF (first 50 entries)');
         } catch (error) {
             console.error('PDF export error:', error);
             toast.error('Failed to export PDF');
