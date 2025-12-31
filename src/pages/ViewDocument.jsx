@@ -286,25 +286,66 @@ export default function ViewDocument() {
                         
                         {/* Version History */}
                         <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
-                            <div className="flex items-center gap-2 mb-4">
-                                <History className="w-5 h-5 text-slate-600" />
-                                <h2 className="text-lg font-semibold text-slate-900">Version History</h2>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-2">
+                                    <History className="w-5 h-5 text-slate-600" />
+                                    <h2 className="text-lg font-semibold text-slate-900">Version History</h2>
+                                </div>
+                                <Badge className="bg-blue-100 text-blue-700">
+                                    {versions.length + 1} version{versions.length !== 0 ? 's' : ''}
+                                </Badge>
                             </div>
                             
-                            {versions.length > 0 ? (
-                                <div className="space-y-3">
-                                    {versions.map(version => (
-                                        <div key={version.id} className="border-l-2 border-blue-600 pl-4 py-2">
+                            <div className="space-y-3">
+                                {/* Current Version */}
+                                <div className="border-l-4 border-green-600 pl-4 py-3 bg-green-50/50 rounded-r">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <p className="font-semibold text-slate-900">
+                                                    Version {document.version || 1}
+                                                </p>
+                                                <Badge className="bg-green-600 text-white text-xs">Current</Badge>
+                                            </div>
+                                            <p className="text-sm text-slate-600">{document.file_name}</p>
+                                            <div className="flex items-center gap-3 text-xs text-slate-500 mt-2">
+                                                <span className="flex items-center gap-1">
+                                                    <User className="w-3 h-3" />
+                                                    {document.uploaded_by_name || document.created_by}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Clock className="w-3 h-3" />
+                                                    {format(new Date(document.updated_date), 'MMM d, yyyy h:mm a')}
+                                                </span>
+                                                <span className="text-slate-400">
+                                                    {formatFileSize(document.file_size)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <a href={document.file_url} download target="_blank" rel="noopener noreferrer">
+                                            <Button variant="ghost" size="sm" className="text-green-700 hover:text-green-800 hover:bg-green-100">
+                                                <Download className="w-4 h-4" />
+                                            </Button>
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                {/* Previous Versions */}
+                                {versions.length > 0 ? (
+                                    versions.map((version, idx) => (
+                                        <div key={version.id} className="border-l-4 border-slate-300 pl-4 py-3 hover:bg-slate-50 rounded-r transition-colors">
                                             <div className="flex items-start justify-between">
-                                                <div>
-                                                    <p className="font-medium text-slate-900">
-                                                        Version {version.version_number}
-                                                    </p>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <p className="font-medium text-slate-900">
+                                                            Version {version.version_number}
+                                                        </p>
+                                                    </div>
                                                     <p className="text-sm text-slate-600">{version.file_name}</p>
                                                     {version.change_notes && (
-                                                        <p className="text-sm text-slate-500 mt-1">{version.change_notes}</p>
+                                                        <p className="text-sm text-slate-500 mt-1 italic">"{version.change_notes}"</p>
                                                     )}
-                                                    <div className="flex items-center gap-3 text-xs text-slate-400 mt-2">
+                                                    <div className="flex items-center gap-3 text-xs text-slate-500 mt-2">
                                                         <span className="flex items-center gap-1">
                                                             <User className="w-3 h-3" />
                                                             {version.uploaded_by_name}
@@ -313,20 +354,23 @@ export default function ViewDocument() {
                                                             <Clock className="w-3 h-3" />
                                                             {format(new Date(version.created_date), 'MMM d, yyyy h:mm a')}
                                                         </span>
+                                                        <span className="text-slate-400">
+                                                            {formatFileSize(version.file_size)}
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <a href={version.file_url} download target="_blank" rel="noopener noreferrer">
-                                                    <Button variant="ghost" size="sm">
+                                                    <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-900">
                                                         <Download className="w-4 h-4" />
                                                     </Button>
                                                 </a>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="text-slate-500 text-sm">No version history available</p>
-                            )}
+                                    ))
+                                ) : (
+                                    <p className="text-slate-500 text-sm text-center py-4">No previous versions</p>
+                                )}
+                            </div>
                         </div>
                     </div>
                     
