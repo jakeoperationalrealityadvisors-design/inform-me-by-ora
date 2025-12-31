@@ -1,7 +1,9 @@
 import React from 'react';
+import { LanguageProvider } from './components/language/LanguageContext';
 
 export default function Layout({ children, currentPageName }) {
     return (
+        <LanguageProvider>
         <div className="ora-theme">
             <style>{`
                 :root {
@@ -45,6 +47,7 @@ export default function Layout({ children, currentPageName }) {
                 }
             `}</style>
             {children}
-        </div>
-    );
-}
+            </div>
+            </LanguageProvider>
+            );
+            }
