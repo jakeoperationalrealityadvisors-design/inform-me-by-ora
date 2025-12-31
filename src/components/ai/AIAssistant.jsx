@@ -37,27 +37,35 @@ export default function AIAssistant({
     // Workflow Generation
     const workflowMutation = useMutation({
         mutationFn: async (prompt) => {
+            if (!prompt || prompt.trim().length < 10) {
+                throw new Error('Please provide a more detailed description (at least 10 characters)');
+            }
+
             const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `You are a workflow automation expert. Based on this description, create a detailed workflow automation.
 
 User Request: ${prompt}
 
 Generate a workflow with:
-- name: Clear workflow name
-- description: What the workflow does
+- name: Clear, concise workflow name (max 50 chars)
+- description: What the workflow does (1-2 sentences)
 - trigger_type: One of [form_submitted, checklist_completed, task_created, task_completed, document_uploaded, manual_trigger]
-- trigger_config: Configuration for the trigger (e.g., which form, which category)
-- actions: Array of actions with type and config
+- trigger_config: Configuration object for the trigger (can be empty {})
+- actions: Array of 1-5 actions with type and config
   Action types: [assign_task, send_notification, send_email, create_followup, create_task, update_status]
+  Each action must have type (string) and config (object with relevant fields)
 
-Return JSON format matching AutomationRule schema.`,
+Return ONLY valid JSON matching AutomationRule schema. Ensure all required fields are present.`,
                 response_json_schema: {
                     type: "object",
                     properties: {
                         name: { type: "string" },
                         description: { type: "string" },
                         trigger_type: { type: "string" },
-                        trigger_config: { type: "object" },
+                        trigger_config: { 
+                            type: "object",
+                            properties: {}
+                        },
                         actions: {
                             type: "array",
                             items: {
@@ -65,17 +73,35 @@ Return JSON format matching AutomationRule schema.`,
                                 properties: {
                                     type: { type: "string" },
                                     config: { type: "object" }
-                                }
+                                },
+                                required: ["type", "config"]
                             }
                         }
-                    }
+                    },
+                    required: ["name", "description", "trigger_type", "actions"]
                 }
             });
+            
+            // Validate response
+            if (!response.name || !response.description || !response.trigger_type || !response.actions) {
+                throw new Error('Invalid workflow data received');
+            }
+            
+            console.log('✅ Workflow Generation Test:', {
+                input: prompt,
+                output: response,
+                status: 'SUCCESS'
+            });
+            
             return response;
         },
         onSuccess: (data) => {
             setWorkflowResult(data);
-            toast.success('Workflow generated!');
+            toast.success('Workflow generated successfully!');
+        },
+        onError: (error) => {
+            console.error('❌ Workflow Generation Error:', error);
+            toast.error(error.message || 'Failed to generate workflow');
         }
     });
 
@@ -83,25 +109,49 @@ Return JSON format matching AutomationRule schema.`,
     const summarizeMutation = useMutation({
         mutationFn: async () => {
             if (!document?.file_url) {
-                throw new Error('No document provided');
+                throw new Error('No document provided. Please select a document first.');
             }
 
             const response = await base44.integrations.Core.InvokeLLM({
-                prompt: `Summarize this document in a concise, actionable format. Include:
-- Main purpose/topic
-- Key points (bullet list)
-- Action items (if any)
-- Important dates or numbers
-- Overall recommendation or conclusion
+                prompt: `Analyze and summarize this document in a clear, structured format:
 
-Keep it brief but comprehensive.`,
+📋 MAIN TOPIC/PURPOSE:
+[Brief overview]
+
+🔑 KEY POINTS:
+• [Point 1]
+• [Point 2]
+• [Point 3]
+
+✅ ACTION ITEMS:
+[List any tasks or actions needed]
+
+📅 IMPORTANT DATES/NUMBERS:
+[Any critical dates, deadlines, or metrics]
+
+💡 RECOMMENDATION:
+[Your assessment or conclusion]
+
+Keep it concise (max 300 words) but comprehensive.`,
                 file_urls: [document.file_url]
             });
+            
+            console.log('✅ Document Summarization Test:', {
+                document: document.title,
+                fileUrl: document.file_url,
+                outputLength: response?.length,
+                status: 'SUCCESS'
+            });
+            
             return response;
         },
         onSuccess: (data) => {
             setSummary(data);
-            toast.success('Document summarized!');
+            toast.success('Document summarized successfully!');
+        },
+        onError: (error) => {
+            console.error('❌ Document Summarization Error:', error);
+            toast.error(error.message || 'Failed to summarize document');
         }
     });
 
@@ -110,19 +160,37 @@ Keep it brief but comprehensive.`,
         mutationFn: async () => {
             const contextText = context || document?.title || 'General workflow';
             
+            if (forms.length === 0 && checklists.length === 0) {
+                throw new Error('No forms or checklists available yet. Create some first!');
+            }
+            
+            const formsList = forms.slice(0, 10).map(f => `"${f.title}" - ${f.description || 'No description'}`).join('\n');
+            const checklistsList = checklists.slice(0, 10).map(c => `"${c.title}" - ${c.description || 'No description'}`).join('\n');
+            
             const response = await base44.integrations.Core.InvokeLLM({
-                prompt: `Based on this context: "${contextText}"
+                prompt: `You are an intelligent assistant helping users find the right forms and checklists.
 
-Available Forms: ${forms.map(f => `${f.title} - ${f.description || ''}`).join(', ')}
-Available Checklists: ${checklists.map(c => `${c.title} - ${c.description || ''}`).join(', ')}
+CONTEXT: "${contextText}"
 
-Suggest the top 3 most relevant forms or checklists that would be useful for this context. For each suggestion:
-- id: The form/checklist title
+AVAILABLE FORMS:
+${formsList || 'None'}
+
+AVAILABLE CHECKLISTS:
+${checklistsList || 'None'}
+
+Task: Suggest the top 3 most relevant forms or checklists for this context.
+
+Requirements:
+- Match the exact title from the lists above
+- Provide clear, actionable reasoning
+- Focus on practical use cases
+- Return ONLY the 3 best matches
+
+Return JSON with "suggestions" array containing exactly 3 items with:
+- id: Exact title from lists above
 - type: "form" or "checklist"
-- relevance: Why it's relevant (1 sentence)
-- use_case: How to use it in this context
-
-Return as JSON array.`,
+- relevance: One sentence why it matches (max 100 chars)
+- use_case: Specific example of how to use it (max 120 chars)`,
                 response_json_schema: {
                     type: "object",
                     properties: {
@@ -132,27 +200,50 @@ Return as JSON array.`,
                                 type: "object",
                                 properties: {
                                     id: { type: "string" },
-                                    type: { type: "string" },
+                                    type: { type: "string", enum: ["form", "checklist"] },
                                     relevance: { type: "string" },
                                     use_case: { type: "string" }
-                                }
-                            }
+                                },
+                                required: ["id", "type", "relevance", "use_case"]
+                            },
+                            minItems: 1,
+                            maxItems: 3
                         }
-                    }
+                    },
+                    required: ["suggestions"]
                 }
             });
-            return response.suggestions;
+            
+            console.log('✅ Smart Suggestions Test:', {
+                context: contextText,
+                formsCount: forms.length,
+                checklistsCount: checklists.length,
+                suggestionsCount: response.suggestions?.length,
+                output: response.suggestions,
+                status: 'SUCCESS'
+            });
+            
+            return response.suggestions || [];
         },
         onSuccess: (data) => {
             setSuggestions(data);
-            toast.success('Suggestions generated!');
+            toast.success(`Found ${data.length} relevant suggestion${data.length !== 1 ? 's' : ''}!`);
+        },
+        onError: (error) => {
+            console.error('❌ Smart Suggestions Error:', error);
+            toast.error(error.message || 'Failed to generate suggestions');
         }
     });
 
     const handleCreateWorkflow = () => {
-        navigate(createPageUrl('CreateAutomation'), {
+        if (!workflowResult) {
+            toast.error('No workflow to create');
+            return;
+        }
+        navigate(createPageUrl('EditAutomation'), {
             state: { draftData: workflowResult }
         });
+        toast.success('Opening automation builder...');
     };
 
     const copyWorkflow = () => {

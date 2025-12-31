@@ -46,6 +46,7 @@ import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import AIAssistantPage from './pages/AIAssistantPage';
+import AIAssistantTest from './pages/AIAssistantTest';
 import __Layout from './Layout.jsx';
 
 
@@ -98,6 +99,7 @@ export const PAGES = {
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
     "AIAssistantPage": AIAssistantPage,
+    "AIAssistantTest": AIAssistantTest,
 }
 
 export const pagesConfig = {
