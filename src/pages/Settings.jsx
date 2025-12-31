@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity, Shield, Building2 } from 'lucide-react';
+import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity, Shield, Building2, Book } from 'lucide-react';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -183,6 +183,26 @@ export default function Settings() {
                         <Link to={createPageUrl('OrganizationSettings')}>
                             <Button variant="ghost" className="w-full text-blue-400 hover:bg-blue-950/30 text-sm">
                                 Organization Settings
+                            </Button>
+                        </Link>
+                    </CardContent>
+                </Card>
+
+                {/* Knowledge Base */}
+                <Card className="bg-[#0f1419] border-blue-900/20">
+                    <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                            <Book className="w-5 h-5 text-purple-400" />
+                            AI Knowledge Base
+                        </CardTitle>
+                        <CardDescription className="text-blue-400">
+                            Ask questions about app features, data, and processes
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Link to={createPageUrl('KnowledgeBase')}>
+                            <Button variant="outline" className="w-full border-purple-900/30 text-purple-300 hover:bg-purple-950/50">
+                                Open Knowledge Base
                             </Button>
                         </Link>
                     </CardContent>

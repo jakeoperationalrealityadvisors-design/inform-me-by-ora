@@ -34,6 +34,7 @@ import CustomerPortal from './pages/CustomerPortal';
 import AutomationOptimizer from './pages/AutomationOptimizer';
 import AIWorkflowBuilder from './pages/AIWorkflowBuilder';
 import Messages from './pages/Messages';
+import KnowledgeBase from './pages/KnowledgeBase';
 import __Layout from './Layout.jsx';
 
 
@@ -74,6 +75,7 @@ export const PAGES = {
     "AutomationOptimizer": AutomationOptimizer,
     "AIWorkflowBuilder": AIWorkflowBuilder,
     "Messages": Messages,
+    "KnowledgeBase": KnowledgeBase,
 }
 
 export const pagesConfig = {
