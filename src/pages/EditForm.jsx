@@ -15,7 +15,11 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { SuggestFieldsButton, AutoCategorizeButton, GenerateExamplesButton } from '@/components/ai/AIFormHelper';
 import ExampleSubmissionsDialog from '@/components/ai/ExampleSubmissionsDialog';
 import { toast } from 'sonner';
-import RoleGuard from '@/components/auth/RoleGuard';
+import RoleGuard, { useUserRole } from '@/components/auth/RoleGuard';
+import { useCollaboration } from '@/components/collaboration/useCollaboration';
+import PresenceIndicators from '@/components/collaboration/PresenceIndicators';
+import CollaborationBanner from '@/components/collaboration/CollaborationBanner';
+import ConflictResolver from '@/components/collaboration/ConflictResolver';
 
 const FIELD_TYPES = [
     { value: 'text', label: 'Text Input' },
@@ -33,6 +37,7 @@ function EditFormContent() {
     const formId = urlParams.get('id');
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const { user } = useUserRole();
     
     const [form, setForm] = useState({
         title: '',
@@ -44,6 +49,12 @@ function EditFormContent() {
     
     const [exampleSubmissions, setExampleSubmissions] = useState([]);
     const [showExamples, setShowExamples] = useState(false);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const [showConflict, setShowConflict] = useState(false);
+    const [conflictData, setConflictData] = useState(null);
+
+    // Collaboration
+    const { otherUsers, updateCursor, isCollaborating } = useCollaboration('form', formId, user);
     
     const { data: existingForm, isLoading } = useQuery({
         queryKey: ['edit-form', formId],
@@ -62,19 +73,42 @@ function EditFormContent() {
     useEffect(() => {
         if (existingForm) {
             setForm(existingForm);
+            setHasUnsavedChanges(false);
         }
     }, [existingForm]);
+
+    useEffect(() => {
+        if (existingForm && JSON.stringify(form) !== JSON.stringify(existingForm)) {
+            setHasUnsavedChanges(true);
+        }
+    }, [form, existingForm]);
     
     const saveMutation = useMutation({
-        mutationFn: (data) => {
+        mutationFn: async (data) => {
             if (formId) {
+                // Check for conflicts before saving
+                const currentData = await base44.entities.FormTemplate.filter({ id: formId }).then(r => r[0]);
+                
+                if (existingForm && currentData.updated_date !== existingForm.updated_date) {
+                    setConflictData({ local: data, server: currentData });
+                    setShowConflict(true);
+                    throw new Error('Conflict detected');
+                }
+                
                 return base44.entities.FormTemplate.update(formId, data);
             }
             return base44.entities.FormTemplate.create(data);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(['forms', 'all-forms']);
+            queryClient.invalidateQueries(['forms', 'all-forms', 'edit-form']);
+            setHasUnsavedChanges(false);
+            toast.success('Form saved successfully');
             navigate(createPageUrl('Admin'));
+        },
+        onError: (error) => {
+            if (error.message !== 'Conflict detected') {
+                toast.error('Failed to save form');
+            }
         }
     });
     
@@ -95,6 +129,7 @@ function EditFormContent() {
             ...prev,
             fields: prev.fields.map((f, i) => i === index ? { ...f, ...updates } : f)
         }));
+        updateCursor({ field_id: form.fields[index]?.id, section: 'fields' });
     };
     
     const removeField = (index) => {
@@ -131,6 +166,17 @@ function EditFormContent() {
         setExampleSubmissions(submissions);
         setShowExamples(true);
     };
+
+    const handleConflictResolve = (resolution) => {
+        if (resolution === 'local') {
+            saveMutation.mutate(conflictData.local);
+        } else if (resolution === 'server') {
+            setForm(conflictData.server);
+            queryClient.invalidateQueries(['edit-form']);
+        }
+        setShowConflict(false);
+        setConflictData(null);
+    };
     
     if (formId && isLoading) {
         return (
@@ -151,9 +197,13 @@ function EditFormContent() {
                                 <ArrowLeft className="w-5 h-5" />
                             </Button>
                         </Link>
-                        <h1 className="text-lg font-semibold text-slate-900">
-                            {formId ? 'Edit Form' : 'New Form'}
-                        </h1>
+                        <div>
+                            <h1 className="text-lg font-semibold text-slate-900">
+                                {formId ? 'Edit Form' : 'New Form'}
+                            </h1>
+                            {hasUnsavedChanges && <span className="text-xs text-orange-600">Unsaved changes</span>}
+                        </div>
+                        {isCollaborating && <PresenceIndicators users={otherUsers} />}
                     </div>
                     <Button 
                         onClick={handleSave}
@@ -171,6 +221,8 @@ function EditFormContent() {
             </div>
             
             <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
+                <CollaborationBanner otherUsers={otherUsers} hasUnsavedChanges={hasUnsavedChanges} />
+                
                 {/* Basic Info */}
                 <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
                     <h2 className="text-lg font-semibold text-slate-900">Basic Information</h2>
@@ -360,6 +412,14 @@ function EditFormContent() {
                 open={showExamples}
                 onOpenChange={setShowExamples}
                 submissions={exampleSubmissions}
+            />
+
+            <ConflictResolver
+                isOpen={showConflict}
+                onResolve={handleConflictResolve}
+                localVersion={conflictData?.local}
+                serverVersion={conflictData?.server}
+                entityType="form"
             />
         </div>
     );
