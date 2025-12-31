@@ -1,4 +1,3 @@
-
 export const translations = {
     en: {
         common: {
@@ -647,6 +646,6 @@ export const translations = {
 };
 
 export const languages = [
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'en', name: 'English (Canada)', flag: '🇨🇦' },
+    { code: 'fr', name: 'Français (Canada)', flag: '🇨🇦' },
 ];
