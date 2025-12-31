@@ -131,34 +131,24 @@ export default function Home() {
         <div className="min-h-screen bg-[#0a0e17] transition-colors overflow-y-auto">
             {/* Header */}
             <div className="bg-[#0a0e17] border-b border-blue-900/30 sticky top-0 z-20 shadow-sm transition-colors">
-                <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3">
-                    <div className="flex items-center justify-between">
-                        <h1 className="text-xl font-bold text-[#FF8C00]">
+                <div className="max-w-2xl mx-auto px-4 sm:px-4 py-4 sm:py-3">
+                    <div className="flex items-center justify-between mb-3 sm:mb-0">
+                        <h1 className="text-2xl sm:text-xl font-bold text-[#FF8C00]">
                             {isSeniorMode ? 'My Forms' : 'InForm Me'}
                         </h1>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 sm:gap-2">
                             <NotificationBell />
-                            <Link to={createPageUrl('Scanner')}>
-                                <Button variant="ghost" size="icon" className="rounded-full text-[#FF8C00]">
-                                    <Scan className="w-5 h-5" />
-                                </Button>
-                            </Link>
                             {canCreateForms && (
                                 <Link to={createPageUrl('CreateForm')}>
-                                    <Button size="icon" className="rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]">
-                                        <Plus className="w-5 h-5" />
+                                    <Button size="icon" className="rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] h-11 w-11 sm:h-10 sm:w-10">
+                                        <Plus className="w-6 h-6 sm:w-5 sm:h-5" />
                                     </Button>
                                 </Link>
                             )}
-                            <Link to={createPageUrl('Settings')}>
-                                <Button variant="ghost" size="icon" className="rounded-full text-[#FF8C00]">
-                                    <Settings className="w-5 h-5" />
-                                </Button>
-                            </Link>
                         </div>
                     </div>
                     
-                    <div className="relative">
+                    <div className="relative sm:mt-3">
                         <SearchBar
                             value={search}
                             onChange={setSearch}
@@ -166,7 +156,7 @@ export default function Home() {
                         />
                         <button
                             onClick={() => setShowGlobalSearch(true)}
-                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded hover:bg-blue-50"
+                            className="hidden sm:block absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded hover:bg-blue-50"
                         >
                             Advanced
                         </button>
@@ -197,26 +187,28 @@ export default function Home() {
                 </div>
 
                 {/* Tab Switcher */}
-                <div className="flex gap-2 mb-6">
+                <div className="flex gap-3 sm:gap-2 mb-6">
                     <button
                         onClick={() => setActiveTab('forms')}
-                        className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                        className={`flex-1 py-4 sm:py-3 rounded-xl sm:rounded-lg font-semibold sm:font-medium text-lg sm:text-base transition-all ${
                             activeTab === 'forms' 
-                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white' 
+                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white shadow-lg' 
                                 : 'bg-[#0f1419] text-[#FF8C00]/70 border border-blue-900/30'
                         }`}
                     >
-                        Forms ({forms.length})
+                        <div className="sm:hidden">Forms</div>
+                        <div className="hidden sm:block">Forms ({forms.length})</div>
                     </button>
                     <button
                         onClick={() => setActiveTab('checklists')}
-                        className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                        className={`flex-1 py-4 sm:py-3 rounded-xl sm:rounded-lg font-semibold sm:font-medium text-lg sm:text-base transition-all ${
                             activeTab === 'checklists' 
-                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white' 
+                                ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white shadow-lg' 
                                 : 'bg-[#0f1419] text-[#FF8C00]/70 border border-blue-900/30'
                         }`}
                     >
-                        Checklists ({checklists.length})
+                        <div className="sm:hidden">Checklists</div>
+                        <div className="hidden sm:block">Checklists ({checklists.length})</div>
                     </button>
                 </div>
                 
@@ -224,24 +216,24 @@ export default function Home() {
                 
                 {/* Content */}
                 {isLoading ? (
-                    <div className="grid gap-3 sm:gap-4">
+                    <div className="grid gap-4 sm:gap-3">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="bg-[#0a0e17] rounded-lg border border-blue-900/30 p-4 sm:p-5 animate-pulse shadow-lg transition-colors">
-                                <div className="h-8 sm:h-10 bg-blue-900/30 rounded mb-3 sm:mb-4" />
-                                <div className="h-4 sm:h-5 w-3/4 bg-blue-900/20 rounded mb-2" />
-                                <div className="h-3 sm:h-4 w-1/2 bg-blue-900/10 rounded" />
+                            <div key={i} className="bg-[#0a0e17] rounded-xl sm:rounded-lg border border-blue-900/30 p-6 sm:p-4 animate-pulse shadow-lg transition-colors">
+                                <div className="h-10 sm:h-8 bg-blue-900/30 rounded mb-4 sm:mb-3" />
+                                <div className="h-5 sm:h-4 w-3/4 bg-blue-900/20 rounded mb-3 sm:mb-2" />
+                                <div className="h-4 sm:h-3 w-1/2 bg-blue-900/10 rounded" />
                             </div>
                         ))}
                     </div>
                 ) : activeTab === 'forms' ? (
                     filteredForms.length > 0 ? (
-                        <div className={viewMode === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4" : "grid gap-3 sm:gap-4"}>
+                        <div className="grid gap-4 sm:gap-3">
                             {filteredForms.map((form) => (
                                 <SwipeActions key={form.id}>
                                     <FormCard 
                                         form={form} 
                                         category={getCategoryById(form.category_id)}
-                                        viewMode={viewMode}
+                                        viewMode="list"
                                     />
                                 </SwipeActions>
                             ))}
@@ -255,13 +247,13 @@ export default function Home() {
                     )
                 ) : (
                     filteredChecklists.length > 0 ? (
-                        <div className={viewMode === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4" : "grid gap-3 sm:gap-4"}>
+                        <div className="grid gap-4 sm:gap-3">
                             {filteredChecklists.map((checklist) => (
                                 <SwipeActions key={checklist.id}>
                                     <ChecklistCard 
                                         checklist={checklist}
                                         category={getCategoryById(checklist.category_id)}
-                                        viewMode={viewMode}
+                                        viewMode="list"
                                     />
                                 </SwipeActions>
                             ))}

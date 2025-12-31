@@ -1,3 +1,5 @@
+import AIAssistantPage from './pages/AIAssistantPage';
+import AIAssistantTest from './pages/AIAssistantTest';
 import AIWorkflowBuilder from './pages/AIWorkflowBuilder';
 import ActivityLog from './pages/ActivityLog';
 import Admin from './pages/Admin';
@@ -30,6 +32,7 @@ import Messages from './pages/Messages';
 import MyTasks from './pages/MyTasks';
 import NetworkOnboarding from './pages/NetworkOnboarding';
 import OrganizationSettings from './pages/OrganizationSettings';
+import Pricing from './pages/Pricing';
 import PublicChecklist from './pages/PublicChecklist';
 import PublicForm from './pages/PublicForm';
 import PublicSubmission from './pages/PublicSubmission';
@@ -45,13 +48,12 @@ import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import AIAssistantPage from './pages/AIAssistantPage';
-import AIAssistantTest from './pages/AIAssistantTest';
-import Pricing from './pages/Pricing';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AIAssistantPage": AIAssistantPage,
+    "AIAssistantTest": AIAssistantTest,
     "AIWorkflowBuilder": AIWorkflowBuilder,
     "ActivityLog": ActivityLog,
     "Admin": Admin,
@@ -84,6 +86,7 @@ export const PAGES = {
     "MyTasks": MyTasks,
     "NetworkOnboarding": NetworkOnboarding,
     "OrganizationSettings": OrganizationSettings,
+    "Pricing": Pricing,
     "PublicChecklist": PublicChecklist,
     "PublicForm": PublicForm,
     "PublicSubmission": PublicSubmission,
@@ -99,9 +102,6 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "AIAssistantPage": AIAssistantPage,
-    "AIAssistantTest": AIAssistantTest,
-    "Pricing": Pricing,
 }
 
 export const pagesConfig = {
