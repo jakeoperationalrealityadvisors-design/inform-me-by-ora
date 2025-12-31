@@ -1,0 +1,417 @@
+import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, Plus, Trash2, Upload, Camera, FileText, Loader2, X, Sparkles } from 'lucide-react';
+import { createPageUrl } from '@/utils';
+import { toast } from 'sonner';
+import { useLanguage } from '@/components/language/LanguageContext';
+
+export default function CreateForm() {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const { t } = useLanguage();
+    const fileInputRef = useRef(null);
+    const cameraInputRef = useRef(null);
+    
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        category_id: '',
+        status: 'active'
+    });
+    
+    const [fields, setFields] = useState([]);
+    const [isUploading, setIsUploading] = useState(false);
+    const [isExtracting, setIsExtracting] = useState(false);
+    const [cameraPermission, setCameraPermission] = useState('prompt');
+
+    const { data: categories = [] } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => base44.entities.Category.list()
+    });
+
+    const createMutation = useMutation({
+        mutationFn: (data) => base44.entities.FormTemplate.create(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['forms'] });
+            toast.success('Form template created successfully');
+            navigate(createPageUrl('Home'));
+        },
+        onError: (error) => {
+            toast.error('Failed to create form template');
+            console.error(error);
+        }
+    });
+
+    const addField = () => {
+        const newField = {
+            id: `field_${Date.now()}`,
+            label: '',
+            type: 'text',
+            required: false,
+            options: [],
+            placeholder: ''
+        };
+        setFields([...fields, newField]);
+    };
+
+    const removeField = (index) => {
+        setFields(fields.filter((_, i) => i !== index));
+    };
+
+    const updateField = (index, key, value) => {
+        const updated = [...fields];
+        updated[index] = { ...updated[index], [key]: value };
+        setFields(updated);
+    };
+
+    const handleUpload = async (file) => {
+        if (!file) return;
+
+        setIsUploading(true);
+        try {
+            // Upload file first
+            const { file_url } = await base44.integrations.Core.UploadFile({ file });
+            
+            setIsExtracting(true);
+            
+            // Use AI to extract form structure
+            const response = await base44.integrations.Core.InvokeLLM({
+                prompt: `Analyze this document and extract a form structure. Identify all fields that would make sense for a form template. For each field, provide:
+- label (the field name)
+- type (text, textarea, number, date, select, checkbox)
+- required (boolean)
+- options (array of strings, only for select type)
+- placeholder (helpful text)
+
+Return JSON with: { title, description, fields: [...] }`,
+                file_urls: [file_url],
+                response_json_schema: {
+                    type: "object",
+                    properties: {
+                        title: { type: "string" },
+                        description: { type: "string" },
+                        fields: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    label: { type: "string" },
+                                    type: { type: "string" },
+                                    required: { type: "boolean" },
+                                    options: { type: "array", items: { type: "string" } },
+                                    placeholder: { type: "string" }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            if (response.title) setFormData(prev => ({ ...prev, title: response.title }));
+            if (response.description) setFormData(prev => ({ ...prev, description: response.description }));
+            if (response.fields) {
+                const fieldsWithIds = response.fields.map((field, idx) => ({
+                    ...field,
+                    id: `field_${Date.now()}_${idx}`,
+                    options: field.options || []
+                }));
+                setFields(fieldsWithIds);
+            }
+
+            toast.success('Form extracted from document');
+        } catch (error) {
+            toast.error('Failed to process document');
+            console.error(error);
+        } finally {
+            setIsUploading(false);
+            setIsExtracting(false);
+        }
+    };
+
+    const checkCameraPermission = async () => {
+        try {
+            const result = await navigator.permissions.query({ name: 'camera' });
+            setCameraPermission(result.state);
+            result.addEventListener('change', () => {
+                setCameraPermission(result.state);
+            });
+        } catch (error) {
+            console.log('Permission API not supported');
+        }
+    };
+
+    React.useEffect(() => {
+        checkCameraPermission();
+    }, []);
+
+    const handleCameraCapture = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            await handleUpload(file);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!formData.title || fields.length === 0) {
+            toast.error('Please add a title and at least one field');
+            return;
+        }
+
+        await createMutation.mutateAsync({
+            ...formData,
+            fields
+        });
+    };
+
+    return (
+        <div className="min-h-screen bg-slate-100 dark:bg-[#0a0e17] pb-20 md:pb-6">
+            <div className="bg-white dark:bg-[#0a0e17] border-b border-slate-200 dark:border-blue-900/30 sticky top-0 z-10">
+                <div className="max-w-4xl mx-auto px-4 py-4">
+                    <div className="flex items-center gap-3">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => navigate(createPageUrl('Home'))}
+                            className="text-slate-700 dark:text-[#FF8C00]"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                        </Button>
+                        <div>
+                            <h1 className="text-xl font-bold text-slate-900 dark:text-[#FF8C00]">
+                                Create Form Template
+                            </h1>
+                            <p className="text-sm text-slate-600 dark:text-[#FF8C00]/70">
+                                Build from scratch or upload a document
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="max-w-4xl mx-auto px-4 py-6">
+                {/* Upload Options */}
+                <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30 mb-6">
+                    <CardHeader>
+                        <CardTitle className="text-slate-900 dark:text-[#FF8C00] flex items-center gap-2">
+                            <Sparkles className="w-5 h-5" />
+                            AI-Powered Form Builder
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <p className="text-sm text-slate-600 dark:text-[#FF8C00]/70">
+                            Upload a document or take a photo, and AI will extract the form structure for you
+                        </p>
+                        <div className="flex flex-wrap gap-3">
+                            <Button
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={isUploading || isExtracting}
+                                className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] hover:opacity-90 text-black"
+                            >
+                                {isUploading || isExtracting ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        {isExtracting ? 'Extracting...' : 'Uploading...'}
+                                    </>
+                                ) : (
+                                    <>
+                                        <Upload className="w-4 h-4 mr-2" />
+                                        Upload Document
+                                    </>
+                                )}
+                            </Button>
+                            <Button
+                                onClick={() => cameraInputRef.current?.click()}
+                                disabled={isUploading || isExtracting}
+                                variant="outline"
+                                className="border-blue-900/30 dark:text-[#FF8C00]"
+                            >
+                                <Camera className="w-4 h-4 mr-2" />
+                                Take Photo
+                            </Button>
+                        </div>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*,.pdf,.doc,.docx"
+                            className="hidden"
+                            onChange={(e) => handleUpload(e.target.files[0])}
+                        />
+                        <input
+                            ref={cameraInputRef}
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            className="hidden"
+                            onChange={handleCameraCapture}
+                        />
+                    </CardContent>
+                </Card>
+
+                {/* Form Builder */}
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30">
+                        <CardHeader>
+                            <CardTitle className="text-slate-900 dark:text-[#FF8C00]">Form Details</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div>
+                                <Label className="text-slate-700 dark:text-[#FF8C00]">Title *</Label>
+                                <Input
+                                    value={formData.title}
+                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                    placeholder="Enter form title"
+                                    required
+                                    className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
+                                />
+                            </div>
+                            <div>
+                                <Label className="text-slate-700 dark:text-[#FF8C00]">Description</Label>
+                                <Textarea
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                    placeholder="Enter form description"
+                                    className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
+                                />
+                            </div>
+                            <div>
+                                <Label className="text-slate-700 dark:text-[#FF8C00]">Category</Label>
+                                <Select
+                                    value={formData.category_id}
+                                    onValueChange={(value) => setFormData({ ...formData, category_id: value })}
+                                >
+                                    <SelectTrigger className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
+                                        <SelectValue placeholder="Select category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {categories.map(cat => (
+                                            <SelectItem key={cat.id} value={cat.id}>
+                                                {cat.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Fields */}
+                    <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <CardTitle className="text-slate-900 dark:text-[#FF8C00]">Form Fields</CardTitle>
+                            <Button
+                                type="button"
+                                onClick={addField}
+                                size="sm"
+                                className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] hover:opacity-90 text-black"
+                            >
+                                <Plus className="w-4 h-4 mr-1" />
+                                Add Field
+                            </Button>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {fields.length === 0 ? (
+                                <div className="text-center py-8 text-slate-500 dark:text-[#FF8C00]/50">
+                                    <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                                    <p>No fields yet. Add fields or upload a document.</p>
+                                </div>
+                            ) : (
+                                fields.map((field, index) => (
+                                    <div key={field.id} className="p-4 border border-slate-200 dark:border-blue-900/30 rounded-lg space-y-3">
+                                        <div className="flex items-start justify-between gap-3">
+                                            <div className="flex-1 space-y-3">
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <Label className="text-xs text-slate-700 dark:text-[#FF8C00]">Label</Label>
+                                                        <Input
+                                                            value={field.label}
+                                                            onChange={(e) => updateField(index, 'label', e.target.value)}
+                                                            placeholder="Field label"
+                                                            className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs text-slate-700 dark:text-[#FF8C00]">Type</Label>
+                                                        <Select
+                                                            value={field.type}
+                                                            onValueChange={(value) => updateField(index, 'type', value)}
+                                                        >
+                                                            <SelectTrigger className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="text">Text</SelectItem>
+                                                                <SelectItem value="textarea">Text Area</SelectItem>
+                                                                <SelectItem value="number">Number</SelectItem>
+                                                                <SelectItem value="date">Date</SelectItem>
+                                                                <SelectItem value="select">Select</SelectItem>
+                                                                <SelectItem value="checkbox">Checkbox</SelectItem>
+                                                                <SelectItem value="photo">Photo</SelectItem>
+                                                                <SelectItem value="signature">Signature</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={field.required}
+                                                        onChange={(e) => updateField(index, 'required', e.target.checked)}
+                                                        className="rounded"
+                                                    />
+                                                    <Label className="text-sm text-slate-700 dark:text-[#FF8C00]">Required</Label>
+                                                </div>
+                                            </div>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => removeField(index)}
+                                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    <div className="flex gap-3 justify-end">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => navigate(createPageUrl('Home'))}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            disabled={createMutation.isPending}
+                            className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] hover:opacity-90 text-black"
+                        >
+                            {createMutation.isPending ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    Creating...
+                                </>
+                            ) : (
+                                'Create Form Template'
+                            )}
+                        </Button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}

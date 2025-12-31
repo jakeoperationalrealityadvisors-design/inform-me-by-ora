@@ -85,6 +85,11 @@ export default function Home() {
                             <NotificationBell />
                             <ThemeToggle />
                             <LanguageSwitcher />
+                            <Link to={createPageUrl('CreateForm')}>
+                                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-200 dark:hover:bg-blue-900/30 text-slate-700 dark:text-[#FF8C00] h-9 w-9 sm:h-10 sm:w-10">
+                                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                                </Button>
+                            </Link>
                             <Link to={createPageUrl('MyTasks')}>
                                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-200 dark:hover:bg-blue-900/30 text-slate-700 dark:text-[#FF8C00] h-9 w-9 sm:h-10 sm:w-10">
                                     <ListTodo className="w-4 h-4 sm:w-5 sm:h-5" />
