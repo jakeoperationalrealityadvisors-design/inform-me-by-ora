@@ -325,6 +325,28 @@ export default function Settings() {
                     </CardContent>
                 </Card>
 
+                {/* Admin Dashboard */}
+                {isAdmin && (
+                    <Card className="bg-[#0f1419] border-blue-900/20">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <Activity className="w-5 h-5 text-[#FF8C00]" />
+                                Admin Dashboard
+                            </CardTitle>
+                            <CardDescription className="text-blue-400">
+                                System overview and management console
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link to={createPageUrl('AdminDashboard')}>
+                                <Button className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]">
+                                    Open Dashboard
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Role Management */}
                 {isAdmin && (
                     <Card className="bg-[#0f1419] border-blue-900/20">

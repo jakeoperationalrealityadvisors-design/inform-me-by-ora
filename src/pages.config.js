@@ -59,6 +59,7 @@ import BillingTest from './pages/BillingTest';
 import ProductionChecklist from './pages/ProductionChecklist';
 import Documentation from './pages/Documentation';
 import LoadTesting from './pages/LoadTesting';
+import AdminDashboard from './pages/AdminDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -124,6 +125,7 @@ export const PAGES = {
     "ProductionChecklist": ProductionChecklist,
     "Documentation": Documentation,
     "LoadTesting": LoadTesting,
+    "AdminDashboard": AdminDashboard,
 }
 
 export const pagesConfig = {
