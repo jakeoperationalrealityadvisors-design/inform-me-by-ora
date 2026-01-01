@@ -35,6 +35,7 @@ import SwipeActions from '@/components/mobile/SwipeActions';
 import { useNavigate } from 'react-router-dom';
 import SmartSuggestions from '@/components/ai/SmartSuggestions';
 import { useQueryClient } from '@tanstack/react-query';
+import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 
 export default function Home() {
     const { isAdmin, canViewAll, canCreateForms, user } = useUserRole();
@@ -146,6 +147,7 @@ export default function Home() {
     
     return (
         <div className="min-h-screen bg-[#0a0e17] transition-colors overflow-y-auto">
+            <EmailVerificationBanner user={user} />
             {/* Header */}
             <div className="bg-[#0a0e17] border-b border-blue-900/30 sticky top-0 z-20 shadow-sm transition-colors">
                 <div className="max-w-5xl mx-auto px-4 sm:px-4 py-4 sm:py-3">
