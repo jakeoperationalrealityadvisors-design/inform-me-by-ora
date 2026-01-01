@@ -474,6 +474,28 @@ export default function Settings() {
                         </CardContent>
                     </Card>
                 )}
+
+                {/* Load Testing - Admin Only */}
+                {isAdmin && (
+                    <Card className="bg-[#0f1419] border-blue-900/20">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <TrendingUp className="w-5 h-5 text-purple-400" />
+                                Load Testing
+                            </CardTitle>
+                            <CardDescription className="text-blue-400">
+                                Simulate concurrent users and test performance
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link to={createPageUrl('LoadTesting')}>
+                                <Button variant="outline" className="w-full border-purple-900/30 text-purple-300 hover:bg-purple-950/50">
+                                    Run Load Tests
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         </div>
     );
