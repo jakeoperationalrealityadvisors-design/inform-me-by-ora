@@ -410,6 +410,28 @@ export default function Settings() {
                         </CardContent>
                     </Card>
                 )}
+
+                {/* Billing Tests - Admin Only */}
+                {isAdmin && (
+                    <Card className="bg-[#0f1419] border-blue-900/20">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <TrendingUp className="w-5 h-5 text-green-400" />
+                                Billing Tests
+                            </CardTitle>
+                            <CardDescription className="text-blue-400">
+                                Test Stripe integration flow
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link to={createPageUrl('BillingTest')}>
+                                <Button variant="outline" className="w-full border-green-900/30 text-green-300 hover:bg-green-950/50">
+                                    Run Billing Tests
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         </div>
     );
