@@ -432,6 +432,28 @@ export default function Settings() {
                         </CardContent>
                     </Card>
                 )}
+
+                {/* Production Checklist - Admin Only */}
+                {isAdmin && (
+                    <Card className="bg-[#0f1419] border-blue-900/20">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <Activity className="w-5 h-5 text-[#FF8C00]" />
+                                Production Checklist
+                            </CardTitle>
+                            <CardDescription className="text-blue-400">
+                                Track readiness for production launch
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link to={createPageUrl('ProductionChecklist')}>
+                                <Button variant="outline" className="w-full border-[#FF8C00]/30 text-[#FF8C00] hover:bg-[#FF8C00]/10">
+                                    View Checklist
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         </div>
     );

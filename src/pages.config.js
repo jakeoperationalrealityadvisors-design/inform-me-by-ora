@@ -56,6 +56,7 @@ import ViewFormSubmission from './pages/ViewFormSubmission';
 import SystemHealth from './pages/SystemHealth';
 import VerifyEmail from './pages/VerifyEmail';
 import BillingTest from './pages/BillingTest';
+import ProductionChecklist from './pages/ProductionChecklist';
 import __Layout from './Layout.jsx';
 
 
@@ -118,6 +119,7 @@ export const PAGES = {
     "SystemHealth": SystemHealth,
     "VerifyEmail": VerifyEmail,
     "BillingTest": BillingTest,
+    "ProductionChecklist": ProductionChecklist,
 }
 
 export const pagesConfig = {
