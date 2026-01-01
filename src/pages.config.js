@@ -57,6 +57,7 @@ import SystemHealth from './pages/SystemHealth';
 import VerifyEmail from './pages/VerifyEmail';
 import BillingTest from './pages/BillingTest';
 import ProductionChecklist from './pages/ProductionChecklist';
+import Documentation from './pages/Documentation';
 import __Layout from './Layout.jsx';
 
 
@@ -120,6 +121,7 @@ export const PAGES = {
     "VerifyEmail": VerifyEmail,
     "BillingTest": BillingTest,
     "ProductionChecklist": ProductionChecklist,
+    "Documentation": Documentation,
 }
 
 export const pagesConfig = {

@@ -285,6 +285,26 @@ export default function Settings() {
                     </CardContent>
                 </Card>
 
+                {/* Documentation */}
+                <Card className="bg-[#0f1419] border-blue-900/20">
+                    <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                            <Book className="w-5 h-5 text-blue-400" />
+                            User Documentation
+                        </CardTitle>
+                        <CardDescription className="text-blue-400">
+                            Guides, tutorials, and FAQs
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Link to={createPageUrl('Documentation')}>
+                            <Button variant="outline" className="w-full border-blue-900/30 text-blue-300 hover:bg-blue-950/50">
+                                View Documentation
+                            </Button>
+                        </Link>
+                    </CardContent>
+                </Card>
+
                 {/* Knowledge Base */}
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>
