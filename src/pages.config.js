@@ -20,9 +20,11 @@ import EditAutomation from './pages/EditAutomation';
 import EditCategory from './pages/EditCategory';
 import EditChecklist from './pages/EditChecklist';
 import EditForm from './pages/EditForm';
+import ExportData from './pages/ExportData';
 import FillChecklist from './pages/FillChecklist';
 import FillForm from './pages/FillForm';
 import Home from './pages/Home';
+import HopCode from './pages/HopCode';
 import Integrations from './pages/Integrations';
 import KnowledgeBase from './pages/KnowledgeBase';
 import ManageAutomations from './pages/ManageAutomations';
@@ -33,6 +35,7 @@ import MyTasks from './pages/MyTasks';
 import NetworkOnboarding from './pages/NetworkOnboarding';
 import OrganizationSettings from './pages/OrganizationSettings';
 import Pricing from './pages/Pricing';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import PublicChecklist from './pages/PublicChecklist';
 import PublicForm from './pages/PublicForm';
 import PublicSubmission from './pages/PublicSubmission';
@@ -42,17 +45,15 @@ import Scanner from './pages/Scanner';
 import SendFax from './pages/SendFax';
 import Settings from './pages/Settings';
 import Submissions from './pages/Submissions';
+import Support from './pages/Support';
+import TermsOfService from './pages/TermsOfService';
 import TikTokDashboard from './pages/TikTokDashboard';
 import UploadDocument from './pages/UploadDocument';
 import UserManagement from './pages/UserManagement';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import HopCode from './pages/HopCode';
-import TermsOfService from './pages/TermsOfService';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import Support from './pages/Support';
-import ExportData from './pages/ExportData';
+import SystemHealth from './pages/SystemHealth';
 import __Layout from './Layout.jsx';
 
 
@@ -79,9 +80,11 @@ export const PAGES = {
     "EditCategory": EditCategory,
     "EditChecklist": EditChecklist,
     "EditForm": EditForm,
+    "ExportData": ExportData,
     "FillChecklist": FillChecklist,
     "FillForm": FillForm,
     "Home": Home,
+    "HopCode": HopCode,
     "Integrations": Integrations,
     "KnowledgeBase": KnowledgeBase,
     "ManageAutomations": ManageAutomations,
@@ -92,6 +95,7 @@ export const PAGES = {
     "NetworkOnboarding": NetworkOnboarding,
     "OrganizationSettings": OrganizationSettings,
     "Pricing": Pricing,
+    "PrivacyPolicy": PrivacyPolicy,
     "PublicChecklist": PublicChecklist,
     "PublicForm": PublicForm,
     "PublicSubmission": PublicSubmission,
@@ -101,17 +105,15 @@ export const PAGES = {
     "SendFax": SendFax,
     "Settings": Settings,
     "Submissions": Submissions,
+    "Support": Support,
+    "TermsOfService": TermsOfService,
     "TikTokDashboard": TikTokDashboard,
     "UploadDocument": UploadDocument,
     "UserManagement": UserManagement,
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "HopCode": HopCode,
-    "TermsOfService": TermsOfService,
-    "PrivacyPolicy": PrivacyPolicy,
-    "Support": Support,
-    "ExportData": ExportData,
+    "SystemHealth": SystemHealth,
 }
 
 export const pagesConfig = {

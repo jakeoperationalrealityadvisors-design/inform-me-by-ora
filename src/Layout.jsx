@@ -4,6 +4,8 @@ import { LanguageProvider } from './components/language/LanguageContext';
 import { ThemeProvider } from './components/theme/ThemeContext';
 import { WebSocketProvider } from './components/connections/WebSocketProvider';
 import { ConnectionManager } from './components/connections/ConnectionManager';
+import { SecurityProvider } from './components/security/SecurityProvider';
+import './components/error/ErrorLogger';
 import OfflineIndicator from './components/mobile/OfflineIndicator';
 import InstallPWA from './components/mobile/InstallPWA';
 import SyncIndicator from './components/mobile/SyncManager';
@@ -55,10 +57,11 @@ export default function Layout({ children, currentPageName }) {
     }, []);
 
     return (
-        <ThemeProvider>
-            <LanguageProvider>
-                <ConnectionManager>
-                    <WebSocketProvider>
+        <SecurityProvider>
+            <ThemeProvider>
+                <LanguageProvider>
+                    <ConnectionManager>
+                        <WebSocketProvider>
                         <OfflineIndicator />
                         <InstallPWA />
                         <SyncIndicator />
@@ -169,8 +172,9 @@ export default function Layout({ children, currentPageName }) {
                         <MobileNav />
                     </div>
                     </WebSocketProvider>
-                </ConnectionManager>
-            </LanguageProvider>
-        </ThemeProvider>
+                    </ConnectionManager>
+                    </LanguageProvider>
+                    </ThemeProvider>
+                    </SecurityProvider>
     );
 }

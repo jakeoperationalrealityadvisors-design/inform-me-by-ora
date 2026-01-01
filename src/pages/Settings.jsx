@@ -388,6 +388,28 @@ export default function Settings() {
                         </Link>
                     </CardContent>
                 </Card>
+
+                {/* System Health - Admin Only */}
+                {isAdmin && (
+                    <Card className="bg-[#0f1419] border-blue-900/20">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <Activity className="w-5 h-5 text-red-400" />
+                                System Health
+                            </CardTitle>
+                            <CardDescription className="text-blue-400">
+                                Monitor errors and system status
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Link to={createPageUrl('SystemHealth')}>
+                                <Button variant="outline" className="w-full border-red-900/30 text-red-300 hover:bg-red-950/50">
+                                    View System Health
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         </div>
     );
