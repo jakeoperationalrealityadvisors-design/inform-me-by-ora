@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Plus, FileText, CheckSquare, Folder, Pencil, Trash2, Loader2 } from 'lucide-react';
@@ -35,21 +35,21 @@ function AdminContent() {
     
     const { data: forms = [], isLoading: formsLoading } = useQuery({
         queryKey: ['all-forms'],
-        queryFn: () => base44.entities.FormTemplate.list('-created_date')
+        queryFn: () => httpClient.entities.FormTemplate.list('-created_date')
     });
     
     const { data: checklists = [], isLoading: checklistsLoading } = useQuery({
         queryKey: ['all-checklists'],
-        queryFn: () => base44.entities.ChecklistTemplate.list('-created_date')
+        queryFn: () => httpClient.entities.ChecklistTemplate.list('-created_date')
     });
     
     const { data: categories = [], isLoading: categoriesLoading } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list()
+        queryFn: () => httpClient.entities.Category.list()
     });
     
     const deleteFormMutation = useMutation({
-        mutationFn: (id) => base44.entities.FormTemplate.delete(id),
+        mutationFn: (id) => httpClient.entities.FormTemplate.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries(['all-forms', 'forms']);
             setDeleteItem(null);
@@ -57,7 +57,7 @@ function AdminContent() {
     });
     
     const deleteChecklistMutation = useMutation({
-        mutationFn: (id) => base44.entities.ChecklistTemplate.delete(id),
+        mutationFn: (id) => httpClient.entities.ChecklistTemplate.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries(['all-checklists', 'checklists']);
             setDeleteItem(null);
@@ -65,7 +65,7 @@ function AdminContent() {
     });
     
     const deleteCategoryMutation = useMutation({
-        mutationFn: (id) => base44.entities.Category.delete(id),
+        mutationFn: (id) => httpClient.entities.Category.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries(['categories']);
             setDeleteItem(null);

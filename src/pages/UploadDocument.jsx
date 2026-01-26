@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Upload, FileText, Loader2, X } from 'lucide-react';
@@ -34,16 +34,16 @@ export default function UploadDocument() {
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
+        queryFn: () => httpClient.auth.me()
     });
     
     const { data: folders = [] } = useQuery({
         queryKey: ['document-folders'],
-        queryFn: () => base44.entities.DocumentFolder.list()
+        queryFn: () => httpClient.entities.DocumentFolder.list()
     });
     
     const createDocMutation = useMutation({
-        mutationFn: (docData) => base44.entities.Document.create(docData),
+        mutationFn: (docData) => httpClient.entities.Document.create(docData),
         onSuccess: () => {
             queryClient.invalidateQueries(['documents']);
             toast.success('Document uploaded successfully');
@@ -95,7 +95,7 @@ export default function UploadDocument() {
         
         try {
             // Upload file
-            const uploadResult = await base44.integrations.Core.UploadFile({ file });
+            const uploadResult = await httpClient.integrations.Core.UploadFile({ file });
             
             // Create document record
             const newDoc = await createDocMutation.mutateAsync({

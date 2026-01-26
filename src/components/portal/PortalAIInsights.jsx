@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ export default function PortalAIInsights({ organization, members, formSubmission
                 ? (checklistSubmissions.filter(c => c.status === 'completed').length / checklistSubmissions.length) * 100
                 : 0;
             
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `You are a business consultant. Analyze this organization's usage data and provide executive-level insights:
 
 **Organization:** ${organization.name}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,7 @@ export default function PublicChecklist() {
     const { data: checklist, isLoading } = useQuery({
         queryKey: ['public-checklist', checklistId],
         queryFn: async () => {
-            const checklists = await base44.entities.ChecklistTemplate.filter({ id: checklistId });
+            const checklists = await httpClient.entities.ChecklistTemplate.filter({ id: checklistId });
             return checklists[0];
         },
         enabled: !!checklistId
@@ -28,7 +28,7 @@ export default function PublicChecklist() {
     
     const submitMutation = useMutation({
         mutationFn: async (data) => {
-            return await base44.entities.ChecklistSubmission.create(data);
+            return await httpClient.entities.ChecklistSubmission.create(data);
         },
         onSuccess: () => {
             setSubmitted(true);

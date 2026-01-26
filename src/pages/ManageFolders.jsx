@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Plus, Folder, Pencil, Trash2 } from 'lucide-react';
@@ -41,11 +41,11 @@ export default function ManageFolders() {
     
     const { data: folders = [], isLoading } = useQuery({
         queryKey: ['document-folders'],
-        queryFn: () => base44.entities.DocumentFolder.list()
+        queryFn: () => httpClient.entities.DocumentFolder.list()
     });
     
     const createMutation = useMutation({
-        mutationFn: (data) => base44.entities.DocumentFolder.create(data),
+        mutationFn: (data) => httpClient.entities.DocumentFolder.create(data),
         onSuccess: () => {
             queryClient.invalidateQueries(['document-folders']);
             setShowDialog(false);
@@ -55,7 +55,7 @@ export default function ManageFolders() {
     });
     
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }) => base44.entities.DocumentFolder.update(id, data),
+        mutationFn: ({ id, data }) => httpClient.entities.DocumentFolder.update(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries(['document-folders']);
             setShowDialog(false);
@@ -65,7 +65,7 @@ export default function ManageFolders() {
     });
     
     const deleteMutation = useMutation({
-        mutationFn: (id) => base44.entities.DocumentFolder.delete(id),
+        mutationFn: (id) => httpClient.entities.DocumentFolder.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries(['document-folders']);
             setDeleteFolder(null);

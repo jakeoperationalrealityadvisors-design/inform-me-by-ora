@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Check, Sparkles, Zap, Crown, TrendingUp, Loader2 } from 'lucide-react';
@@ -99,12 +99,12 @@ export default function Pricing() {
 
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
+        queryFn: () => httpClient.auth.me()
     });
 
     const { data: organization } = useQuery({
         queryKey: ['organization', user?.organization_id],
-        queryFn: () => base44.entities.Organization.filter({ id: user.organization_id }).then(r => r[0]),
+        queryFn: () => httpClient.entities.Organization.filter({ id: user.organization_id }).then(r => r[0]),
         enabled: !!user?.organization_id
     });
 
@@ -143,13 +143,13 @@ export default function Pricing() {
         onSuccess: async (data) => {
             // Update organization with new plan
             if (organization) {
-                await base44.entities.Organization.update(organization.id, {
+                await httpClient.entities.Organization.update(organization.id, {
                     plan_type: data.planId,
                     status: 'active'
                 });
                 
                 // Create billing history record
-                await base44.entities.BillingHistory.create({
+                await httpClient.entities.BillingHistory.create({
                     organization_id: organization.id,
                     amount: parseFloat(data.proratedAmount),
                     currency: 'USD',

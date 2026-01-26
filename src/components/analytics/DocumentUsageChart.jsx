@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { format, eachDayOfInterval, startOfDay } from 'date-fns';
-import { FolderOpen, Upload, Download, Eye } from 'lucide-react';
+import { FolderOpen, Upload } from 'lucide-react';
 
 export default function DocumentUsageChart({ documents, dateRange }) {
     // Daily uploads

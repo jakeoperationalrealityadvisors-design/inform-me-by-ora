@@ -1,11 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Camera, Upload, FileText, Image, Scan, Copy, Send, Cloud, HardDrive, Edit3, Search } from 'lucide-react';
+import { ArrowLeft, Camera, Upload, Scan, Copy, Send, Cloud, HardDrive, Edit3, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { toast } from 'sonner';
 import { useSimpleMode } from '@/components/tutorial/SimpleModeWrapper';
 
@@ -28,7 +27,7 @@ export default function Scanner() {
 
         for (const file of files) {
             try {
-                const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                const { file_url } = await httpClient.integrations.Core.UploadFile({ file });
                 newImages.push({
                     id: Date.now() + Math.random(),
                     url: file_url,
@@ -53,7 +52,7 @@ export default function Scanner() {
 
         setIsProcessing(true);
         try {
-            const { file_url } = await base44.integrations.Core.UploadFile({ file });
+            const { file_url } = await httpClient.integrations.Core.UploadFile({ file });
             const newImage = {
                 id: Date.now(),
                 url: file_url,
@@ -76,7 +75,7 @@ export default function Scanner() {
 
     const saveToStorage = async (image, storageType) => {
         try {
-            const doc = await base44.entities.Document.create({
+            const doc = await httpClient.entities.Document.create({
                 title: image.name,
                 file_url: image.url,
                 file_name: image.name,
@@ -88,7 +87,7 @@ export default function Scanner() {
             
             // Trigger workflows
             try {
-                await base44.functions.invoke('triggerDocumentWorkflow', {
+                await httpClient.functions.invoke('triggerDocumentWorkflow', {
                     documentId: doc.id,
                     triggerType: 'document_uploaded',
                     documentData: doc

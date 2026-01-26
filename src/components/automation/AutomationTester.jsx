@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,7 +18,7 @@ export default function AutomationTester({ ruleId, triggerType }) {
         
         try {
             const data = JSON.parse(testData);
-            const response = await base44.functions.invoke('executeAutomations', {
+            const response = await httpClient.functions.invoke('executeAutomations', {
                 trigger_type: triggerType,
                 trigger_data: data
             });

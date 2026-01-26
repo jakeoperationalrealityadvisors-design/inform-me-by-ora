@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Download, Upload, History, Trash2, Folder, Clock, User } from 'lucide-react';
@@ -46,29 +46,29 @@ export default function ViewDocument() {
     
     const { data: document, isLoading } = useQuery({
         queryKey: ['document', documentId],
-        queryFn: () => base44.entities.Document.filter({ id: documentId }).then(docs => docs[0]),
+        queryFn: () => httpClient.entities.Document.filter({ id: documentId }).then(docs => docs[0]),
         enabled: !!documentId
     });
     
     const { data: folder } = useQuery({
         queryKey: ['folder', document?.folder_id],
-        queryFn: () => base44.entities.DocumentFolder.filter({ id: document.folder_id }).then(f => f[0]),
+        queryFn: () => httpClient.entities.DocumentFolder.filter({ id: document.folder_id }).then(f => f[0]),
         enabled: !!document?.folder_id
     });
     
     const { data: versions = [] } = useQuery({
         queryKey: ['document-versions', documentId],
-        queryFn: () => base44.entities.DocumentVersion.filter({ document_id: documentId }, '-version_number'),
+        queryFn: () => httpClient.entities.DocumentVersion.filter({ document_id: documentId }, '-version_number'),
         enabled: !!documentId
     });
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
+        queryFn: () => httpClient.auth.me()
     });
     
     const updateLinksMutation = useMutation({
-        mutationFn: (links) => base44.entities.Document.update(documentId, { linked_to: links }),
+        mutationFn: (links) => httpClient.entities.Document.update(documentId, { linked_to: links }),
         onSuccess: () => {
             queryClient.invalidateQueries(['document', documentId]);
             toast.success('Links updated');
@@ -76,7 +76,7 @@ export default function ViewDocument() {
     });
     
     const updatePermissionsMutation = useMutation({
-        mutationFn: (perms) => base44.entities.Document.update(documentId, { permissions: perms }),
+        mutationFn: (perms) => httpClient.entities.Document.update(documentId, { permissions: perms }),
         onSuccess: () => {
             queryClient.invalidateQueries(['document', documentId]);
             toast.success('Permissions updated');
@@ -84,7 +84,7 @@ export default function ViewDocument() {
     });
     
     const deleteMutation = useMutation({
-        mutationFn: () => base44.entities.Document.update(documentId, { status: 'archived' }),
+        mutationFn: () => httpClient.entities.Document.update(documentId, { status: 'archived' }),
         onSuccess: () => {
             queryClient.invalidateQueries(['documents']);
             toast.success('Document deleted');
@@ -109,12 +109,12 @@ export default function ViewDocument() {
         
         try {
             // Upload new file
-            const uploadResult = await base44.integrations.Core.UploadFile({ file: newVersionFile });
+            const uploadResult = await httpClient.integrations.Core.UploadFile({ file: newVersionFile });
             
             const newVersion = (document.version || 1) + 1;
             
             // Create version record
-            await base44.entities.DocumentVersion.create({
+            await httpClient.entities.DocumentVersion.create({
                 document_id: documentId,
                 version_number: newVersion,
                 file_url: uploadResult.file_url,
@@ -125,7 +125,7 @@ export default function ViewDocument() {
             });
             
             // Update document with new version
-            await base44.entities.Document.update(documentId, {
+            await httpClient.entities.Document.update(documentId, {
                 file_url: uploadResult.file_url,
                 file_name: newVersionFile.name,
                 file_size: newVersionFile.size,

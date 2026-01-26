@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 export default function VersionHistoryDialog({ open, onOpenChange, document }) {
     const { data: versions = [], isLoading } = useQuery({
         queryKey: ['document-versions', document?.id],
-        queryFn: () => base44.entities.DocumentVersion.filter({ document_id: document.id }, '-version_number'),
+        queryFn: () => httpClient.entities.DocumentVersion.filter({ document_id: document.id }, '-version_number'),
         enabled: open && !!document
     });
 

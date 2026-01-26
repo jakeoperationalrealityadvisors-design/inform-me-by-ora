@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,12 +26,12 @@ export default function AIAssistant({
 
     const { data: forms = [] } = useQuery({
         queryKey: ['forms'],
-        queryFn: () => base44.entities.FormTemplate.filter({ status: 'active' })
+        queryFn: () => httpClient.entities.FormTemplate.filter({ status: 'active' })
     });
 
     const { data: checklists = [] } = useQuery({
         queryKey: ['checklists'],
-        queryFn: () => base44.entities.ChecklistTemplate.filter({ status: 'active' })
+        queryFn: () => httpClient.entities.ChecklistTemplate.filter({ status: 'active' })
     });
 
     // Workflow Generation
@@ -41,7 +41,7 @@ export default function AIAssistant({
                 throw new Error('Please provide a more detailed description (at least 10 characters)');
             }
 
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `You are a workflow automation expert. Based on this description, create a detailed workflow automation.
 
 User Request: ${prompt}
@@ -112,7 +112,7 @@ Return ONLY valid JSON matching AutomationRule schema. Ensure all required field
                 throw new Error('No document provided. Please select a document first.');
             }
 
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `Analyze and summarize this document in a clear, structured format:
 
 📋 MAIN TOPIC/PURPOSE:
@@ -167,7 +167,7 @@ Keep it concise (max 300 words) but comprehensive.`,
             const formsList = forms.slice(0, 10).map(f => `"${f.title}" - ${f.description || 'No description'}`).join('\n');
             const checklistsList = checklists.slice(0, 10).map(c => `"${c.title}" - ${c.description || 'No description'}`).join('\n');
             
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `You are an intelligent assistant helping users find the right forms and checklists.
 
 CONTEXT: "${contextText}"

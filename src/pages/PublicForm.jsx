@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,7 @@ export default function PublicForm() {
     const { data: form, isLoading } = useQuery({
         queryKey: ['public-form', formId],
         queryFn: async () => {
-            const forms = await base44.entities.FormTemplate.filter({ id: formId });
+            const forms = await httpClient.entities.FormTemplate.filter({ id: formId });
             return forms[0];
         },
         enabled: !!formId
@@ -27,7 +27,7 @@ export default function PublicForm() {
     
     const submitMutation = useMutation({
         mutationFn: async (data) => {
-            return await base44.entities.FormSubmission.create(data);
+            return await httpClient.entities.FormSubmission.create(data);
         },
         onSuccess: () => {
             setSubmitted(true);
@@ -132,7 +132,7 @@ export default function PublicForm() {
                             const file = e.target.files[0];
                             if (file) {
                                 try {
-                                    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                                    const { file_url } = await httpClient.integrations.Core.UploadFile({ file });
                                     setResponses({ ...responses, [field.id]: file_url });
                                     toast.success('Photo uploaded');
                                 } catch (error) {

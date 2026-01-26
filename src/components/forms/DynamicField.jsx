@@ -5,8 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Camera, Upload, X } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { Camera, X } from 'lucide-react';
+import { httpClient } from '@/api/httpClient';
 
 export default function DynamicField({ field, value, onChange }) {
     const [uploading, setUploading] = useState(false);
@@ -17,7 +17,7 @@ export default function DynamicField({ field, value, onChange }) {
         if (!file) return;
         
         setUploading(true);
-        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        const { file_url } = await httpClient.integrations.Core.UploadFile({ file });
         onChange(file_url);
         setUploading(false);
     };

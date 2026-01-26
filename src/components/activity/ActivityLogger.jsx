@@ -1,4 +1,4 @@
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 
 /**
  * Utility to log user activities for audit trail
@@ -12,9 +12,9 @@ export async function logActivity({
     metadata = {}
 }) {
     try {
-        const user = await base44.auth.me();
+        const user = await httpClient.auth.me();
         
-        await base44.entities.ActivityLog.create({
+        await httpClient.entities.ActivityLog.create({
             user_email: user.email,
             user_name: user.full_name,
             action_type,

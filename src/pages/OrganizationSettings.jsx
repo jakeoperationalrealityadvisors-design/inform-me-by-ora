@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Building2, Copy, Users, Calendar, ArrowLeft, Crown, Trash2, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -25,18 +24,18 @@ export default function OrganizationSettings() {
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
+        queryFn: () => httpClient.auth.me()
     });
     
     const { data: organization } = useQuery({
         queryKey: ['organization', user?.organization_id],
-        queryFn: () => base44.entities.Organization.filter({ id: user.organization_id }).then(r => r[0]),
+        queryFn: () => httpClient.entities.Organization.filter({ id: user.organization_id }).then(r => r[0]),
         enabled: !!user?.organization_id
     });
     
     const { data: members = [] } = useQuery({
         queryKey: ['org-members', user?.organization_id],
-        queryFn: () => base44.entities.User.filter({ organization_id: user.organization_id }),
+        queryFn: () => httpClient.entities.User.filter({ organization_id: user.organization_id }),
         enabled: !!user?.organization_id
     });
     
@@ -53,7 +52,7 @@ export default function OrganizationSettings() {
         const code = Math.random().toString(36).substring(2, 8).toUpperCase();
         const expiresIn30Days = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
         
-        await base44.entities.Organization.update(organization.id, {
+        await httpClient.entities.Organization.update(organization.id, {
             hopcode: code,
             hopcode_expires: expiresIn30Days
         });
@@ -68,7 +67,7 @@ export default function OrganizationSettings() {
     };
     
     const updateOrgMutation = useMutation({
-        mutationFn: (data) => base44.entities.Organization.update(organization.id, data),
+        mutationFn: (data) => httpClient.entities.Organization.update(organization.id, data),
         onSuccess: () => {
             queryClient.invalidateQueries(['organization']);
             toast.success('Organization updated');
@@ -77,7 +76,7 @@ export default function OrganizationSettings() {
     
     const removeMemberMutation = useMutation({
         mutationFn: async (userId) => {
-            await base44.entities.User.update(userId, {
+            await httpClient.entities.User.update(userId, {
                 organization_id: null,
                 team_role: null
             });
@@ -96,7 +95,7 @@ export default function OrganizationSettings() {
             }
             
             // Invite user using Base44's built-in invitation system
-            await base44.users.inviteUser(email, 'user');
+            await httpClient.users.inviteUser(email, 'user');
             
             toast.success(`Invitation sent to ${email}. They will be added to the organization upon first login.`);
         },

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, Calendar, FolderOpen, BarChart3, Settings, LayoutDashboard, Scan } from 'lucide-react';
+import { Home, FolderOpen, Settings, LayoutDashboard, Scan } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import { useLanguage } from '@/components/language/LanguageContext';

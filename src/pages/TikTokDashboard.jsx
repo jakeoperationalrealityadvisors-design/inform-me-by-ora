@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Users, Heart, Video, UserPlus, RefreshCw, TrendingUp } from 'lucide-react';
@@ -13,7 +13,7 @@ export default function TikTokDashboard() {
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['tiktok-stats'],
         queryFn: async () => {
-            const response = await base44.functions.invoke('getTikTokStats', {});
+            const response = await httpClient.functions.invoke('getTikTokStats', {});
             return response.data;
         },
         staleTime: 300000, // 5 minutes

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import {
     Dialog,
     DialogContent,
@@ -32,7 +32,7 @@ export default function EventDialog({ event, onClose, onSave }) {
     
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
-        queryFn: () => base44.entities.User.list()
+        queryFn: () => httpClient.entities.User.list()
     });
     
     useEffect(() => {
@@ -54,16 +54,16 @@ export default function EventDialog({ event, onClose, onSave }) {
     const saveMutation = useMutation({
         mutationFn: async (data) => {
             if (event?.id) {
-                return base44.entities.ScheduledEvent.update(event.id, data);
+                return httpClient.entities.ScheduledEvent.update(event.id, data);
             } else {
-                return base44.entities.ScheduledEvent.create(data);
+                return httpClient.entities.ScheduledEvent.create(data);
             }
         },
         onSuccess: async (savedEvent) => {
             // Send notification if assigned
             if (formData.assigned_to_email && !event?.id) {
                 try {
-                    await base44.entities.Notification.create({
+                    await httpClient.entities.Notification.create({
                         user_email: formData.assigned_to_email,
                         title: 'New Event Scheduled',
                         message: `You've been assigned: ${formData.title}`,
@@ -72,7 +72,7 @@ export default function EventDialog({ event, onClose, onSave }) {
                         read: false
                     });
                     
-                    await base44.integrations.Core.SendEmail({
+                    await httpClient.integrations.Core.SendEmail({
                         to: formData.assigned_to_email,
                         subject: `New Event Scheduled: ${formData.title}`,
                         body: `
@@ -99,7 +99,7 @@ export default function EventDialog({ event, onClose, onSave }) {
     });
     
     const deleteMutation = useMutation({
-        mutationFn: () => base44.entities.ScheduledEvent.update(event.id, { status: 'cancelled' }),
+        mutationFn: () => httpClient.entities.ScheduledEvent.update(event.id, { status: 'cancelled' }),
         onSuccess: () => {
             toast.success('Event cancelled');
             onSave();

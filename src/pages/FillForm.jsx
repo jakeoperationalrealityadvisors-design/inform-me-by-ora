@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Send, Loader2, CheckCircle, ChevronDown } from 'lucide-react';
@@ -8,7 +8,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import DynamicField from '@/components/forms/DynamicField';
 import { logActivity } from '@/components/activity/ActivityLogger';
 
@@ -26,7 +26,7 @@ export default function FillForm() {
     const { data: form, isLoading } = useQuery({
         queryKey: ['form', formId],
         queryFn: async () => {
-            const forms = await base44.entities.FormTemplate.filter({ id: formId });
+            const forms = await httpClient.entities.FormTemplate.filter({ id: formId });
             return forms[0];
         },
         enabled: !!formId
@@ -34,7 +34,7 @@ export default function FillForm() {
     
     const submitMutation = useMutation({
         mutationFn: async (data) => {
-            const submission = await base44.entities.FormSubmission.create(data);
+            const submission = await httpClient.entities.FormSubmission.create(data);
             
             await logActivity({
                 action_type: 'form_submitted',
@@ -45,7 +45,7 @@ export default function FillForm() {
             });
             
             // Trigger automations
-            await base44.functions.invoke('executeAutomations', {
+            await httpClient.functions.invoke('executeAutomations', {
                 trigger_type: 'form_submitted',
                 trigger_data: {
                     template_id: form.id,

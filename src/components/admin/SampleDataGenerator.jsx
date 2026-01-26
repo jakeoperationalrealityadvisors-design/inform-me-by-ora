@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,7 @@ export default function SampleDataGenerator() {
     
     const generateMutation = useMutation({
         mutationFn: async (type) => {
-            const response = await base44.functions.invoke('generateSampleData', { type });
+            const response = await httpClient.functions.invoke('generateSampleData', { type });
             return response.data;
         },
         onSuccess: (data) => {

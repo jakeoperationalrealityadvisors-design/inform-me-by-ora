@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Plus, Trash2, Save, Workflow, BookTemplate, History, Share2 } from 'lucide-react';
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoleGuard from '@/components/auth/RoleGuard';
 import { toast } from 'sonner';
 import AutomationTester from '@/components/automation/AutomationTester';
@@ -34,23 +34,23 @@ function EditAutomationContent() {
 
     const { data: rule } = useQuery({
         queryKey: ['automation-rule', ruleId],
-        queryFn: () => base44.entities.AutomationRule.filter({ id: ruleId }).then(r => r[0]),
+        queryFn: () => httpClient.entities.AutomationRule.filter({ id: ruleId }).then(r => r[0]),
         enabled: !!ruleId
     });
 
     const { data: forms = [] } = useQuery({
         queryKey: ['forms'],
-        queryFn: () => base44.entities.FormTemplate.filter({ status: 'active' })
+        queryFn: () => httpClient.entities.FormTemplate.filter({ status: 'active' })
     });
 
     const { data: checklists = [] } = useQuery({
         queryKey: ['checklists'],
-        queryFn: () => base44.entities.ChecklistTemplate.filter({ status: 'active' })
+        queryFn: () => httpClient.entities.ChecklistTemplate.filter({ status: 'active' })
     });
 
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
-        queryFn: () => base44.entities.User.list()
+        queryFn: () => httpClient.entities.User.list()
     });
 
     const [formData, setFormData] = useState({
@@ -88,21 +88,21 @@ function EditAutomationContent() {
         mutationFn: async (data) => {
             let savedRule;
             if (ruleId) {
-                savedRule = await base44.entities.AutomationRule.update(ruleId, data);
+                savedRule = await httpClient.entities.AutomationRule.update(ruleId, data);
                 
                 // Get current version count
-                const versions = await base44.entities.AutomationRuleVersion.filter({ rule_id: ruleId });
+                const versions = await httpClient.entities.AutomationRuleVersion.filter({ rule_id: ruleId });
                 const versionNumber = versions.length + 1;
                 
                 // Mark all previous versions as inactive
                 for (const v of versions) {
                     if (v.is_active) {
-                        await base44.entities.AutomationRuleVersion.update(v.id, { is_active: false });
+                        await httpClient.entities.AutomationRuleVersion.update(v.id, { is_active: false });
                     }
                 }
                 
                 // Create new version
-                await base44.entities.AutomationRuleVersion.create({
+                await httpClient.entities.AutomationRuleVersion.create({
                     rule_id: ruleId,
                     version_number: versionNumber,
                     name: data.name,
@@ -115,10 +115,10 @@ function EditAutomationContent() {
                     is_active: true
                 });
             } else {
-                savedRule = await base44.entities.AutomationRule.create(data);
+                savedRule = await httpClient.entities.AutomationRule.create(data);
                 
                 // Create initial version
-                await base44.entities.AutomationRuleVersion.create({
+                await httpClient.entities.AutomationRuleVersion.create({
                     rule_id: savedRule.id,
                     version_number: 1,
                     name: data.name,

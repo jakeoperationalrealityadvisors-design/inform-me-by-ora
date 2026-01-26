@@ -1,61 +1,61 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Users, Building2, FileText, CheckSquare, ClipboardList, AlertCircle, TrendingUp, Activity, Zap, Shield } from 'lucide-react';
+import { ArrowLeft, Users, Building2, FileText, ClipboardList, AlertCircle, TrendingUp, Activity, Zap, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import RoleGuard from '@/components/auth/RoleGuard';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 
 const COLORS = ['#FF8C00', '#1E40AF', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
 function AdminDashboardContent() {
     const { data: users = [] } = useQuery({
         queryKey: ['all-users'],
-        queryFn: () => base44.asServiceRole.entities.User.list()
+        queryFn: () => httpClient.asServiceRole.entities.User.list()
     });
 
     const { data: organizations = [] } = useQuery({
         queryKey: ['all-orgs'],
-        queryFn: () => base44.entities.Organization.list()
+        queryFn: () => httpClient.entities.Organization.list()
     });
 
     const { data: forms = [] } = useQuery({
         queryKey: ['all-forms'],
-        queryFn: () => base44.entities.FormTemplate.list()
+        queryFn: () => httpClient.entities.FormTemplate.list()
     });
 
     const { data: checklists = [] } = useQuery({
         queryKey: ['all-checklists'],
-        queryFn: () => base44.entities.ChecklistTemplate.list()
+        queryFn: () => httpClient.entities.ChecklistTemplate.list()
     });
 
     const { data: formSubmissions = [] } = useQuery({
         queryKey: ['all-form-submissions'],
-        queryFn: () => base44.entities.FormSubmission.list('-created_date', 100)
+        queryFn: () => httpClient.entities.FormSubmission.list('-created_date', 100)
     });
 
     const { data: checklistSubmissions = [] } = useQuery({
         queryKey: ['all-checklist-submissions'],
-        queryFn: () => base44.entities.ChecklistSubmission.list('-created_date', 100)
+        queryFn: () => httpClient.entities.ChecklistSubmission.list('-created_date', 100)
     });
 
     const { data: errors = [] } = useQuery({
         queryKey: ['recent-errors'],
-        queryFn: () => base44.entities.ErrorLog.filter({ resolved: false }, '-created_date', 10)
+        queryFn: () => httpClient.entities.ErrorLog.filter({ resolved: false }, '-created_date', 10)
     });
 
     const { data: activities = [] } = useQuery({
         queryKey: ['recent-activities'],
-        queryFn: () => base44.entities.ActivityLog.list('-created_date', 20)
+        queryFn: () => httpClient.entities.ActivityLog.list('-created_date', 20)
     });
 
     const { data: automations = [] } = useQuery({
         queryKey: ['all-automations'],
-        queryFn: () => base44.entities.AutomationRule.list()
+        queryFn: () => httpClient.entities.AutomationRule.list()
     });
 
     // Calculate metrics

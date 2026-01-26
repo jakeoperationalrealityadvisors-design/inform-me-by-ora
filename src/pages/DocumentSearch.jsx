@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { ArrowLeft, Search, FileText, Calendar, Tag } from 'lucide-react';
+import { httpClient } from '@/api/httpClient';
+import { ArrowLeft, Search, FileText, Calendar } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ export default function DocumentSearch() {
 
     const { data: documents = [] } = useQuery({
         queryKey: ['documents'],
-        queryFn: () => base44.entities.Document.list()
+        queryFn: () => httpClient.entities.Document.list()
     });
 
     const performSearch = async () => {

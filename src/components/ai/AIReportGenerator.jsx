@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Loader2, Download, FileText } from 'lucide-react';
@@ -12,7 +12,7 @@ export default function AIReportGenerator({ data, reportType = 'general' }) {
     
     const generateMutation = useMutation({
         mutationFn: async () => {
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `You are an expert data analyst. Generate a comprehensive business report based on this data:
 
 **Report Type:** ${reportType}

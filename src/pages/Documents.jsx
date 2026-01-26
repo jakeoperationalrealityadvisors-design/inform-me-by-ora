@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Plus, FileText, Folder, Search, Filter, Download, Trash2, Upload, X, Sparkles } from 'lucide-react';
+import { ArrowLeft, FileText, Folder, Search, Filter, Upload, X, Sparkles } from 'lucide-react';
 import AIAssistant from '@/components/ai/AIAssistant';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,13 +29,13 @@ export default function Documents() {
     
     const { data: documents = [], isLoading: docsLoading } = useQuery({
         queryKey: ['documents'],
-        queryFn: () => base44.entities.Document.filter({ status: 'active' }, '-created_date'),
+        queryFn: () => httpClient.entities.Document.filter({ status: 'active' }, '-created_date'),
         staleTime: 30000
     });
     
     const { data: folders = [] } = useQuery({
         queryKey: ['document-folders'],
-        queryFn: () => base44.entities.DocumentFolder.list(),
+        queryFn: () => httpClient.entities.DocumentFolder.list(),
         staleTime: 60000
     });
     

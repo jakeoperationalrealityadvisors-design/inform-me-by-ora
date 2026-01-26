@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileText, CheckSquare, ListTodo, FolderOpen, Zap, Shield, BarChart3, Users } from 'lucide-react';
+import { FileText, CheckSquare, ListTodo, FolderOpen, Zap, Shield } from 'lucide-react';
 
 const permissionGroups = [
     {

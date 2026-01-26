@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Loader2, ShieldAlert } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
@@ -8,12 +8,12 @@ import { createPageUrl } from '@/utils';
 export function useUserRole() {
     const { data: user, isLoading: userLoading } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
+        queryFn: () => httpClient.auth.me()
     });
 
     const { data: customRole, isLoading: roleLoading } = useQuery({
         queryKey: ['user-role', user?.custom_role_id],
-        queryFn: () => user?.custom_role_id ? base44.entities.Role.filter({ id: user.custom_role_id }).then(r => r[0]) : null,
+        queryFn: () => user?.custom_role_id ? httpClient.entities.Role.filter({ id: user.custom_role_id }).then(r => r[0]) : null,
         enabled: !!user?.custom_role_id
     });
 

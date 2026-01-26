@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 
 export function useCollaboration(entityType, entityId, user) {
     const queryClient = useQueryClient();
@@ -14,7 +14,7 @@ export function useCollaboration(entityType, entityId, user) {
             const now = new Date();
             const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
             
-            const all = await base44.entities.CollaborationSession.filter({
+            const all = await httpClient.entities.CollaborationSession.filter({
                 entity_type: entityType,
                 entity_id: entityId
             });
@@ -29,7 +29,7 @@ export function useCollaboration(entityType, entityId, user) {
     });
 
     const createSessionMutation = useMutation({
-        mutationFn: (data) => base44.entities.CollaborationSession.create(data),
+        mutationFn: (data) => httpClient.entities.CollaborationSession.create(data),
         onSuccess: (data) => {
             sessionIdRef.current = data.id;
             queryClient.invalidateQueries(['collaboration-sessions']);
@@ -37,14 +37,14 @@ export function useCollaboration(entityType, entityId, user) {
     });
 
     const updateSessionMutation = useMutation({
-        mutationFn: ({ id, data }) => base44.entities.CollaborationSession.update(id, data),
+        mutationFn: ({ id, data }) => httpClient.entities.CollaborationSession.update(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries(['collaboration-sessions']);
         }
     });
 
     const deleteSessionMutation = useMutation({
-        mutationFn: (id) => base44.entities.CollaborationSession.delete(id),
+        mutationFn: (id) => httpClient.entities.CollaborationSession.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries(['collaboration-sessions']);
         }

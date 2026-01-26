@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Plus, Zap, Trash2, Edit, Power, Sparkles } from 'lucide-react';
@@ -28,12 +28,12 @@ function ManageAutomationsContent() {
 
     const { data: rules = [], isLoading } = useQuery({
         queryKey: ['automation-rules'],
-        queryFn: () => base44.entities.AutomationRule.list('-created_date')
+        queryFn: () => httpClient.entities.AutomationRule.list('-created_date')
     });
 
     const toggleMutation = useMutation({
         mutationFn: ({ id, enabled }) => 
-            base44.entities.AutomationRule.update(id, { enabled }),
+            httpClient.entities.AutomationRule.update(id, { enabled }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['automation-rules'] });
             toast.success('Automation rule updated');
@@ -41,7 +41,7 @@ function ManageAutomationsContent() {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id) => base44.entities.AutomationRule.delete(id),
+        mutationFn: (id) => httpClient.entities.AutomationRule.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['automation-rules'] });
             toast.success('Automation rule deleted');

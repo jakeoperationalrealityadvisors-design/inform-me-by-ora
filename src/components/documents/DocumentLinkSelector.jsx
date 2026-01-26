@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,19 +15,19 @@ export default function DocumentLinkSelector({ currentLinks = {}, onLinksUpdate,
 
     const { data: forms = [] } = useQuery({
         queryKey: ['form-submissions-all'],
-        queryFn: () => base44.entities.FormSubmission.list('-created_date'),
+        queryFn: () => httpClient.entities.FormSubmission.list('-created_date'),
         enabled: open
     });
 
     const { data: checklists = [] } = useQuery({
         queryKey: ['checklist-submissions-all'],
-        queryFn: () => base44.entities.ChecklistSubmission.list('-created_date'),
+        queryFn: () => httpClient.entities.ChecklistSubmission.list('-created_date'),
         enabled: open
     });
 
     const { data: tasks = [] } = useQuery({
         queryKey: ['tasks-all'],
-        queryFn: () => base44.entities.Task.list('-created_date'),
+        queryFn: () => httpClient.entities.Task.list('-created_date'),
         enabled: open
     });
 

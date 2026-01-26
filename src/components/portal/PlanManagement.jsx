@@ -1,10 +1,10 @@
 import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Zap, Users, HardDrive, FileText, Star } from 'lucide-react';
+import { Check, Crown, Zap, FileText, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import {
     AlertDialog,
@@ -76,13 +76,13 @@ export default function PlanManagement({ organization, isOwner }) {
     const changePlanMutation = useMutation({
         mutationFn: async (newPlan) => {
             // In production, this would integrate with Stripe/payment provider
-            await base44.entities.Organization.update(organization.id, {
+            await httpClient.entities.Organization.update(organization.id, {
                 plan_type: newPlan.id,
                 max_users: newPlan.id === 'basic' ? 10 : newPlan.id === 'professional' ? 50 : 999
             });
             
             // Create billing record
-            await base44.entities.BillingHistory.create({
+            await httpClient.entities.BillingHistory.create({
                 organization_id: organization.id,
                 amount: newPlan.price,
                 status: 'completed',
@@ -103,7 +103,7 @@ export default function PlanManagement({ organization, isOwner }) {
     
     const cancelSubscriptionMutation = useMutation({
         mutationFn: async () => {
-            await base44.entities.Organization.update(organization.id, {
+            await httpClient.entities.Organization.update(organization.id, {
                 status: 'suspended'
             });
         },

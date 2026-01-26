@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { toast } from 'sonner';
 import { Bell, CheckSquare, FileText, AlertCircle, Calendar } from 'lucide-react';
 
@@ -18,14 +18,14 @@ export function useRealtimeNotifications() {
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
+        queryFn: () => httpClient.auth.me()
     });
 
     const { data: notifications = [] } = useQuery({
         queryKey: ['notifications', user?.email],
         queryFn: async () => {
             if (!user?.email) return [];
-            return base44.entities.Notification.filter({ user_email: user.email }, '-created_date', 50);
+            return httpClient.entities.Notification.filter({ user_email: user.email }, '-created_date', 50);
         },
         enabled: !!user?.email,
         refetchInterval: 10000, // Poll every 10 seconds
@@ -36,7 +36,7 @@ export function useRealtimeNotifications() {
         queryKey: ['notification-settings', user?.email],
         queryFn: async () => {
             if (!user?.email) return null;
-            const settings = await base44.entities.NotificationSettings.filter({ created_by: user.email });
+            const settings = await httpClient.entities.NotificationSettings.filter({ created_by: user.email });
             return settings[0] || {
                 form_submissions: true,
                 checklist_completion: true,
@@ -79,7 +79,7 @@ export function useRealtimeNotifications() {
     }, [notifications]);
 
     const markAsRead = async (notificationId) => {
-        await base44.entities.Notification.update(notificationId, { read: true });
+        await httpClient.entities.Notification.update(notificationId, { read: true });
         queryClient.invalidateQueries(['notifications']);
     };
 
@@ -87,7 +87,7 @@ export function useRealtimeNotifications() {
         const unreadNotifications = notifications.filter(n => !n.read);
         await Promise.all(
             unreadNotifications.map(n => 
-                base44.entities.Notification.update(n.id, { read: true })
+                httpClient.entities.Notification.update(n.id, { read: true })
             )
         );
         queryClient.invalidateQueries(['notifications']);

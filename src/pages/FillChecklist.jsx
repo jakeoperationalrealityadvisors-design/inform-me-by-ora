@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { Link, useNavigate } from 'react-router-dom';
+import { httpClient } from '@/api/httpClient';
+import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, CheckCircle, Circle, MessageSquare, Loader2, Send, ChevronDown } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -29,7 +29,7 @@ export default function FillChecklist() {
     const { data: checklist, isLoading } = useQuery({
         queryKey: ['checklist', checklistId],
         queryFn: async () => {
-            const checklists = await base44.entities.ChecklistTemplate.filter({ id: checklistId });
+            const checklists = await httpClient.entities.ChecklistTemplate.filter({ id: checklistId });
             return checklists[0];
         },
         enabled: !!checklistId
@@ -37,7 +37,7 @@ export default function FillChecklist() {
     
     const submitMutation = useMutation({
         mutationFn: async (data) => {
-            const submission = await base44.entities.ChecklistSubmission.create(data);
+            const submission = await httpClient.entities.ChecklistSubmission.create(data);
             
             await logActivity({
                 action_type: 'checklist_submitted',
@@ -49,7 +49,7 @@ export default function FillChecklist() {
             
             // Trigger automations
             if (data.status === 'completed') {
-                await base44.functions.invoke('executeAutomations', {
+                await httpClient.functions.invoke('executeAutomations', {
                     trigger_type: 'checklist_completed',
                     trigger_data: {
                         template_id: checklist.id,

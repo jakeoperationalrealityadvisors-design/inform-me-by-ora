@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Send, Sparkles, Book, Loader2, ExternalLink, FileText, CheckSquare, ListTodo, Zap } from 'lucide-react';
@@ -18,27 +18,27 @@ export default function KnowledgeBase() {
     // Fetch app data for context
     const { data: forms = [] } = useQuery({
         queryKey: ['forms'],
-        queryFn: () => base44.entities.FormTemplate.filter({ status: 'active' })
+        queryFn: () => httpClient.entities.FormTemplate.filter({ status: 'active' })
     });
     
     const { data: checklists = [] } = useQuery({
         queryKey: ['checklists'],
-        queryFn: () => base44.entities.ChecklistTemplate.filter({ status: 'active' })
+        queryFn: () => httpClient.entities.ChecklistTemplate.filter({ status: 'active' })
     });
     
     const { data: tasks = [] } = useQuery({
         queryKey: ['tasks-kb'],
-        queryFn: () => base44.entities.Task.list('-created_date', 20)
+        queryFn: () => httpClient.entities.Task.list('-created_date', 20)
     });
     
     const { data: automations = [] } = useQuery({
         queryKey: ['automations-kb'],
-        queryFn: () => base44.entities.AutomationRule.list('-created_date', 10)
+        queryFn: () => httpClient.entities.AutomationRule.list('-created_date', 10)
     });
     
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list()
+        queryFn: () => httpClient.entities.Category.list()
     });
     
     const askMutation = useMutation({
@@ -64,7 +64,7 @@ export default function KnowledgeBase() {
                 ]
             };
             
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `You are an intelligent assistant for the InForm Me application - a comprehensive forms, checklists, and project management platform.
 
 User Question: "${userQuestion}"

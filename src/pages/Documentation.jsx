@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Search, Book, FileText, CheckSquare, Users, Zap, Settings, Smartphone, Shield, HelpCircle, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Search, Book, FileText, CheckSquare, Zap, Smartphone, Shield, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

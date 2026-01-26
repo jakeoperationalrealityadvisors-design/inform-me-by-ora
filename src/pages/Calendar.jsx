@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Plus, Calendar as CalendarIcon, Filter } from 'lucide-react';
+import { ArrowLeft, Plus, Filter } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
@@ -39,8 +39,8 @@ export default function CalendarPage() {
     const { data: formTasks = [] } = useQuery({
         queryKey: ['form-submissions-calendar'],
         queryFn: () => canViewAll 
-            ? base44.entities.FormSubmission.list('-due_date')
-            : base44.entities.FormSubmission.filter({ assigned_to_email: user?.email }, '-due_date'),
+            ? httpClient.entities.FormSubmission.list('-due_date')
+            : httpClient.entities.FormSubmission.filter({ assigned_to_email: user?.email }, '-due_date'),
         enabled: !!user
     });
     
@@ -48,8 +48,8 @@ export default function CalendarPage() {
     const { data: checklistTasks = [] } = useQuery({
         queryKey: ['checklist-submissions-calendar'],
         queryFn: () => canViewAll
-            ? base44.entities.ChecklistSubmission.list('-due_date')
-            : base44.entities.ChecklistSubmission.filter({ assigned_to_email: user?.email }, '-due_date'),
+            ? httpClient.entities.ChecklistSubmission.list('-due_date')
+            : httpClient.entities.ChecklistSubmission.filter({ assigned_to_email: user?.email }, '-due_date'),
         enabled: !!user
     });
     
@@ -57,8 +57,8 @@ export default function CalendarPage() {
     const { data: scheduledEvents = [] } = useQuery({
         queryKey: ['scheduled-events'],
         queryFn: () => canViewAll
-            ? base44.entities.ScheduledEvent.filter({ status: 'scheduled' }, '-start_date')
-            : base44.entities.ScheduledEvent.filter({ 
+            ? httpClient.entities.ScheduledEvent.filter({ status: 'scheduled' }, '-start_date')
+            : httpClient.entities.ScheduledEvent.filter({ 
                 status: 'scheduled',
                 assigned_to_email: user?.email 
             }, '-start_date'),

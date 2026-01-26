@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react';
+import { httpClient } from '@/api/httpClient';
+import { ArrowLeft, Trash2, Save } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,11 +27,11 @@ function CreateDocumentWorkflowContent() {
 
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
-        queryFn: () => base44.entities.User.list()
+        queryFn: () => httpClient.entities.User.list()
     });
 
     const createMutation = useMutation({
-        mutationFn: (data) => base44.entities.AutomationRule.create(data),
+        mutationFn: (data) => httpClient.entities.AutomationRule.create(data),
         onSuccess: () => {
             queryClient.invalidateQueries(['document-workflows']);
             toast.success('Workflow created');

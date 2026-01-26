@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Building2, Users, Key, ArrowRight, CheckCircle2, Zap, Shield, TrendingUp, User } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -111,9 +110,9 @@ export default function NetworkOnboarding() {
     
     const joinMutation = useMutation({
         mutationFn: async (code) => {
-            const user = await base44.auth.me();
+            const user = await httpClient.auth.me();
             
-            const orgs = await base44.entities.Organization.filter({ invite_code: code });
+            const orgs = await httpClient.entities.Organization.filter({ invite_code: code });
             if (orgs.length === 0) {
                 throw new Error('Invalid invite code');
             }
@@ -124,12 +123,12 @@ export default function NetworkOnboarding() {
                 throw new Error('This organization is not active');
             }
             
-            const orgUsers = await base44.entities.User.filter({ organization_id: org.id });
+            const orgUsers = await httpClient.entities.User.filter({ organization_id: org.id });
             if (orgUsers.length >= org.max_users) {
                 throw new Error('Organization has reached maximum users');
             }
             
-            await base44.auth.updateMe({
+            await httpClient.auth.updateMe({
                 organization_id: org.id,
                 team_role: 'member',
                 account_type: accountType,
@@ -153,14 +152,14 @@ export default function NetworkOnboarding() {
     
     const createMutation = useMutation({
         mutationFn: async ({ name, email }) => {
-            const user = await base44.auth.me();
+            const user = await httpClient.auth.me();
             
             const code = Math.random().toString(36).substring(2, 10).toUpperCase();
             
             const trialEnd = new Date();
             trialEnd.setDate(trialEnd.getDate() + 30);
             
-            const org = await base44.entities.Organization.create({
+            const org = await httpClient.entities.Organization.create({
                 name,
                 invite_code: code,
                 owner_email: email || user.email,
@@ -174,7 +173,7 @@ export default function NetworkOnboarding() {
                 }
             });
             
-            await base44.auth.updateMe({
+            await httpClient.auth.updateMe({
                 organization_id: org.id,
                 team_role: 'owner',
                 account_type: accountType,

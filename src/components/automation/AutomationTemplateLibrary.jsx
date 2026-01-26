@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookTemplate, Star, Zap, Bell, FileCheck, Users, Search, Sparkles } from 'lucide-react';
+import { BookTemplate, Star, Zap, Bell, FileCheck, Search, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 const categoryIcons = {
@@ -67,13 +67,13 @@ export default function AutomationTemplateLibrary({ open, onOpenChange, onSelect
     
     const { data: templates = [], isLoading } = useQuery({
         queryKey: ['automation-templates'],
-        queryFn: () => base44.entities.AutomationTemplate.list('-usage_count')
+        queryFn: () => httpClient.entities.AutomationTemplate.list('-usage_count')
     });
     
     const incrementUsage = useMutation({
         mutationFn: (templateId) => {
             const template = templates.find(t => t.id === templateId);
-            return base44.entities.AutomationTemplate.update(templateId, {
+            return httpClient.entities.AutomationTemplate.update(templateId, {
                 usage_count: (template?.usage_count || 0) + 1
             });
         }

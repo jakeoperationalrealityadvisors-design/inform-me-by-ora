@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, CreditCard, TrendingUp, Users, FileText, CheckSquare, Zap, Calendar } from 'lucide-react';
+import { ArrowLeft, Users, FileText, Zap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SubscriptionOverview from '@/components/portal/SubscriptionOverview';
 import BillingHistory from '@/components/portal/BillingHistory';
 import UsageMetrics from '@/components/portal/UsageMetrics';
 import PlanManagement from '@/components/portal/PlanManagement';
 import PortalAIInsights from '@/components/portal/PortalAIInsights';
-import { format, subDays } from 'date-fns';
+import { subDays } from 'date-fns';
 
 export default function CustomerPortal() {
     const [dateRange] = useState({
@@ -22,42 +22,42 @@ export default function CustomerPortal() {
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
+        queryFn: () => httpClient.auth.me()
     });
     
     const { data: organization } = useQuery({
         queryKey: ['organization', user?.organization_id],
-        queryFn: () => base44.entities.Organization.filter({ id: user.organization_id }).then(r => r[0]),
+        queryFn: () => httpClient.entities.Organization.filter({ id: user.organization_id }).then(r => r[0]),
         enabled: !!user?.organization_id
     });
     
     const { data: members = [] } = useQuery({
         queryKey: ['org-members', user?.organization_id],
-        queryFn: () => base44.entities.User.filter({ organization_id: user.organization_id }),
+        queryFn: () => httpClient.entities.User.filter({ organization_id: user.organization_id }),
         enabled: !!user?.organization_id
     });
     
     const { data: formSubmissions = [] } = useQuery({
         queryKey: ['portal-forms', dateRange],
-        queryFn: () => base44.entities.FormSubmission.list('-created_date', 1000),
+        queryFn: () => httpClient.entities.FormSubmission.list('-created_date', 1000),
         enabled: !!user?.organization_id
     });
     
     const { data: checklistSubmissions = [] } = useQuery({
         queryKey: ['portal-checklists', dateRange],
-        queryFn: () => base44.entities.ChecklistSubmission.list('-created_date', 1000),
+        queryFn: () => httpClient.entities.ChecklistSubmission.list('-created_date', 1000),
         enabled: !!user?.organization_id
     });
     
     const { data: documents = [] } = useQuery({
         queryKey: ['portal-documents'],
-        queryFn: () => base44.entities.Document.list('-created_date', 1000),
+        queryFn: () => httpClient.entities.Document.list('-created_date', 1000),
         enabled: !!user?.organization_id
     });
     
     const { data: automations = [] } = useQuery({
         queryKey: ['portal-automations'],
-        queryFn: () => base44.entities.AutomationRule.list(),
+        queryFn: () => httpClient.entities.AutomationRule.list(),
         enabled: !!user?.organization_id
     });
     

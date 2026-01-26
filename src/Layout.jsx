@@ -1,5 +1,5 @@
 import React from 'react';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { LanguageProvider } from './components/language/LanguageContext';
 import { ThemeProvider } from './components/theme/ThemeContext';
 import { WebSocketProvider } from './components/connections/WebSocketProvider';
@@ -23,7 +23,7 @@ export default function Layout({ children, currentPageName }) {
     React.useEffect(() => {
         const checkUser = async () => {
             try {
-                const user = await base44.auth.me();
+                const user = await httpClient.auth.me();
                 setSeniorMode(user?.technical_level === 'senior');
             } catch (e) {
                 // User not logged in yet

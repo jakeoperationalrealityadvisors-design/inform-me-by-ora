@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { FileText, CheckSquare, ClipboardList, History, Plus, Settings, BarChart3, ListTodo, Shield, Users, Calendar, FolderOpen, LayoutGrid, LayoutList, Scan, MoreVertical, Menu } from 'lucide-react';
+import { FileText, CheckSquare, ClipboardList, Plus, Settings, BarChart3, ListTodo, FolderOpen, Scan, MoreVertical } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { motion } from 'framer-motion';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -15,22 +14,16 @@ import {
 import SearchBar from '@/components/common/SearchBar';
 import FormCard from '@/components/forms/FormCard';
 import ChecklistCard from '@/components/forms/ChecklistCard';
-import CategoryFilter from '@/components/forms/CategoryFilter';
 import EmptyState from '@/components/common/EmptyState';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import BottomNav from '@/components/navigation/BottomNav';
 import OrgSwitcher from '@/components/navigation/OrgSwitcher';
 import { useLanguage } from '@/components/language/LanguageContext';
-import LanguageSwitcher from '@/components/language/LanguageSwitcher';
-import TooltipHelper from '@/components/tutorial/TooltipHelper';
 import { useSimpleMode } from '@/components/tutorial/SimpleModeWrapper';
 import GlobalSearch from '@/components/search/GlobalSearch';
-import CategorySidebar from '@/components/navigation/CategorySidebar';
-import ThemeToggle from '@/components/theme/ThemeToggle';
 import { offlineStorage } from '@/components/mobile/OfflineStorage';
 import PullToRefresh from '@/components/mobile/PullToRefresh';
-import PushNotificationToggle from '@/components/mobile/PushNotifications';
 import SwipeActions from '@/components/mobile/SwipeActions';
 import { useNavigate } from 'react-router-dom';
 import SmartSuggestions from '@/components/ai/SmartSuggestions';
@@ -59,7 +52,7 @@ export default function Home() {
         queryKey: ['forms'],
         queryFn: async () => {
             try {
-                const data = await base44.entities.FormTemplate.filter({ status: 'active' });
+                const data = await httpClient.entities.FormTemplate.filter({ status: 'active' });
                 // Cache for offline
                 if (navigator.onLine) {
                     await offlineStorage.saveMany('forms', data);
@@ -84,7 +77,7 @@ export default function Home() {
         queryKey: ['checklists'],
         queryFn: async () => {
             try {
-                const data = await base44.entities.ChecklistTemplate.filter({ status: 'active' });
+                const data = await httpClient.entities.ChecklistTemplate.filter({ status: 'active' });
                 // Cache for offline
                 if (navigator.onLine) {
                     await offlineStorage.saveMany('checklists', data);
@@ -107,7 +100,7 @@ export default function Home() {
     
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list(),
+        queryFn: () => httpClient.entities.Category.list(),
         staleTime: 60000,
         retry: 3,
         retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000)

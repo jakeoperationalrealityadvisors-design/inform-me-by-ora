@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,14 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Plus, Trash2, Upload, Camera, FileText, Loader2, X, Sparkles, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Upload, Camera, FileText, Loader2, Sparkles, ChevronDown } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
 import { useLanguage } from '@/components/language/LanguageContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import { logActivity } from '@/components/activity/ActivityLogger';
-import AIFormBuilder from '@/components/ai/AIFormBuilder';
 
 function CreateFormContent() {
     const navigate = useNavigate();
@@ -38,11 +37,11 @@ function CreateFormContent() {
 
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list()
+        queryFn: () => httpClient.entities.Category.list()
     });
 
     const createMutation = useMutation({
-        mutationFn: (data) => base44.entities.FormTemplate.create(data),
+        mutationFn: (data) => httpClient.entities.FormTemplate.create(data),
         onSuccess: async (newForm) => {
             await logActivity({
                 action_type: 'form_created',
@@ -89,12 +88,12 @@ function CreateFormContent() {
         setIsUploading(true);
         try {
             // Upload file first
-            const { file_url } = await base44.integrations.Core.UploadFile({ file });
+            const { file_url } = await httpClient.integrations.Core.UploadFile({ file });
             
             setIsExtracting(true);
             
             // Use AI to extract form structure
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `Analyze this document and extract a form structure. Identify all fields that would make sense for a form template. For each field, provide:
 - label (the field name)
 - type (text, textarea, number, date, select, checkbox)

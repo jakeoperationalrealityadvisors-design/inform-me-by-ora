@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Search, FileText, CheckSquare, FolderOpen, ListTodo, Loader2 } from 'lucide-react';
@@ -30,11 +30,11 @@ export default function GlobalSearch({ open, onOpenChange }) {
             const query = debouncedQuery.toLowerCase();
             
             const [forms, checklists, documents, formTasks, checklistTasks] = await Promise.all([
-                base44.entities.FormTemplate.filter({ status: 'active' }),
-                base44.entities.ChecklistTemplate.filter({ status: 'active' }),
-                base44.entities.Document.filter({ status: 'active' }),
-                base44.entities.FormSubmission.list('-created_date', 50),
-                base44.entities.ChecklistSubmission.list('-created_date', 50),
+                httpClient.entities.FormTemplate.filter({ status: 'active' }),
+                httpClient.entities.ChecklistTemplate.filter({ status: 'active' }),
+                httpClient.entities.Document.filter({ status: 'active' }),
+                httpClient.entities.FormSubmission.list('-created_date', 50),
+                httpClient.entities.ChecklistSubmission.list('-created_date', 50),
             ]);
             
             const matchedForms = forms.filter(f => 

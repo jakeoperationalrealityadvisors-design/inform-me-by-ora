@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
@@ -17,7 +17,7 @@ export default function NotificationItem({ notification, onClose }) {
     const queryClient = useQueryClient();
     
     const markReadMutation = useMutation({
-        mutationFn: () => base44.entities.Notification.update(notification.id, { read: true }),
+        mutationFn: () => httpClient.entities.Notification.update(notification.id, { read: true }),
         onSuccess: () => {
             queryClient.invalidateQueries(['notifications']);
         }

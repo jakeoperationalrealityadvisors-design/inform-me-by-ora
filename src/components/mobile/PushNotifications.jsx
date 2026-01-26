@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Bell, BellOff } from 'lucide-react';
 import { toast } from 'sonner';
-import { base44 } from '@/api/base44Client';
 
 export function usePushNotifications() {
     const [permission, setPermission] = useState(Notification.permission);

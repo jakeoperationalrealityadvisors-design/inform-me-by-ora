@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,7 +17,7 @@ export default function NewVersionDialog({ open, onOpenChange, document }) {
 
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
+        queryFn: () => httpClient.auth.me()
     });
 
     const uploadMutation = useMutation({
@@ -25,12 +25,12 @@ export default function NewVersionDialog({ open, onOpenChange, document }) {
             setUploading(true);
             
             // Upload new file
-            const { file_url } = await base44.integrations.Core.UploadFile({ file: newFile });
+            const { file_url } = await httpClient.integrations.Core.UploadFile({ file: newFile });
             
             const newVersion = (document.version || 1) + 1;
             
             // Create version record for old file
-            await base44.entities.DocumentVersion.create({
+            await httpClient.entities.DocumentVersion.create({
                 document_id: document.id,
                 version_number: document.version || 1,
                 file_url: document.file_url,
@@ -41,7 +41,7 @@ export default function NewVersionDialog({ open, onOpenChange, document }) {
             });
             
             // Update document with new version
-            return base44.entities.Document.update(document.id, {
+            return httpClient.entities.Document.update(document.id, {
                 file_url,
                 file_name: newFile.name,
                 file_size: newFile.size,

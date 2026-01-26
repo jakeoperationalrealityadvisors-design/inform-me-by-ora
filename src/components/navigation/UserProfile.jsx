@@ -1,13 +1,12 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User } from 'lucide-react';
 
 export default function UserProfile() {
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => base44.auth.me(),
+        queryFn: () => httpClient.auth.me(),
         retry: 2
     });
 

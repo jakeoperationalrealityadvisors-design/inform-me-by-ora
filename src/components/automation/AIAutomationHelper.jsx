@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 function ConditionLogicBuilder({ currentRule, onApply }) {
     const [logicGroups, setLogicGroups] = useState([
@@ -73,7 +72,7 @@ function ConditionLogicBuilder({ currentRule, onApply }) {
     const getAISuggestions = async () => {
         setLoading(true);
         try {
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `Based on this automation rule: "${currentRule?.name || 'New Rule'}"
                 
 Current logic groups: ${JSON.stringify(logicGroups)}
@@ -243,7 +242,7 @@ export default function AIAutomationHelper({ currentRule, onSuggestionApply }) {
         setSuggestions(null);
 
         try {
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `You are an automation expert. A user wants to create an automation rule with this goal: "${goal}"
 
 Based on this goal, suggest:
@@ -317,7 +316,7 @@ Respond with practical, ready-to-use suggestions.`,
         setOptimizations(null);
 
         try {
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `Analyze this automation rule and suggest optimizations:
 
 Rule Name: ${currentRule.name}
@@ -382,7 +381,7 @@ Provide:
         setLoading(true);
         try {
             const context = currentRule?.name ? `for automation rule "${currentRule.name}"` : '';
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `Generate a professional ${type === 'notification' ? 'notification message' : 'email'} ${context}.
                 
 ${type === 'notification' ? 'Create a concise title (max 50 chars) and message (max 200 chars).' : 'Create a subject line and email body.'}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { offlineStorage } from './OfflineStorage';
 import { toast } from 'sonner';
 import { RefreshCw, ListChecks } from 'lucide-react';
@@ -35,11 +35,11 @@ export function useSyncManager() {
             for (const item of unsyncedItems) {
                 try {
                     if (item.action === 'create') {
-                        await base44.entities[item.entity].create(item.data);
+                        await httpClient.entities[item.entity].create(item.data);
                     } else if (item.action === 'update') {
-                        await base44.entities[item.entity].update(item.data.id, item.data);
+                        await httpClient.entities[item.entity].update(item.data.id, item.data);
                     } else if (item.action === 'delete') {
-                        await base44.entities[item.entity].delete(item.data.id);
+                        await httpClient.entities[item.entity].delete(item.data.id);
                     }
                     
                     await offlineStorage.deleteData('syncQueue', item.id);

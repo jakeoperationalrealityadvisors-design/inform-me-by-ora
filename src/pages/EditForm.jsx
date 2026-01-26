@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Save, Plus, Trash2, GripVertical, Loader2, Sparkles } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, GripVertical, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -59,7 +59,7 @@ function EditFormContent() {
     const { data: existingForm, isLoading } = useQuery({
         queryKey: ['edit-form', formId],
         queryFn: async () => {
-            const forms = await base44.entities.FormTemplate.filter({ id: formId });
+            const forms = await httpClient.entities.FormTemplate.filter({ id: formId });
             return forms[0];
         },
         enabled: !!formId
@@ -67,7 +67,7 @@ function EditFormContent() {
     
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list()
+        queryFn: () => httpClient.entities.Category.list()
     });
     
     useEffect(() => {
@@ -87,7 +87,7 @@ function EditFormContent() {
         mutationFn: async (data) => {
             if (formId) {
                 // Check for conflicts before saving
-                const currentData = await base44.entities.FormTemplate.filter({ id: formId }).then(r => r[0]);
+                const currentData = await httpClient.entities.FormTemplate.filter({ id: formId }).then(r => r[0]);
                 
                 if (existingForm && currentData.updated_date !== existingForm.updated_date) {
                     setConflictData({ local: data, server: currentData });
@@ -95,9 +95,9 @@ function EditFormContent() {
                     throw new Error('Conflict detected');
                 }
                 
-                return base44.entities.FormTemplate.update(formId, data);
+                return httpClient.entities.FormTemplate.update(formId, data);
             }
-            return base44.entities.FormTemplate.create(data);
+            return httpClient.entities.FormTemplate.create(data);
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['forms', 'all-forms', 'edit-form']);

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Play, Square, TrendingUp, Users, Zap, Clock, AlertTriangle } from 'lucide-react';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 export default function BillingHistory({ organization }) {
     const { data: billingRecords = [] } = useQuery({
         queryKey: ['billing-history', organization.id],
-        queryFn: () => base44.entities.BillingHistory.filter({ organization_id: organization.id }, '-created_date')
+        queryFn: () => httpClient.entities.BillingHistory.filter({ organization_id: organization.id }, '-created_date')
     });
     
     const statusColors = {

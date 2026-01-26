@@ -1,14 +1,13 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown, Zap, Clock, CheckCircle2, XCircle, Activity } from 'lucide-react';
+import { TrendingUp, Zap, Clock, CheckCircle2, XCircle, Activity } from 'lucide-react';
 
 export default function AutomationAnalytics({ ruleId }) {
     const { data: rule } = useQuery({
         queryKey: ['automation-rule', ruleId],
-        queryFn: () => base44.entities.AutomationRule.filter({ id: ruleId }).then(r => r[0]),
+        queryFn: () => httpClient.entities.AutomationRule.filter({ id: ruleId }).then(r => r[0]),
         enabled: !!ruleId
     });
     

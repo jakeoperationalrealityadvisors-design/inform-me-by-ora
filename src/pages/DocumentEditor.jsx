@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Save, Crop, RotateCw, Contrast, Sun, Image as ImageIcon, Sliders, FileText } from 'lucide-react';
+import { ArrowLeft, Save, Crop, RotateCw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { toast } from 'sonner';
 import OCRProcessor from '@/components/scanner/OCRProcessor';
 
@@ -119,9 +119,9 @@ export default function DocumentEditor() {
             const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
             const file = new File([blob], `edited_${Date.now()}.jpg`, { type: 'image/jpeg' });
             
-            const { file_url } = await base44.integrations.Core.UploadFile({ file });
+            const { file_url } = await httpClient.integrations.Core.UploadFile({ file });
             
-            await base44.entities.Document.create({
+            await httpClient.entities.Document.create({
                 title: `Edited Document ${new Date().toLocaleDateString()}`,
                 file_url: file_url,
                 file_name: file.name,

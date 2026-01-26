@@ -1,6 +1,6 @@
 import React from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { httpClient } from '@/api/httpClient';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Building2, Check, LogOut, Plus, ChevronDown } from 'lucide-react';
@@ -22,21 +22,21 @@ export default function OrgSwitcher() {
 
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => base44.auth.me()
+        queryFn: () => httpClient.auth.me()
     });
 
     const { data: currentOrg } = useQuery({
         queryKey: ['organization', currentOrgId || user?.organization_id],
         queryFn: () => {
             const orgId = currentOrgId || user?.organization_id;
-            return base44.entities.Organization.filter({ id: orgId }).then(r => r[0]);
+            return httpClient.entities.Organization.filter({ id: orgId }).then(r => r[0]);
         },
         enabled: !!(currentOrgId || user?.organization_id)
     });
 
     const { data: tempAccess = [] } = useQuery({
         queryKey: ['temp-access', user?.email],
-        queryFn: () => base44.entities.TemporaryAccess.filter({ 
+        queryFn: () => httpClient.entities.TemporaryAccess.filter({ 
             user_email: user.email,
             status: 'active'
         }),
@@ -68,7 +68,7 @@ export default function OrgSwitcher() {
     const handleLogout = () => {
         localStorage.removeItem('current_org_id');
         localStorage.removeItem('active_orgs');
-        base44.auth.logout();
+        httpClient.auth.logout();
     };
 
     const handleHopCode = () => {

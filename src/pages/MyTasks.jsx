@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, FileText, CheckSquare, Calendar, AlertCircle, User, LayoutList, CalendarDays, ArrowUpDown, Plus, ListTodo } from 'lucide-react';
+import { ArrowLeft, FileText, CheckSquare, Calendar, User, LayoutList, CalendarDays, ArrowUpDown, Plus, ListTodo } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -26,7 +26,7 @@ export default function MyTasks() {
     const { data: standaloneTasks = [] } = useQuery({
         queryKey: ['standalone-tasks'],
         queryFn: async () => {
-            const all = await base44.entities.Task.list('-created_date');
+            const all = await httpClient.entities.Task.list('-created_date');
             if (canViewAll) return all;
             return all.filter(t => t.assigned_to_email === user?.email);
         },
@@ -36,7 +36,7 @@ export default function MyTasks() {
     const { data: formTasks = [] } = useQuery({
         queryKey: ['my-form-tasks'],
         queryFn: async () => {
-            const all = await base44.entities.FormSubmission.list('-due_date');
+            const all = await httpClient.entities.FormSubmission.list('-due_date');
             // Managers and admins see all tasks, team members see only assigned
             if (canViewAll) return all;
             return all.filter(f => f.assigned_to_email === user?.email);
@@ -47,7 +47,7 @@ export default function MyTasks() {
     const { data: checklistTasks = [] } = useQuery({
         queryKey: ['my-checklist-tasks'],
         queryFn: async () => {
-            const all = await base44.entities.ChecklistSubmission.list('-due_date');
+            const all = await httpClient.entities.ChecklistSubmission.list('-due_date');
             // Managers and admins see all tasks, team members see only assigned
             if (canViewAll) return all;
             return all.filter(c => c.assigned_to_email === user?.email);

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Loader2, Sparkles, Zap, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -47,7 +46,7 @@ export default function WorkflowGenerator({ onGenerate }) {
     
     const generateMutation = useMutation({
         mutationFn: async (prompt) => {
-            const response = await base44.integrations.Core.InvokeLLM({
+            const response = await httpClient.integrations.Core.InvokeLLM({
                 prompt: `You are an automation expert. Generate a complete automation rule configuration based on this request: "${prompt}"
 
 Return a JSON object with this exact structure:

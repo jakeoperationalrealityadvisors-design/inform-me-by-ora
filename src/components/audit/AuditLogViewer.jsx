@@ -3,8 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
 import { 
-    FileText, CheckSquare, User, Settings, Folder, 
-    Zap, Trash2, Edit, Plus, Eye 
+    FileText, CheckSquare, User, Trash2, Edit, Plus, Eye 
 } from 'lucide-react';
 
 const ACTION_ICONS = {

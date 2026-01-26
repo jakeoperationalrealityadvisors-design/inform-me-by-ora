@@ -1,272 +1,200 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Plus } from "lucide-react";
+import { createPageUrl } from "@/utils";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Loader2, Plus } from 'lucide-react';
-import { createPageUrl } from '@/utils';
-import { toast } from 'sonner';
-import AITaskEnhancer from '@/components/ai/AITaskEnhancer';
+
+import { sampleData } from "../sampleData";
+
+const STORAGE_KEY = "ora_tasks";
 
 export default function CreateTask() {
-    const navigate = useNavigate();
-    const queryClient = useQueryClient();
-    
-    const [taskData, setTaskData] = useState({
-        title: '',
-        description: '',
-        assigned_to_email: '',
-        assigned_to_name: '',
-        due_date: '',
-        priority: 'medium',
-        status: 'todo',
-        category_id: '',
-        tags: []
-    });
+  const navigate = useNavigate();
 
-    const { data: categories = [] } = useQuery({
-        queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list()
-    });
+  const [tasks, setTasks] = useState([]);
+  const [taskData, setTaskData] = useState({
+    title: "",
+    description: "",
+    assigned_to_name: "",
+    due_date: "",
+    priority: "medium",
+    status: "todo",
+    category: ""
+  });
 
-    const { data: users = [] } = useQuery({
-        queryKey: ['users'],
-        queryFn: () => base44.entities.User.list()
-    });
+  /* Load tasks from localStorage or sampleData */
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      setTasks(JSON.parse(stored));
+    } else {
+      setTasks(sampleData.tasks || []);
+    }
+  }, []);
 
-    const createMutation = useMutation({
-        mutationFn: (data) => base44.entities.Task.create(data),
-        onSuccess: async (task) => {
-            await logActivity({
-                action_type: 'task_created',
-                entity_type: 'task',
-                entity_id: task.id,
-                entity_title: task.title,
-                description: `Created task: ${task.title}`,
-                metadata: { assigned_to: task.assigned_to_email, priority: task.priority }
-            });
-            
-            // Trigger automations for task creation
-            await base44.functions.invoke('executeAutomations', {
-                trigger_type: 'task_created',
-                trigger_data: {
-                    task_id: task.id,
-                    title: task.title,
-                    priority: task.priority,
-                    assigned_to_email: task.assigned_to_email
-                }
-            });
-            
-            queryClient.invalidateQueries({ queryKey: ['tasks'] });
-            
-            // Send notification to assigned user
-            if (task.assigned_to_email) {
-                await base44.entities.Notification.create({
-                    user_email: task.assigned_to_email,
-                    title: 'New Task Assigned',
-                    message: `You have been assigned: ${task.title}`,
-                    type: 'task_assigned',
-                    link_page: 'MyTasks'
-                });
-            }
-            
-            toast.success('Task created successfully');
-            navigate(createPageUrl('MyTasks'));
-        },
-        onError: (error) => {
-            toast.error('Failed to create task');
-            console.error(error);
-        }
-    });
+  /* Save tasks to localStorage */
+  const persistTasks = (newTasks) => {
+    setTasks(newTasks);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newTasks));
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        if (!taskData.title || !taskData.assigned_to_email) {
-            toast.error('Title and assignee are required');
-            return;
-        }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!taskData.title) return;
 
-        await createMutation.mutateAsync(taskData);
+    const newTask = {
+      id: `task-${Date.now()}`,
+      ...taskData,
+      created_at: new Date().toISOString()
     };
 
-    return (
-        <div className="min-h-screen bg-slate-100 dark:bg-[#0a0e17] pb-20 md:pb-6">
-            <div className="bg-white dark:bg-[#0a0e17] border-b border-slate-200 dark:border-blue-900/30 sticky top-0 z-10">
-                <div className="max-w-4xl mx-auto px-4 py-4">
-                    <div className="flex items-center gap-3">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => navigate(createPageUrl('MyTasks'))}
-                            className="text-slate-700 dark:text-[#FF8C00]"
-                        >
-                            <ArrowLeft className="w-5 h-5" />
-                        </Button>
-                        <div>
-                            <h1 className="text-xl font-bold text-slate-900 dark:text-[#FF8C00]">
-                                Create New Task
-                            </h1>
-                            <p className="text-sm text-slate-600 dark:text-[#FF8C00]/70">
-                                Assign and track work items
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    persistTasks([...tasks, newTask]);
+    navigate(createPageUrl("MyTasks"));
+  };
 
-            <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-                {/* AI Task Enhancement */}
-                {taskData.title && (
-                    <AITaskEnhancer
-                        taskTitle={taskData.title}
-                        taskDescription={taskData.description}
-                        onApplySuggestions={(suggestions) => {
-                            setTaskData({ ...taskData, ...suggestions });
-                        }}
-                    />
-                )}
-                
-                <form onSubmit={handleSubmit}>
-                    <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30">
-                        <CardHeader>
-                            <CardTitle className="text-slate-900 dark:text-[#FF8C00]">Task Details</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div>
-                                <Label className="text-slate-700 dark:text-[#FF8C00]">Title *</Label>
-                                <Input
-                                    value={taskData.title}
-                                    onChange={(e) => setTaskData({ ...taskData, title: e.target.value })}
-                                    placeholder="Enter task title"
-                                    required
-                                    className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
-                                />
-                            </div>
-
-                            <div>
-                                <Label className="text-slate-700 dark:text-[#FF8C00]">Description</Label>
-                                <Textarea
-                                    value={taskData.description}
-                                    onChange={(e) => setTaskData({ ...taskData, description: e.target.value })}
-                                    placeholder="Enter task description"
-                                    rows={4}
-                                    className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <Label className="text-slate-700 dark:text-[#FF8C00]">Assign To *</Label>
-                                    <Select
-                                        value={taskData.assigned_to_email}
-                                        onValueChange={(value) => {
-                                            const user = users.find(u => u.email === value);
-                                            setTaskData({
-                                                ...taskData,
-                                                assigned_to_email: value,
-                                                assigned_to_name: user?.full_name || ''
-                                            });
-                                        }}
-                                    >
-                                        <SelectTrigger className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
-                                            <SelectValue placeholder="Select user" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {users.map(user => (
-                                                <SelectItem key={user.email} value={user.email}>
-                                                    {user.full_name} ({user.email})
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                <div>
-                                    <Label className="text-slate-700 dark:text-[#FF8C00]">Due Date</Label>
-                                    <Input
-                                        type="date"
-                                        value={taskData.due_date}
-                                        onChange={(e) => setTaskData({ ...taskData, due_date: e.target.value })}
-                                        className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <Label className="text-slate-700 dark:text-[#FF8C00]">Priority</Label>
-                                    <Select
-                                        value={taskData.priority}
-                                        onValueChange={(value) => setTaskData({ ...taskData, priority: value })}
-                                    >
-                                        <SelectTrigger className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="low">Low</SelectItem>
-                                            <SelectItem value="medium">Medium</SelectItem>
-                                            <SelectItem value="high">High</SelectItem>
-                                            <SelectItem value="urgent">Urgent</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                <div>
-                                    <Label className="text-slate-700 dark:text-[#FF8C00]">Category</Label>
-                                    <Select
-                                        value={taskData.category_id}
-                                        onValueChange={(value) => setTaskData({ ...taskData, category_id: value })}
-                                    >
-                                        <SelectTrigger className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
-                                            <SelectValue placeholder="Select category" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {categories.map(cat => (
-                                                <SelectItem key={cat.id} value={cat.id}>
-                                                    {cat.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <div className="flex gap-3 justify-end mt-6">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => navigate(createPageUrl('MyTasks'))}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="submit"
-                            disabled={createMutation.isPending}
-                            className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] hover:opacity-90 text-black"
-                        >
-                            {createMutation.isPending ? (
-                                <>
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                    Creating...
-                                </>
-                            ) : (
-                                <>
-                                    <Plus className="w-4 h-4 mr-2" />
-                                    Create Task
-                                </>
-                            )}
-                        </Button>
-                    </div>
-                </form>
-            </div>
+  return (
+    <div className="min-h-screen bg-[#0a0e17] text-white">
+      {/* Header */}
+      <div className="border-b border-blue-900/30 bg-[#0f1419] sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(createPageUrl("MyTasks"))}
+            className="text-[#FF8C00]"
+          >
+            <ArrowLeft />
+          </Button>
+          <div>
+            <h1 className="text-xl font-bold text-[#FF8C00]">
+              Create New Task
+            </h1>
+            <p className="text-sm text-[#FF8C00]/70">
+              Offline · Local · Instant
+            </p>
+          </div>
         </div>
-    );
+      </div>
+
+      {/* Form */}
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <form onSubmit={handleSubmit}>
+          <Card className="bg-[#0f1419] border-blue-900/30">
+            <CardHeader>
+              <CardTitle className="text-[#FF8C00]">
+                Task Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Title *</Label>
+                <Input
+                  value={taskData.title}
+                  onChange={(e) =>
+                    setTaskData({ ...taskData, title: e.target.value })
+                  }
+                  placeholder="e.g. Complete Pre-Trip Inspection"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label>Description</Label>
+                <Textarea
+                  value={taskData.description}
+                  onChange={(e) =>
+                    setTaskData({ ...taskData, description: e.target.value })
+                  }
+                  placeholder="Optional task details"
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Assigned To</Label>
+                  <Input
+                    value={taskData.assigned_to_name}
+                    onChange={(e) =>
+                      setTaskData({
+                        ...taskData,
+                        assigned_to_name: e.target.value
+                      })
+                    }
+                    placeholder="Driver / Admin / Dispatcher"
+                  />
+                </div>
+
+                <div>
+                  <Label>Due Date</Label>
+                  <Input
+                    type="date"
+                    value={taskData.due_date}
+                    onChange={(e) =>
+                      setTaskData({ ...taskData, due_date: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Priority</Label>
+                  <Select
+                    value={taskData.priority}
+                    onValueChange={(v) =>
+                      setTaskData({ ...taskData, priority: v })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                      <SelectItem value="urgent">Urgent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Category</Label>
+                  <Input
+                    value={taskData.category}
+                    onChange={(e) =>
+                      setTaskData({ ...taskData, category: e.target.value })
+                    }
+                    placeholder="Safety / Compliance / Maintenance"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="flex justify-end gap-3 mt-6">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate(createPageUrl("MyTasks"))}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create Task
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }

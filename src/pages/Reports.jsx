@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, FileText, CheckSquare, ListTodo, TrendingUp, BarChart3, Users } from 'lucide-react';
+import { ArrowLeft, FileText, CheckSquare, TrendingUp, BarChart3, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoleGuard from '@/components/auth/RoleGuard';
@@ -26,27 +26,27 @@ function ReportsContent() {
     // Fetch data
     const { data: forms = [] } = useQuery({
         queryKey: ['form-submissions'],
-        queryFn: () => base44.entities.FormSubmission.list('-created_date')
+        queryFn: () => httpClient.entities.FormSubmission.list('-created_date')
     });
 
     const { data: checklists = [] } = useQuery({
         queryKey: ['checklist-submissions'],
-        queryFn: () => base44.entities.ChecklistSubmission.list('-created_date')
+        queryFn: () => httpClient.entities.ChecklistSubmission.list('-created_date')
     });
 
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list()
+        queryFn: () => httpClient.entities.Category.list()
     });
 
     const { data: formTemplates = [] } = useQuery({
         queryKey: ['form-templates'],
-        queryFn: () => base44.entities.FormTemplate.list()
+        queryFn: () => httpClient.entities.FormTemplate.list()
     });
 
     const { data: checklistTemplates = [] } = useQuery({
         queryKey: ['checklist-templates'],
-        queryFn: () => base44.entities.ChecklistTemplate.list()
+        queryFn: () => httpClient.entities.ChecklistTemplate.list()
     });
 
     // Filter data

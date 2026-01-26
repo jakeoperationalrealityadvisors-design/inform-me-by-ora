@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,17 +22,17 @@ export default function DocumentUploadDialog({ open, onOpenChange, currentFolder
 
     const { data: existingTags = [] } = useQuery({
         queryKey: ['document-tags'],
-        queryFn: () => base44.entities.DocumentTag.list()
+        queryFn: () => httpClient.entities.DocumentTag.list()
     });
 
     const uploadMutation = useMutation({
         mutationFn: async (data) => {
             // First upload file
             setUploading(true);
-            const { file_url } = await base44.integrations.Core.UploadFile({ file: data.file });
+            const { file_url } = await httpClient.integrations.Core.UploadFile({ file: data.file });
             
             // Create document record
-            return base44.entities.Document.create({
+            return httpClient.entities.Document.create({
                 name: data.name,
                 description: data.description,
                 file_url,
@@ -71,7 +71,7 @@ export default function DocumentUploadDialog({ open, onOpenChange, currentFolder
             
             // Create tag if it doesn't exist
             if (!existingTags.find(t => t.name === newTag)) {
-                base44.entities.DocumentTag.create({ name: newTag, color: '#1e90ff' });
+                httpClient.entities.DocumentTag.create({ name: newTag, color: '#1e90ff' });
             }
             
             setTagInput('');

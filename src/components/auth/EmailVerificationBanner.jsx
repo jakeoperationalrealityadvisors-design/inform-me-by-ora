@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { AlertCircle, Mail, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -9,7 +9,7 @@ export default function EmailVerificationBanner({ user }) {
     const [dismissed, setDismissed] = useState(false);
 
     const resendMutation = useMutation({
-        mutationFn: () => base44.functions.invoke('sendVerificationEmail'),
+        mutationFn: () => httpClient.functions.invoke('sendVerificationEmail'),
         onSuccess: () => {
             toast.success('Verification email sent! Check your inbox.');
         },

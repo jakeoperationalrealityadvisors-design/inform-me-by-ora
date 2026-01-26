@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Save, Plus, Trash2, GripVertical, Loader2, MessageSquare } from 'lucide-react';
@@ -30,7 +30,7 @@ export default function EditChecklist() {
     const { data: existingChecklist, isLoading } = useQuery({
         queryKey: ['edit-checklist', checklistId],
         queryFn: async () => {
-            const checklists = await base44.entities.ChecklistTemplate.filter({ id: checklistId });
+            const checklists = await httpClient.entities.ChecklistTemplate.filter({ id: checklistId });
             return checklists[0];
         },
         enabled: !!checklistId
@@ -38,7 +38,7 @@ export default function EditChecklist() {
     
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list()
+        queryFn: () => httpClient.entities.Category.list()
     });
     
     useEffect(() => {
@@ -50,9 +50,9 @@ export default function EditChecklist() {
     const saveMutation = useMutation({
         mutationFn: (data) => {
             if (checklistId) {
-                return base44.entities.ChecklistTemplate.update(checklistId, data);
+                return httpClient.entities.ChecklistTemplate.update(checklistId, data);
             }
-            return base44.entities.ChecklistTemplate.create(data);
+            return httpClient.entities.ChecklistTemplate.create(data);
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['checklists', 'all-checklists']);

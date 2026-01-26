@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { FileText, Copy, Download, Search, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { toast } from 'sonner';
 
 export default function OCRProcessor({ imageUrl, onTextExtracted }) {
@@ -26,7 +25,7 @@ export default function OCRProcessor({ imageUrl, onTextExtracted }) {
                 return;
             }
 
-            const result = await base44.integrations.Core.InvokeLLM({
+            const result = await httpClient.integrations.Core.InvokeLLM({
                 prompt: 'Extract all text from this image. Return only the text content, preserving formatting and structure. If there are tables, preserve them in a readable format.',
                 file_urls: [imageUrl]
             });

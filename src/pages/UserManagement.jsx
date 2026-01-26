@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, UserPlus, Mail, Shield, Users, Pencil, Trash2, Search } from 'lucide-react';
+import { ArrowLeft, UserPlus, Mail, Shield, Users, Pencil, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,11 +31,11 @@ function UserManagementContent() {
     
     const { data: users = [] } = useQuery({
         queryKey: ['all-users'],
-        queryFn: () => base44.entities.User.list()
+        queryFn: () => httpClient.entities.User.list()
     });
     
     const inviteMutation = useMutation({
-        mutationFn: ({ email, role }) => base44.users.inviteUser(email, role),
+        mutationFn: ({ email, role }) => httpClient.users.inviteUser(email, role),
         onSuccess: async (data, variables) => {
             await logActivity({
                 action_type: 'user_invited',
@@ -53,7 +53,7 @@ function UserManagementContent() {
     });
     
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }) => base44.entities.User.update(id, data),
+        mutationFn: ({ id, data }) => httpClient.entities.User.update(id, data),
         onSuccess: async (updatedUser, variables) => {
             await logActivity({
                 action_type: 'user_updated',

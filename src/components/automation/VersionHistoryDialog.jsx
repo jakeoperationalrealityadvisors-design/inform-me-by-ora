@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { History, RotateCcw, GitCompare, Check, Clock } from 'lucide-react';
 import { toast } from 'sonner';
@@ -16,7 +15,7 @@ export default function VersionHistoryDialog({ open, onOpenChange, ruleId, onRev
     
     const { data: versions = [], isLoading } = useQuery({
         queryKey: ['automation-versions', ruleId],
-        queryFn: () => base44.entities.AutomationRuleVersion.filter({ rule_id: ruleId }, '-version_number'),
+        queryFn: () => httpClient.entities.AutomationRuleVersion.filter({ rule_id: ruleId }, '-version_number'),
         enabled: !!ruleId && open
     });
     
@@ -25,7 +24,7 @@ export default function VersionHistoryDialog({ open, onOpenChange, ruleId, onRev
             const version = versions.find(v => v.id === versionId);
             
             // Update the main rule with version data
-            await base44.entities.AutomationRule.update(ruleId, {
+            await httpClient.entities.AutomationRule.update(ruleId, {
                 name: version.name,
                 description: version.description,
                 trigger_type: version.trigger_type,
@@ -35,12 +34,12 @@ export default function VersionHistoryDialog({ open, onOpenChange, ruleId, onRev
             });
             
             // Mark this version as active
-            await base44.entities.AutomationRuleVersion.update(versionId, { is_active: true });
+            await httpClient.entities.AutomationRuleVersion.update(versionId, { is_active: true });
             
             // Mark all other versions as inactive
             const otherVersions = versions.filter(v => v.id !== versionId);
             for (const v of otherVersions) {
-                await base44.entities.AutomationRuleVersion.update(v.id, { is_active: false });
+                await httpClient.entities.AutomationRuleVersion.update(v.id, { is_active: false });
             }
             
             return version;

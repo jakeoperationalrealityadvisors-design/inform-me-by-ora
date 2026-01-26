@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, User, ChevronDown, ChevronRight, MoreVertical } from 'lucide-react';
 import { format } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { toast } from 'sonner';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -28,7 +28,7 @@ export default function TaskCard({ task }) {
     };
 
     const updateMutation = useMutation({
-        mutationFn: (updates) => base44.entities.Task.update(task.id, updates),
+        mutationFn: (updates) => httpClient.entities.Task.update(task.id, updates),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             toast.success('Task updated');
@@ -36,7 +36,7 @@ export default function TaskCard({ task }) {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: () => base44.entities.Task.delete(task.id),
+        mutationFn: () => httpClient.entities.Task.delete(task.id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             toast.success('Task deleted');

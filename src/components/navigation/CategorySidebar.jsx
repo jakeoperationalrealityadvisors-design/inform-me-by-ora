@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Folder, FileText, CheckSquare, Truck, ClipboardList, Building, Users, PackageCheck, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -23,7 +23,7 @@ export default function CategorySidebar({ selectedCategory, onSelectCategory, sh
     
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => base44.entities.Category.list(),
+        queryFn: () => httpClient.entities.Category.list(),
         staleTime: 60000
     });
     

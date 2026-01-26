@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,7 @@ export default function ShareAutomationDialog({ open, onOpenChange, automation }
                 usage_count: 0
             };
             
-            return await base44.entities.AutomationTemplate.create(templateData);
+            return await httpClient.entities.AutomationTemplate.create(templateData);
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['automation-templates']);

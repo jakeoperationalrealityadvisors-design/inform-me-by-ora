@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { httpClient } from '@/api/httpClient';
 import { FileText, Download, Eye, MoreVertical, Clock, Upload, Trash2 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ export default function DocumentCard({ document, currentFolderId }) {
     const queryClient = useQueryClient();
 
     const deleteMutation = useMutation({
-        mutationFn: (id) => base44.entities.Document.delete(id),
+        mutationFn: (id) => httpClient.entities.Document.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries(['documents']);
             toast.success('Document deleted');

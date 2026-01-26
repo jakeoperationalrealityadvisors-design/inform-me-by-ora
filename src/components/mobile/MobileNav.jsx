@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, ClipboardList, CheckSquare, ListTodo, FolderOpen, Building2 } from 'lucide-react';
+import { Home, ClipboardList, FolderOpen, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import OrgSwitcher from '@/components/navigation/OrgSwitcher';
 
