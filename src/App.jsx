@@ -2,7 +2,7 @@ import "./globals.css";
 
 export default function App() {
   return (
-    <div className="app-shell">
+    <div className="app-shell" style={{ padding: '16px' }}>
       {/* Top Bar */}
       <header className="top-bar">
         <h1 className="brand">
