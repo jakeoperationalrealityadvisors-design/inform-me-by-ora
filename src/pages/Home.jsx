@@ -221,7 +221,7 @@ export default function Home() {
                         />
                         <button
                             onClick={() => setShowGlobalSearch(true)}
-                            className="hidden sm:block absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded hover:bg-blue-50"
+                            className="hidden sm:block absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded hover:bg-blue-950/40"
                         >
                             Advanced
                         </button>

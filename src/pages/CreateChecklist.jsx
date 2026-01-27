@@ -145,23 +145,23 @@ Return a JSON object with title, description, and items array.`,
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-[#0a0e17] pb-20 md:pb-6 overflow-y-auto">
-      <div className="bg-white dark:bg-[#0a0e17] border-b border-slate-200 dark:border-blue-900/30 sticky top-0 z-20 shadow-sm">
+    <div className="min-h-screen bg-blue-950/50 dark:bg-[#0a0e17] pb-20 md:pb-6 overflow-y-auto">
+      <div className="bg-[#0f1419] dark:bg-[#0a0e17] border-b border-blue-900/30 dark:border-blue-900/30 sticky top-0 z-20 shadow-sm">
         <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3">
           <div className="flex items-center gap-2 sm:gap-3">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => navigate(createPageUrl('Checklists'))}
-              className="text-slate-700 dark:text-[#FF8C00] shrink-0"
+              className="text-blue-200 dark:text-[#FF8C00] shrink-0"
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div className="min-w-0">
-              <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-[#FF8C00] truncate">
+              <h1 className="text-lg sm:text-xl font-bold text-white dark:text-[#FF8C00] truncate">
                 Create Checklist Template
               </h1>
-              <p className="text-sm text-slate-500 dark:text-[#FF8C00]/70">
+              <p className="text-sm text-blue-400/70 dark:text-[#FF8C00]/70">
                 Build reusable checklists with AI assistance
               </p>
             </div>
@@ -171,9 +171,9 @@ Return a JSON object with title, description, and items array.`,
 
       <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6">
         {/* AI Generation Card */}
-        <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30 mb-6">
+        <Card className="bg-[#0f1419] dark:bg-[#0a0e17] border-blue-900/30 dark:border-blue-900/30 mb-6">
           <CardHeader>
-            <CardTitle className="text-slate-900 dark:text-[#FF8C00] flex items-center gap-2">
+            <CardTitle className="text-white dark:text-[#FF8C00] flex items-center gap-2">
               <Sparkles className="w-5 h-5" />
               AI-Powered Checklist Generation
             </CardTitle>
@@ -181,10 +181,10 @@ Return a JSON object with title, description, and items array.`,
           <CardContent>
             <div className="space-y-4">
               <div>
-                <Label className="text-slate-700 dark:text-[#FF8C00]">Describe your checklist</Label>
+                <Label className="text-blue-200 dark:text-[#FF8C00]">Describe your checklist</Label>
                 <Textarea
                   placeholder="e.g. Daily vehicle inspection checklist, Employee onboarding process, Safety audit checklist..."
-                  className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00] mt-1"
+                  className="border-blue-900/40 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00] mt-1"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
@@ -195,7 +195,7 @@ Return a JSON object with title, description, and items array.`,
                     }
                   }}
                 />
-                <p className="text-xs text-slate-500 dark:text-[#FF8C00]/70 mt-1">
+                <p className="text-xs text-blue-400/70 dark:text-[#FF8C00]/70 mt-1">
                   Press Enter to generate. AI will create a complete checklist with all necessary items.
                 </p>
               </div>
@@ -210,37 +210,37 @@ Return a JSON object with title, description, and items array.`,
         </Card>
 
         <form onSubmit={handleSubmit}>
-          <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30">
+          <Card className="bg-[#0f1419] dark:bg-[#0a0e17] border-blue-900/30 dark:border-blue-900/30">
             <CardHeader>
-              <CardTitle className="text-slate-900 dark:text-[#FF8C00]">Checklist Details</CardTitle>
+              <CardTitle className="text-white dark:text-[#FF8C00]">Checklist Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="text-slate-700 dark:text-[#FF8C00]">Title *</Label>
+                <Label className="text-blue-200 dark:text-[#FF8C00]">Title *</Label>
                 <Input
                   value={checklistData.title}
                   onChange={(e) => setChecklistData({ ...checklistData, title: e.target.value })}
                   placeholder="Enter checklist title"
                   required
-                  className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
+                  className="border-blue-900/40 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
                 />
               </div>
               <div>
-                <Label className="text-slate-700 dark:text-[#FF8C00]">Description</Label>
+                <Label className="text-blue-200 dark:text-[#FF8C00]">Description</Label>
                 <Textarea
                   value={checklistData.description}
                   onChange={(e) => setChecklistData({ ...checklistData, description: e.target.value })}
                   placeholder="Enter checklist description"
-                  className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
+                  className="border-blue-900/40 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
                 />
               </div>
               <div>
-                <Label className="text-slate-700 dark:text-[#FF8C00]">Category</Label>
+                <Label className="text-blue-200 dark:text-[#FF8C00]">Category</Label>
                 <Select
                   value={checklistData.category_id}
                   onValueChange={(value) => setChecklistData({ ...checklistData, category_id: value })}
                 >
-                  <SelectTrigger className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
+                  <SelectTrigger className="border-blue-900/40 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -256,9 +256,9 @@ Return a JSON object with title, description, and items array.`,
           </Card>
 
           {/* Checklist Items */}
-          <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30 mt-6">
+          <Card className="bg-[#0f1419] dark:bg-[#0a0e17] border-blue-900/30 dark:border-blue-900/30 mt-6">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm sm:text-base text-slate-900 dark:text-[#FF8C00]">Checklist Items ({items.length})</CardTitle>
+              <CardTitle className="text-sm sm:text-base text-white dark:text-[#FF8C00]">Checklist Items ({items.length})</CardTitle>
               <Button
                 type="button"
                 onClick={addItem}
@@ -271,25 +271,25 @@ Return a JSON object with title, description, and items array.`,
             </CardHeader>
             <CardContent className="space-y-2 max-h-[60vh] overflow-y-auto">
               {items.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 dark:text-[#FF8C00]/50">
+                <div className="text-center py-8 text-blue-400/70 dark:text-[#FF8C00]/50">
                   <p className="text-xs sm:text-sm">No checklist items yet</p>
-                  <p className="text-xs text-slate-400 dark:text-[#FF8C00]/30 mt-1">
+                  <p className="text-xs text-blue-400/60 dark:text-[#FF8C00]/30 mt-1">
                     Use AI generation above or add items manually
                   </p>
                 </div>
               ) : (
                 items.map((item, index) => (
-                  <div key={item.id} className="flex items-center gap-3 p-3 border border-slate-200 dark:border-blue-900/30 rounded-lg">
+                  <div key={item.id} className="flex items-center gap-3 p-3 border border-blue-900/30 dark:border-blue-900/30 rounded-lg">
                     <div className="flex-1">
                       <Input
                         value={item.text}
                         onChange={(e) => updateItem(index, 'text', e.target.value)}
                         placeholder="Enter checklist item"
-                        className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
+                        className="border-blue-900/40 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <Label className="text-xs text-slate-600 dark:text-[#FF8C00]/70">Required</Label>
+                      <Label className="text-xs text-blue-300 dark:text-[#FF8C00]/70">Required</Label>
                       <Checkbox
                         checked={item.required}
                         onCheckedChange={(checked) => updateItem(index, 'required', checked)}
@@ -315,7 +315,7 @@ Return a JSON object with title, description, and items array.`,
               type="button"
               variant="outline"
               onClick={() => navigate(createPageUrl('Checklists'))}
-              className="border-slate-300 dark:border-blue-900/30"
+              className="border-blue-900/40 dark:border-blue-900/30"
             >
               Cancel
             </Button>

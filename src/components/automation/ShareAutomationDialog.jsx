@@ -75,7 +75,7 @@ export default function ShareAutomationDialog({ open, onOpenChange, automation }
                     <div className="flex items-center justify-between">
                         <div>
                             <Label>Save as Public Template</Label>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-blue-400/70 mt-1">
                                 Allow others to use this automation as a template
                             </p>
                         </div>

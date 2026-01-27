@@ -112,25 +112,25 @@ export default function NewVersionDialog({ open, onOpenChange, document }) {
                     <div>
                         <Label>Select File *</Label>
                         <div className="mt-2">
-                            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-[#1e90ff] hover:bg-blue-50/50 transition-all">
+                            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-blue-900/40 rounded-lg cursor-pointer hover:border-[#1e90ff] hover:bg-blue-950/40/50 transition-all">
                                 <div className="text-center p-4">
                                     {file ? (
                                         <>
                                             <FileUp className="w-8 h-8 mx-auto text-green-600 mb-2" />
-                                            <p className="text-sm font-medium text-slate-900">
+                                            <p className="text-sm font-medium text-white">
                                                 {file.name}
                                             </p>
-                                            <p className="text-xs text-slate-500 mt-1">
+                                            <p className="text-xs text-blue-400/70 mt-1">
                                                 {formatFileSize(file.size)}
                                             </p>
                                         </>
                                     ) : (
                                         <>
-                                            <Upload className="w-8 h-8 mx-auto text-slate-400 mb-2" />
-                                            <p className="text-sm text-slate-600">
+                                            <Upload className="w-8 h-8 mx-auto text-blue-400/60 mb-2" />
+                                            <p className="text-sm text-blue-300">
                                                 Click to select file
                                             </p>
-                                            <p className="text-xs text-slate-500 mt-1">
+                                            <p className="text-xs text-blue-400/70 mt-1">
                                                 Any file type accepted
                                             </p>
                                         </>

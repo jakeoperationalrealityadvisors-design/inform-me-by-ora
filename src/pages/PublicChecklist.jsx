@@ -80,18 +80,18 @@ export default function PublicChecklist() {
     
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
             </div>
         );
     }
     
     if (!checklist) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] flex items-center justify-center p-4">
                 <Card className="max-w-md w-full">
                     <CardContent className="pt-6 text-center">
-                        <p className="text-slate-600">Checklist not found</p>
+                        <p className="text-blue-300">Checklist not found</p>
                     </CardContent>
                 </Card>
             </div>
@@ -100,12 +100,12 @@ export default function PublicChecklist() {
     
     if (submitted) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] flex items-center justify-center p-4">
                 <Card className="max-w-md w-full">
                     <CardContent className="pt-12 pb-12 text-center">
                         <CheckCircle2 className="w-16 h-16 text-green-600 mx-auto mb-4" />
-                        <h2 className="text-2xl font-bold text-slate-900 mb-2">Thank You!</h2>
-                        <p className="text-slate-600 mb-6">Your checklist has been submitted successfully.</p>
+                        <h2 className="text-2xl font-bold text-white mb-2">Thank You!</h2>
+                        <p className="text-blue-300 mb-6">Your checklist has been submitted successfully.</p>
                         <Button onClick={() => window.location.reload()} className="bg-blue-600 hover:bg-blue-700">
                             Submit Another Response
                         </Button>
@@ -120,7 +120,7 @@ export default function PublicChecklist() {
         : 0;
     
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4">
+        <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] py-12 px-4">
             <Card className="max-w-2xl mx-auto">
                 <CardHeader className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white">
                     <CardTitle className="text-2xl">{checklist.title}</CardTitle>
@@ -130,9 +130,9 @@ export default function PublicChecklist() {
                             <span>Progress</span>
                             <span>{completionPercentage}%</span>
                         </div>
-                        <div className="w-full bg-white/20 rounded-full h-2">
+                        <div className="w-full bg-blue-950/40 rounded-full h-2">
                             <div
-                                className="bg-white rounded-full h-2 transition-all duration-300"
+                                className="bg-[#0f1419] rounded-full h-2 transition-all duration-300"
                                 style={{ width: `${completionPercentage}%` }}
                             />
                         </div>
@@ -141,19 +141,19 @@ export default function PublicChecklist() {
                 <CardContent className="pt-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <Label className="text-slate-700">Your Name *</Label>
+                            <Label className="text-blue-200">Your Name *</Label>
                             <Input
                                 value={submitterName}
                                 onChange={(e) => setSubmitterName(e.target.value)}
                                 placeholder="Enter your name"
                                 required
-                                className="bg-white border-slate-300"
+                                className="bg-[#0f1419] border-blue-900/40"
                             />
                         </div>
                         
                         <div className="space-y-3">
                             {checklist.items?.map((item) => (
-                                <div key={item.id} className="border border-slate-200 rounded-lg p-4 space-y-3">
+                                <div key={item.id} className="border border-blue-900/30 rounded-lg p-4 space-y-3">
                                     <button
                                         type="button"
                                         onClick={() => toggleItem(item.id)}
@@ -162,10 +162,10 @@ export default function PublicChecklist() {
                                         {completed.includes(item.id) ? (
                                             <CheckSquare className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                                         ) : (
-                                            <Square className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" />
+                                            <Square className="w-5 h-5 text-blue-400/60 flex-shrink-0 mt-0.5" />
                                         )}
                                         <div className="flex-1">
-                                            <span className={`text-slate-900 ${completed.includes(item.id) ? 'line-through' : ''}`}>
+                                            <span className={`text-white ${completed.includes(item.id) ? 'line-through' : ''}`}>
                                                 {item.text}
                                             </span>
                                             {item.required && <span className="text-red-600 ml-1">*</span>}
@@ -177,7 +177,7 @@ export default function PublicChecklist() {
                                             value={notes[item.id] || ''}
                                             onChange={(e) => setNotes({ ...notes, [item.id]: e.target.value })}
                                             placeholder="Add notes..."
-                                            className="bg-white border-slate-300"
+                                            className="bg-[#0f1419] border-blue-900/40"
                                             rows={2}
                                         />
                                     )}

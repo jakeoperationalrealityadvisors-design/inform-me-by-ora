@@ -143,7 +143,7 @@ export default function VisualWorkflowBuilder({ automation, onUpdate }) {
     const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
     return (
-        <div className="h-[500px] border-2 border-slate-200 rounded-xl bg-slate-50">
+        <div className="h-[500px] border-2 border-blue-900/30 rounded-xl bg-blue-950/40">
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -155,7 +155,7 @@ export default function VisualWorkflowBuilder({ automation, onUpdate }) {
                 attributionPosition="bottom-right"
             >
                 <Background color="#e2e8f0" gap={16} />
-                <Controls className="bg-white border border-slate-200 rounded-lg" />
+                <Controls className="bg-[#0f1419] border border-blue-900/30 rounded-lg" />
                 <MiniMap 
                     nodeColor={(node) => {
                         switch (node.type) {
@@ -165,7 +165,7 @@ export default function VisualWorkflowBuilder({ automation, onUpdate }) {
                             default: return '#10b981';
                         }
                     }}
-                    className="bg-white border border-slate-200 rounded-lg"
+                    className="bg-[#0f1419] border border-blue-900/30 rounded-lg"
                 />
             </ReactFlow>
         </div>

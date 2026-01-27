@@ -113,8 +113,8 @@ return formattedData;`
                 spellCheck={false}
             />
 
-            <p className="text-xs text-slate-500">
-                Code executes in a sandboxed environment. Use <code className="bg-slate-100 px-1 rounded">return</code> to pass data to subsequent actions.
+            <p className="text-xs text-blue-400/70">
+                Code executes in a sandboxed environment. Use <code className="bg-blue-950/50 px-1 rounded">return</code> to pass data to subsequent actions.
             </p>
         </div>
     );

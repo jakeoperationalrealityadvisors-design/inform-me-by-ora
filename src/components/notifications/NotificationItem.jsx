@@ -47,7 +47,7 @@ export default function NotificationItem({ notification, onClose }) {
     };
     
     const Icon = icons[notification.type] || ListTodo;
-    const colorClass = colors[notification.type] || 'text-slate-600 bg-slate-50';
+    const colorClass = colors[notification.type] || 'text-blue-300 bg-blue-950/40';
     
     const linkUrl = notification.link_page 
         ? createPageUrl(`${notification.link_page}${notification.link_params || ''}`)
@@ -56,7 +56,7 @@ export default function NotificationItem({ notification, onClose }) {
     const content = (
         <div 
             className={cn(
-                "flex gap-3 p-4 hover:bg-slate-50 transition-colors cursor-pointer",
+                "flex gap-3 p-4 hover:bg-blue-950/40 transition-colors cursor-pointer",
                 !notification.read && "bg-blue-50/50"
             )}
             onClick={handleClick}
@@ -66,17 +66,17 @@ export default function NotificationItem({ notification, onClose }) {
             </div>
             <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
-                    <p className="font-medium text-sm text-slate-900">
+                    <p className="font-medium text-sm text-white">
                         {notification.title}
                     </p>
                     {!notification.read && (
                         <div className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0 mt-1" />
                     )}
                 </div>
-                <p className="text-sm text-slate-600 mt-1 line-clamp-2">
+                <p className="text-sm text-blue-300 mt-1 line-clamp-2">
                     {notification.message}
                 </p>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-blue-400/60 mt-1">
                     {format(new Date(notification.created_date), 'MMM d, h:mm a')}
                 </p>
             </div>

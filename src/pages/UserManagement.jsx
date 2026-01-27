@@ -82,7 +82,7 @@ function UserManagementContent() {
     
     const teamRoleColors = {
         manager: 'bg-green-500/10 text-green-400',
-        team_member: 'bg-slate-500/10 text-slate-400'
+        team_member: 'bg-blue-900/30 text-blue-400/60'
     };
     
     return (

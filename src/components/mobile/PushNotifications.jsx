@@ -78,7 +78,7 @@ export default function PushNotificationToggle() {
             {permission === 'granted' ? (
                 <Bell className="w-5 h-5 text-green-500" />
             ) : (
-                <BellOff className="w-5 h-5 text-slate-400" />
+                <BellOff className="w-5 h-5 text-blue-400/60" />
             )}
         </Button>
     );

@@ -198,8 +198,8 @@ export default function CalendarPage() {
     };
     
     return (
-        <div className="min-h-screen bg-slate-100">
-            <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div className="min-h-screen bg-blue-950/50">
+            <div className="bg-[#0f1419] border-b border-blue-900/30 sticky top-0 z-10 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -209,8 +209,8 @@ export default function CalendarPage() {
                                 </Button>
                             </Link>
                             <div>
-                                <h1 className="text-xl font-bold text-slate-900">Calendar</h1>
-                                <p className="text-sm text-slate-600">Tasks, events & schedules</p>
+                                <h1 className="text-xl font-bold text-white">Calendar</h1>
+                                <p className="text-sm text-blue-300">Tasks, events & schedules</p>
                             </div>
                         </div>
                         <div className="flex gap-2">
@@ -243,7 +243,7 @@ export default function CalendarPage() {
                                 className={`cursor-pointer ${
                                     eventTypeFilter === 'all'
                                         ? 'bg-blue-600 text-white'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        : 'bg-blue-950/50 text-blue-300 hover:bg-slate-200'
                                 }`}
                             >
                                 All
@@ -253,7 +253,7 @@ export default function CalendarPage() {
                                 className={`cursor-pointer ${
                                     eventTypeFilter === 'tasks'
                                         ? 'bg-blue-600 text-white'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        : 'bg-blue-950/50 text-blue-300 hover:bg-slate-200'
                                 }`}
                             >
                                 Tasks
@@ -263,7 +263,7 @@ export default function CalendarPage() {
                                 className={`cursor-pointer ${
                                     eventTypeFilter === 'inspection'
                                         ? 'bg-purple-600 text-white'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        : 'bg-blue-950/50 text-blue-300 hover:bg-slate-200'
                                 }`}
                             >
                                 🔍 Inspections
@@ -273,7 +273,7 @@ export default function CalendarPage() {
                                 className={`cursor-pointer ${
                                     eventTypeFilter === 'meeting'
                                         ? 'bg-cyan-600 text-white'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        : 'bg-blue-950/50 text-blue-300 hover:bg-slate-200'
                                 }`}
                             >
                                 👥 Meetings
@@ -283,7 +283,7 @@ export default function CalendarPage() {
                                 className={`cursor-pointer ${
                                     eventTypeFilter === 'follow_up'
                                         ? 'bg-green-600 text-white'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        : 'bg-blue-950/50 text-blue-300 hover:bg-slate-200'
                                 }`}
                             >
                                 📞 Follow-ups
@@ -293,7 +293,7 @@ export default function CalendarPage() {
                                 className={`cursor-pointer ${
                                     eventTypeFilter === 'deadline'
                                         ? 'bg-red-600 text-white'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        : 'bg-blue-950/50 text-blue-300 hover:bg-slate-200'
                                 }`}
                             >
                                 ⏰ Deadlines
@@ -303,7 +303,7 @@ export default function CalendarPage() {
                                 className={`cursor-pointer ${
                                     eventTypeFilter === 'review'
                                         ? 'bg-amber-600 text-white'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        : 'bg-blue-950/50 text-blue-300 hover:bg-slate-200'
                                 }`}
                             >
                                 📋 Reviews
@@ -314,7 +314,7 @@ export default function CalendarPage() {
             </div>
             
             <div className="max-w-7xl mx-auto px-4 py-6">
-                <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm" style={{ height: '700px' }}>
+                <div className="bg-[#0f1419] rounded-2xl p-4 border border-blue-900/30 shadow-sm" style={{ height: '700px' }}>
                     <Calendar
                         localizer={localizer}
                         events={events}

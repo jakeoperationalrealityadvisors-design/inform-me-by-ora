@@ -51,7 +51,7 @@ export default function DocumentCard({ document, currentFolderId }) {
 
     return (
         <>
-            <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-lg transition-all group">
+            <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-4 hover:shadow-lg transition-all group">
                 <div className="flex items-start justify-between mb-3">
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#1e90ff] to-[#0066cc] flex items-center justify-center">
                         <FileText className="w-6 h-6 text-white" />
@@ -90,9 +90,9 @@ export default function DocumentCard({ document, currentFolderId }) {
                     </DropdownMenu>
                 </div>
 
-                <h3 className="font-semibold text-slate-900 mb-1 truncate">{document.name}</h3>
+                <h3 className="font-semibold text-white mb-1 truncate">{document.name}</h3>
                 {document.description && (
-                    <p className="text-sm text-slate-600 line-clamp-2 mb-3">{document.description}</p>
+                    <p className="text-sm text-blue-300 line-clamp-2 mb-3">{document.description}</p>
                 )}
 
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -103,7 +103,7 @@ export default function DocumentCard({ document, currentFolderId }) {
                     ))}
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
+                <div className="flex items-center justify-between text-xs text-blue-400/70 pt-3 border-t border-blue-900/20">
                     <span>{formatFileSize(document.file_size)}</span>
                     <span>v{document.version}</span>
                     <span>{format(new Date(document.created_date), 'MMM d')}</span>

@@ -25,7 +25,7 @@ const ACTION_COLORS = {
     submitted: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
     completed: 'bg-green-500/10 text-green-400 border-green-500/20',
     invited: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
-    default: 'bg-gray-500/10 text-gray-400 border-gray-500/20'
+    default: 'bg-blue-900/30 text-blue-400/60 border-blue-900/30'
 };
 
 export default function AuditLogViewer({ log }) {

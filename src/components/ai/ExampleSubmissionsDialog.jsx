@@ -27,7 +27,7 @@ export default function ExampleSubmissionsDialog({ open, onOpenChange, submissio
                                     <Badge>{sub.status}</Badge>
                                 </div>
                                 
-                                <div className="flex gap-4 text-sm text-slate-600">
+                                <div className="flex gap-4 text-sm text-blue-300">
                                     {sub.submitted_by_name && (
                                         <span className="flex items-center gap-1">
                                             <User className="w-4 h-4" />
@@ -50,7 +50,7 @@ export default function ExampleSubmissionsDialog({ open, onOpenChange, submissio
                                     <div className="space-y-2">
                                         {Object.entries(sub.responses || {}).map(([key, value]) => (
                                             <div key={key} className="text-sm">
-                                                <span className="text-slate-500">{key}:</span>
+                                                <span className="text-blue-400/70">{key}:</span>
                                                 <span className="ml-2 font-medium">
                                                     {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value}
                                                 </span>

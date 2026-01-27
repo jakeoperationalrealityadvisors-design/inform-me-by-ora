@@ -207,9 +207,9 @@ function EditAutomationContent() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-100">
+        <div className="min-h-screen bg-blue-950/50">
             {/* Header */}
-            <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+            <div className="bg-[#0f1419] border-b border-blue-900/30 sticky top-0 z-10 shadow-sm">
                 <div className="max-w-4xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -219,10 +219,10 @@ function EditAutomationContent() {
                                 </Button>
                             </Link>
                             <div>
-                                <h1 className="text-xl font-bold text-slate-900">
+                                <h1 className="text-xl font-bold text-white">
                                     {ruleId ? 'Edit Automation' : 'New Automation'}
                                 </h1>
-                                <p className="text-sm text-slate-600">Configure triggers and actions</p>
+                                <p className="text-sm text-blue-300">Configure triggers and actions</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -432,7 +432,7 @@ function EditAutomationContent() {
                     <Card>
                         <CardHeader>
                             <CardTitle>Complex Conditions (Optional)</CardTitle>
-                            <p className="text-sm text-slate-600 mt-1">Build advanced logic with AND/OR operators between condition groups</p>
+                            <p className="text-sm text-blue-300 mt-1">Build advanced logic with AND/OR operators between condition groups</p>
                         </CardHeader>
                         <CardContent>
                             <ComplexConditionBuilder
@@ -455,7 +455,7 @@ function EditAutomationContent() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {formData.actions.map((action, index) => (
-                                <div key={index} className="border border-slate-200 rounded-lg p-4 space-y-3">
+                                <div key={index} className="border border-blue-900/30 rounded-lg p-4 space-y-3">
                                     <div className="flex items-center justify-between">
                                         <Label>Action {index + 1}</Label>
                                         {formData.actions.length > 1 && (
@@ -725,7 +725,7 @@ function EditAutomationContent() {
                                     )}
 
                                     {/* Action Delay - Available for all action types */}
-                                    <div className="pt-3 border-t border-slate-200">
+                                    <div className="pt-3 border-t border-blue-900/30">
                                         <Label>Delay Action (Optional)</Label>
                                         <div className="flex items-center gap-2 mt-2">
                                             <Input
@@ -740,7 +740,7 @@ function EditAutomationContent() {
                                                 min="0"
                                                 className="w-24"
                                             />
-                                            <span className="text-sm text-slate-600">minutes after trigger</span>
+                                            <span className="text-sm text-blue-300">minutes after trigger</span>
                                         </div>
                                         {action.delay_minutes > 0 && (
                                             <p className="text-xs text-blue-600 mt-1">

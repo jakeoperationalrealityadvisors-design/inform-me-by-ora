@@ -68,7 +68,7 @@ export default function ViewFormSubmission() {
     const renderValue = (fieldId, value) => {
         const type = getFieldType(fieldId);
         
-        if (!value && value !== false) return <span className="text-slate-400">—</span>;
+        if (!value && value !== false) return <span className="text-blue-400/60">—</span>;
         
         if (type === 'checkbox') {
             return value ? (
@@ -76,7 +76,7 @@ export default function ViewFormSubmission() {
                     <CheckCircle className="w-4 h-4" /> Yes
                 </span>
             ) : (
-                <span className="flex items-center gap-2 text-slate-400">
+                <span className="flex items-center gap-2 text-blue-400/60">
                     <XCircle className="w-4 h-4" /> No
                 </span>
             );

@@ -69,7 +69,7 @@ export default function ShareFormDialog({ open, onOpenChange, formId, formTitle,
                     {qrCode && (
                         <div className="text-center space-y-2">
                             <Label className="text-blue-300">QR Code</Label>
-                            <div className="bg-white p-4 rounded-lg inline-block">
+                            <div className="bg-[#0f1419] p-4 rounded-lg inline-block">
                                 <img src={qrCode} alt="QR Code" className="w-48 h-48" />
                             </div>
                             <Button

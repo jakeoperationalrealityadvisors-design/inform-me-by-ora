@@ -184,22 +184,22 @@ function ReportsContent() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-100 dark:bg-[#0a0e17] transition-colors pb-20 md:pb-6">
+        <div className="min-h-screen bg-blue-950/50 dark:bg-[#0a0e17] transition-colors pb-20 md:pb-6">
             {/* Header */}
-            <div className="bg-white dark:bg-[#0a0e17] border-b border-slate-200 dark:border-blue-900/30 sticky top-0 z-10 shadow-sm transition-colors">
+            <div className="bg-[#0f1419] dark:bg-[#0a0e17] border-b border-blue-900/30 dark:border-blue-900/30 sticky top-0 z-10 shadow-sm transition-colors">
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center gap-4">
                         <Link to={createPageUrl('Home')}>
-                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 dark:hover:bg-slate-800">
                                 <ArrowLeft className="w-5 h-5" />
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-xl font-bold text-slate-900 dark:text-[#FF8C00] flex items-center gap-2">
+                            <h1 className="text-xl font-bold text-white dark:text-[#FF8C00] flex items-center gap-2">
                                 <BarChart3 className="w-6 h-6 text-orange-500 dark:text-[#FF8C00]" />
                                 Reports & Analytics
                             </h1>
-                            <p className="text-sm text-slate-600 dark:text-[#FF8C00]/70">
+                            <p className="text-sm text-blue-300 dark:text-[#FF8C00]/70">
                                 Insights and metrics from your data
                             </p>
                         </div>
@@ -282,7 +282,7 @@ function ReportsContent() {
 
                         {/* Charts */}
                         <Tabs defaultValue="timeline" className="space-y-4">
-                            <TabsList className="bg-white dark:bg-[#0f1419] border border-slate-200 dark:border-slate-800">
+                            <TabsList className="bg-[#0f1419] dark:bg-[#0f1419] border border-blue-900/30 dark:border-slate-800">
                                 <TabsTrigger value="timeline">Timeline</TabsTrigger>
                                 <TabsTrigger value="status">Status</TabsTrigger>
                                 <TabsTrigger value="categories">Categories</TabsTrigger>

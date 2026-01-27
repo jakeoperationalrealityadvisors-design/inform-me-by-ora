@@ -28,8 +28,8 @@ export default function CategorySidebar({ selectedCategory, onSelectCategory, sh
     });
     
     return (
-        <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-sm">
-            <h3 className="font-semibold text-slate-900 mb-3 text-sm uppercase tracking-wide">
+        <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-4 shadow-sm">
+            <h3 className="font-semibold text-white mb-3 text-sm uppercase tracking-wide">
                 Categories
             </h3>
             <div className="space-y-1">
@@ -39,7 +39,7 @@ export default function CategorySidebar({ selectedCategory, onSelectCategory, sh
                         className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center gap-2 ${
                             selectedCategory === null
                                 ? 'bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white font-medium shadow-md'
-                                : 'text-slate-600 hover:bg-slate-50'
+                                : 'text-blue-300 hover:bg-blue-950/40'
                         }`}
                     >
                         <Folder className="w-4 h-4" />
@@ -55,7 +55,7 @@ export default function CategorySidebar({ selectedCategory, onSelectCategory, sh
                             className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center gap-2 ${
                                 selectedCategory === category.id
                                     ? 'bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white font-medium shadow-md'
-                                    : 'text-slate-600 hover:bg-slate-50'
+                                    : 'text-blue-300 hover:bg-blue-950/40'
                             }`}
                         >
                             <IconComponent 
@@ -69,38 +69,38 @@ export default function CategorySidebar({ selectedCategory, onSelectCategory, sh
             </div>
             
             {/* Quick Links */}
-            <div className="mt-6 pt-6 border-t border-slate-200">
-                <h3 className="font-semibold text-slate-900 mb-3 text-xs uppercase tracking-wide">
+            <div className="mt-6 pt-6 border-t border-blue-900/30">
+                <h3 className="font-semibold text-white mb-3 text-xs uppercase tracking-wide">
                     Quick Links
                 </h3>
                 <div className="space-y-1">
                     <Link to={createPageUrl('Dashboard')}>
-                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-blue-300 hover:bg-blue-950/40 transition-colors">
                             📊 Dashboard
                         </button>
                     </Link>
                     <Link to={createPageUrl('Home')}>
-                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-blue-300 hover:bg-blue-950/40 transition-colors">
                             🏠 Home
                         </button>
                     </Link>
                     <Link to={createPageUrl('Documents')}>
-                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-blue-300 hover:bg-blue-950/40 transition-colors">
                             📁 {t('common.documents')}
                         </button>
                     </Link>
                     <Link to={createPageUrl('MyTasks')}>
-                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-blue-300 hover:bg-blue-950/40 transition-colors">
                             ✓ {t('common.tasks')}
                         </button>
                     </Link>
                     <Link to={createPageUrl('Calendar')}>
-                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-blue-300 hover:bg-blue-950/40 transition-colors">
                             📅 {t('common.calendar')}
                         </button>
                     </Link>
                     <Link to={createPageUrl('Submissions')}>
-                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                        <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-blue-300 hover:bg-blue-950/40 transition-colors">
                             📋 {t('common.submissions')}
                         </button>
                     </Link>

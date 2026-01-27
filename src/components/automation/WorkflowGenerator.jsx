@@ -127,7 +127,7 @@ Make the automation practical and complete. Include specific values and realisti
                     <Sparkles className="w-5 h-5 text-purple-600" />
                     AI Workflow Generator
                 </CardTitle>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-blue-300">
                     Describe what you want to automate, or choose a template to get started
                 </p>
             </CardHeader>
@@ -147,14 +147,14 @@ Make the automation practical and complete. Include specific values and realisti
                                 className={`text-left p-3 rounded-lg border-2 transition-all ${
                                     selectedTemplate?.name === template.name
                                         ? 'border-purple-500 bg-purple-50'
-                                        : 'border-slate-200 hover:border-purple-300 bg-white'
+                                        : 'border-blue-900/30 hover:border-purple-300 bg-[#0f1419]'
                                 }`}
                             >
                                 <div className="flex items-start gap-2">
                                     <Zap className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
                                     <div className="min-w-0">
                                         <p className="font-medium text-sm">{template.name}</p>
-                                        <p className="text-xs text-slate-600 line-clamp-2">{template.description}</p>
+                                        <p className="text-xs text-blue-300 line-clamp-2">{template.description}</p>
                                     </div>
                                 </div>
                             </button>

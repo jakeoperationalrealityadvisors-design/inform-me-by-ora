@@ -40,8 +40,8 @@ const TemplateCard = ({ template, onSelect }) => {
                             </Badge>
                         )}
                     </div>
-                    <p className="text-xs text-gray-600 line-clamp-2 mb-2">{template.description}</p>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <p className="text-xs text-blue-300 line-clamp-2 mb-2">{template.description}</p>
+                    <div className="flex items-center gap-2 text-xs text-blue-400/70">
                         <Badge variant="secondary" className="text-xs">
                             {template.trigger_type.replace(/_/g, ' ')}
                         </Badge>
@@ -124,7 +124,7 @@ export default function AutomationTemplateLibrary({ open, onOpenChange, onSelect
                 <div className="space-y-4 flex-1 overflow-hidden flex flex-col">
                     {/* Search */}
                     <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-blue-400/60" />
                         <Input
                             placeholder="Search templates..."
                             value={search}
@@ -168,7 +168,7 @@ export default function AutomationTemplateLibrary({ open, onOpenChange, onSelect
                                     />
                                 ))}
                                 {systemTemplates.length === 0 && (
-                                    <div className="col-span-2 text-center py-8 text-gray-500 text-sm">
+                                    <div className="col-span-2 text-center py-8 text-blue-400/70 text-sm">
                                         No system templates found
                                     </div>
                                 )}
@@ -185,7 +185,7 @@ export default function AutomationTemplateLibrary({ open, onOpenChange, onSelect
                                     />
                                 ))}
                                 {customTemplates.length === 0 && (
-                                    <div className="col-span-2 text-center py-8 text-gray-500 text-sm">
+                                    <div className="col-span-2 text-center py-8 text-blue-400/70 text-sm">
                                         No custom templates yet. Save an automation as a template to see it here.
                                     </div>
                                 )}

@@ -74,7 +74,7 @@ export default function AutomationTester({ ruleId, triggerType }) {
                 </Button>
 
                 {result && (
-                    <div className="mt-4 p-4 bg-slate-50 rounded-lg border">
+                    <div className="mt-4 p-4 bg-blue-950/40 rounded-lg border">
                         <h4 className="font-medium mb-2 flex items-center gap-2">
                             {result.error ? (
                                 <>
@@ -109,7 +109,7 @@ export default function AutomationTester({ ruleId, triggerType }) {
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-sm text-slate-600">No actions executed</p>
+                                    <p className="text-sm text-blue-300">No actions executed</p>
                                 )}
                             </div>
                         )}

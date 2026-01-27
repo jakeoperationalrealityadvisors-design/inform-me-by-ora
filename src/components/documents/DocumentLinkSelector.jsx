@@ -105,7 +105,7 @@ export default function DocumentLinkSelector({ currentLinks = {}, onLinksUpdate,
                 {/* Current Links */}
                 {linkCount > 0 && (
                     <div className="space-y-2 pb-4 border-b">
-                        <p className="text-sm text-slate-600">Currently Linked:</p>
+                        <p className="text-sm text-blue-300">Currently Linked:</p>
                         {links.form_submission_id && (
                             <Badge className="bg-blue-100 text-blue-700 gap-2">
                                 <FileText className="w-3 h-3" />
@@ -141,7 +141,7 @@ export default function DocumentLinkSelector({ currentLinks = {}, onLinksUpdate,
 
                 {/* Search */}
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400/60" />
                     <Input
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
@@ -167,14 +167,14 @@ export default function DocumentLinkSelector({ currentLinks = {}, onLinksUpdate,
                                     className={`p-3 border rounded-lg cursor-pointer transition-all ${
                                         links.form_submission_id === form.id
                                             ? 'border-blue-600 bg-blue-50'
-                                            : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
+                                            : 'border-blue-900/30 hover:border-blue-300 hover:bg-blue-950/40'
                                     }`}
                                 >
                                     <div className="flex items-start gap-3">
                                         <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
                                         <div className="flex-1">
-                                            <p className="font-medium text-slate-900">{form.form_title}</p>
-                                            <p className="text-sm text-slate-500">
+                                            <p className="font-medium text-white">{form.form_title}</p>
+                                            <p className="text-sm text-blue-400/70">
                                                 {form.submitted_by_name} • {new Date(form.created_date).toLocaleDateString()}
                                             </p>
                                         </div>
@@ -182,7 +182,7 @@ export default function DocumentLinkSelector({ currentLinks = {}, onLinksUpdate,
                                 </div>
                             ))
                         ) : (
-                            <p className="text-center text-slate-500 py-8">No forms found</p>
+                            <p className="text-center text-blue-400/70 py-8">No forms found</p>
                         )}
                     </TabsContent>
 
@@ -195,14 +195,14 @@ export default function DocumentLinkSelector({ currentLinks = {}, onLinksUpdate,
                                     className={`p-3 border rounded-lg cursor-pointer transition-all ${
                                         links.checklist_submission_id === checklist.id
                                             ? 'border-green-600 bg-green-50'
-                                            : 'border-slate-200 hover:border-green-300 hover:bg-slate-50'
+                                            : 'border-blue-900/30 hover:border-green-300 hover:bg-blue-950/40'
                                     }`}
                                 >
                                     <div className="flex items-start gap-3">
                                         <CheckSquare className="w-5 h-5 text-green-600 mt-0.5" />
                                         <div className="flex-1">
-                                            <p className="font-medium text-slate-900">{checklist.checklist_title}</p>
-                                            <p className="text-sm text-slate-500">
+                                            <p className="font-medium text-white">{checklist.checklist_title}</p>
+                                            <p className="text-sm text-blue-400/70">
                                                 {checklist.submitted_by_name} • {checklist.completion_percentage || 0}% complete
                                             </p>
                                         </div>
@@ -210,7 +210,7 @@ export default function DocumentLinkSelector({ currentLinks = {}, onLinksUpdate,
                                 </div>
                             ))
                         ) : (
-                            <p className="text-center text-slate-500 py-8">No checklists found</p>
+                            <p className="text-center text-blue-400/70 py-8">No checklists found</p>
                         )}
                     </TabsContent>
 
@@ -223,14 +223,14 @@ export default function DocumentLinkSelector({ currentLinks = {}, onLinksUpdate,
                                     className={`p-3 border rounded-lg cursor-pointer transition-all ${
                                         links.task_id === task.id
                                             ? 'border-purple-600 bg-purple-50'
-                                            : 'border-slate-200 hover:border-purple-300 hover:bg-slate-50'
+                                            : 'border-blue-900/30 hover:border-purple-300 hover:bg-blue-950/40'
                                     }`}
                                 >
                                     <div className="flex items-start gap-3">
                                         <ListTodo className="w-5 h-5 text-purple-600 mt-0.5" />
                                         <div className="flex-1">
-                                            <p className="font-medium text-slate-900">{task.title}</p>
-                                            <p className="text-sm text-slate-500">
+                                            <p className="font-medium text-white">{task.title}</p>
+                                            <p className="text-sm text-blue-400/70">
                                                 {task.assigned_to_email} • {task.priority}
                                             </p>
                                         </div>
@@ -238,7 +238,7 @@ export default function DocumentLinkSelector({ currentLinks = {}, onLinksUpdate,
                                 </div>
                             ))
                         ) : (
-                            <p className="text-center text-slate-500 py-8">No tasks found</p>
+                            <p className="text-center text-blue-400/70 py-8">No tasks found</p>
                         )}
                     </TabsContent>
                 </Tabs>

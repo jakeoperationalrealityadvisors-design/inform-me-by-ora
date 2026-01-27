@@ -21,7 +21,14 @@ export default function App() {
                 element={<Component />}
               />
             ))}
-            <Route path="*" element={<div>Page not found</div>} />
+            <Route
+              path="*"
+              element={
+                <div className="min-h-[60vh] flex items-center justify-center text-blue-300">
+                  Page not found
+                </div>
+              }
+            />
           </Routes>
         </AppLayout>
         <Toaster />

@@ -87,15 +87,15 @@ function AdminContent() {
     const getCategoryName = (id) => categories.find(c => c.id === id)?.name || '—';
     
     const statusColors = {
-        draft: 'bg-slate-100 text-slate-600',
+        draft: 'bg-blue-950/50 text-blue-300',
         active: 'bg-emerald-100 text-emerald-700',
         archived: 'bg-amber-100 text-amber-700'
     };
     
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-blue-950/40">
             {/* Header */}
-            <div className="bg-white border-b border-slate-100 sticky top-0 z-10">
+            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
                 <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
                     <Link to={createPageUrl('Home')}>
                         <Button variant="ghost" size="icon" className="rounded-full">
@@ -103,8 +103,8 @@ function AdminContent() {
                         </Button>
                     </Link>
                     <div>
-                        <h1 className="text-xl font-bold text-slate-900">Admin Panel</h1>
-                        <p className="text-sm text-slate-500">Manage forms, checklists & categories</p>
+                        <h1 className="text-xl font-bold text-white">Admin Panel</h1>
+                        <p className="text-sm text-blue-400/70">Manage forms, checklists & categories</p>
                     </div>
                 </div>
             </div>
@@ -144,21 +144,21 @@ function AdminContent() {
                         
                         {formsLoading ? (
                             <div className="flex justify-center py-12">
-                                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+                                <Loader2 className="w-8 h-8 animate-spin text-blue-400/60" />
                             </div>
                         ) : forms.length > 0 ? (
-                            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                            <div className="bg-[#0f1419] rounded-2xl border border-blue-900/30 overflow-hidden">
                                 {forms.map((form, idx) => (
                                     <motion.div
                                         key={form.id}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: idx * 0.05 }}
-                                        className="flex items-center justify-between p-4 border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                                        className="flex items-center justify-between p-4 border-b border-blue-900/20 last:border-0 hover:bg-blue-950/40"
                                     >
                                         <div className="flex-1">
-                                            <h3 className="font-medium text-slate-900">{form.title}</h3>
-                                            <div className="flex gap-3 mt-1 text-sm text-slate-500">
+                                            <h3 className="font-medium text-white">{form.title}</h3>
+                                            <div className="flex gap-3 mt-1 text-sm text-blue-400/70">
                                                 <span>{form.fields?.length || 0} fields</span>
                                                 <span>{getCategoryName(form.category_id)}</span>
                                             </div>
@@ -184,7 +184,7 @@ function AdminContent() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 text-slate-500">
+                            <div className="text-center py-12 text-blue-400/70">
                                 No forms created yet
                             </div>
                         )}
@@ -203,21 +203,21 @@ function AdminContent() {
                         
                         {checklistsLoading ? (
                             <div className="flex justify-center py-12">
-                                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+                                <Loader2 className="w-8 h-8 animate-spin text-blue-400/60" />
                             </div>
                         ) : checklists.length > 0 ? (
-                            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                            <div className="bg-[#0f1419] rounded-2xl border border-blue-900/30 overflow-hidden">
                                 {checklists.map((checklist, idx) => (
                                     <motion.div
                                         key={checklist.id}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: idx * 0.05 }}
-                                        className="flex items-center justify-between p-4 border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                                        className="flex items-center justify-between p-4 border-b border-blue-900/20 last:border-0 hover:bg-blue-950/40"
                                     >
                                         <div className="flex-1">
-                                            <h3 className="font-medium text-slate-900">{checklist.title}</h3>
-                                            <div className="flex gap-3 mt-1 text-sm text-slate-500">
+                                            <h3 className="font-medium text-white">{checklist.title}</h3>
+                                            <div className="flex gap-3 mt-1 text-sm text-blue-400/70">
                                                 <span>{checklist.items?.length || 0} items</span>
                                                 <span>{getCategoryName(checklist.category_id)}</span>
                                             </div>
@@ -243,7 +243,7 @@ function AdminContent() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 text-slate-500">
+                            <div className="text-center py-12 text-blue-400/70">
                                 No checklists created yet
                             </div>
                         )}
@@ -262,22 +262,22 @@ function AdminContent() {
                         
                         {categoriesLoading ? (
                             <div className="flex justify-center py-12">
-                                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+                                <Loader2 className="w-8 h-8 animate-spin text-blue-400/60" />
                             </div>
                         ) : categories.length > 0 ? (
-                            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                            <div className="bg-[#0f1419] rounded-2xl border border-blue-900/30 overflow-hidden">
                                 {categories.map((category, idx) => (
                                     <motion.div
                                         key={category.id}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: idx * 0.05 }}
-                                        className="flex items-center justify-between p-4 border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                                        className="flex items-center justify-between p-4 border-b border-blue-900/20 last:border-0 hover:bg-blue-950/40"
                                     >
                                         <div className="flex-1">
-                                            <h3 className="font-medium text-slate-900">{category.name}</h3>
+                                            <h3 className="font-medium text-white">{category.name}</h3>
                                             {category.description && (
-                                                <p className="text-sm text-slate-500 mt-1">{category.description}</p>
+                                                <p className="text-sm text-blue-400/70 mt-1">{category.description}</p>
                                             )}
                                         </div>
                                         <div className="flex items-center gap-3">
@@ -298,7 +298,7 @@ function AdminContent() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 text-slate-500">
+                            <div className="text-center py-12 text-blue-400/70">
                                 No categories created yet
                             </div>
                         )}

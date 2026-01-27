@@ -77,13 +77,13 @@ export default function ComplexConditionBuilder({ conditionLogic, onChange }) {
             </div>
 
             {logic.groups.length === 0 && (
-                <div className="text-center py-8 text-slate-500 border-2 border-dashed border-slate-300 rounded-lg">
+                <div className="text-center py-8 text-blue-400/70 border-2 border-dashed border-blue-900/40 rounded-lg">
                     No condition groups. Add a group to start building complex logic.
                 </div>
             )}
 
             {logic.groups.map((group, groupIndex) => (
-                <Card key={groupIndex} className="p-4 bg-slate-50 border-2 border-slate-300">
+                <Card key={groupIndex} className="p-4 bg-blue-950/40 border-2 border-blue-900/40">
                     <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                             <Badge variant="outline" className="font-mono">Group {groupIndex + 1}</Badge>
@@ -121,7 +121,7 @@ export default function ComplexConditionBuilder({ conditionLogic, onChange }) {
 
                     <div className="space-y-2">
                         {group.conditions.map((condition, condIndex) => (
-                            <div key={condIndex} className="flex items-center gap-2 bg-white p-2 rounded border border-slate-200">
+                            <div key={condIndex} className="flex items-center gap-2 bg-[#0f1419] p-2 rounded border border-blue-900/30">
                                 <Select 
                                     value={condition.field}
                                     onValueChange={(v) => updateCondition(groupIndex, condIndex, 'field', v)}

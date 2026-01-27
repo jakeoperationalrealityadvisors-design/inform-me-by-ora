@@ -51,18 +51,18 @@ export default function AutomationAnalytics({ ruleId }) {
                         <div className="text-xs text-purple-700">Avg. Time</div>
                     </div>
                     
-                    <div className="text-center p-4 bg-slate-50 rounded-lg">
-                        <Activity className="w-6 h-6 mx-auto mb-2 text-slate-600" />
-                        <div className="text-sm font-bold text-slate-900">
+                    <div className="text-center p-4 bg-blue-950/40 rounded-lg">
+                        <Activity className="w-6 h-6 mx-auto mb-2 text-blue-300" />
+                        <div className="text-sm font-bold text-white">
                             {lastExecuted ? lastExecuted.toLocaleDateString() : 'Never'}
                         </div>
-                        <div className="text-xs text-slate-700">Last Run</div>
+                        <div className="text-xs text-blue-200">Last Run</div>
                     </div>
                 </div>
                 
-                <div className="mt-4 p-3 bg-slate-50 rounded-lg">
+                <div className="mt-4 p-3 bg-blue-950/40 rounded-lg">
                     <h4 className="text-sm font-semibold mb-2">Quick Insights</h4>
-                    <ul className="text-xs space-y-1 text-slate-700">
+                    <ul className="text-xs space-y-1 text-blue-200">
                         {successRate >= 95 && (
                             <li className="flex items-center gap-2">
                                 <CheckCircle2 className="w-3 h-3 text-green-600" />
@@ -77,7 +77,7 @@ export default function AutomationAnalytics({ ruleId }) {
                         )}
                         {!lastExecuted && (
                             <li className="flex items-center gap-2">
-                                <XCircle className="w-3 h-3 text-slate-400" />
+                                <XCircle className="w-3 h-3 text-blue-400/60" />
                                 No executions yet - verify trigger conditions
                             </li>
                         )}

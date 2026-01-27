@@ -19,14 +19,14 @@ export default function ReportFilters({
     onExport
 }) {
     return (
-        <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30 transition-colors">
+        <Card className="bg-[#0f1419] dark:bg-[#0a0e17] border-blue-900/30 dark:border-blue-900/30 transition-colors">
             <CardHeader>
-                <CardTitle className="text-slate-900 dark:text-[#FF8C00]">Filters</CardTitle>
+                <CardTitle className="text-white dark:text-[#FF8C00]">Filters</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 {/* Date Range */}
                 <div className="space-y-2">
-                    <Label className="text-slate-700 dark:text-[#FF8C00]">Date Range</Label>
+                    <Label className="text-blue-200 dark:text-[#FF8C00]">Date Range</Label>
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button variant="outline" className="w-full justify-start text-left dark:bg-[#0a0e17] dark:border-slate-700">
@@ -59,7 +59,7 @@ export default function ReportFilters({
 
                 {/* Category */}
                 <div className="space-y-2">
-                    <Label className="text-slate-700 dark:text-[#FF8C00]">Category</Label>
+                    <Label className="text-blue-200 dark:text-[#FF8C00]">Category</Label>
                     <Select value={category} onValueChange={setCategory}>
                         <SelectTrigger className="dark:bg-[#0a0e17] dark:border-slate-700">
                             <SelectValue placeholder="All Categories" />
@@ -75,7 +75,7 @@ export default function ReportFilters({
 
                 {/* Status */}
                 <div className="space-y-2">
-                    <Label className="text-slate-700 dark:text-[#FF8C00]">Status</Label>
+                    <Label className="text-blue-200 dark:text-[#FF8C00]">Status</Label>
                     <Select value={status} onValueChange={setStatus}>
                         <SelectTrigger className="dark:bg-[#0a0e17] dark:border-slate-700">
                             <SelectValue placeholder="All Statuses" />

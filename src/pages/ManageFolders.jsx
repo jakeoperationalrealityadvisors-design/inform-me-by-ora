@@ -105,9 +105,9 @@ export default function ManageFolders() {
     ];
     
     return (
-        <div className="min-h-screen bg-slate-100">
+        <div className="min-h-screen bg-blue-950/50">
             {/* Header */}
-            <div className="bg-white border-b border-slate-200">
+            <div className="bg-[#0f1419] border-b border-blue-900/30">
                 <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Button 
@@ -119,8 +119,8 @@ export default function ManageFolders() {
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                         <div>
-                            <h1 className="text-xl font-bold text-slate-900">Manage Folders</h1>
-                            <p className="text-sm text-slate-600">{folders.length} folders</p>
+                            <h1 className="text-xl font-bold text-white">Manage Folders</h1>
+                            <p className="text-sm text-blue-300">{folders.length} folders</p>
                         </div>
                     </div>
                     
@@ -196,7 +196,7 @@ export default function ManageFolders() {
                 {isLoading ? (
                     <div className="grid gap-4">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="bg-white rounded-lg border border-slate-200 p-5 animate-pulse">
+                            <div key={i} className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-5 animate-pulse">
                                 <div className="h-5 w-1/3 bg-slate-200 rounded" />
                             </div>
                         ))}
@@ -204,7 +204,7 @@ export default function ManageFolders() {
                 ) : folders.length > 0 ? (
                     <div className="grid gap-4">
                         {folders.map(folder => (
-                            <div key={folder.id} className="bg-white rounded-lg border border-slate-200 p-5 shadow-sm">
+                            <div key={folder.id} className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-5 shadow-sm">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div
@@ -214,9 +214,9 @@ export default function ManageFolders() {
                                             <Folder className="w-5 h-5" style={{ color: folder.color }} />
                                         </div>
                                         <div>
-                                            <h3 className="font-semibold text-slate-900">{folder.name}</h3>
+                                            <h3 className="font-semibold text-white">{folder.name}</h3>
                                             {folder.description && (
-                                                <p className="text-sm text-slate-600">{folder.description}</p>
+                                                <p className="text-sm text-blue-300">{folder.description}</p>
                                             )}
                                         </div>
                                     </div>
@@ -242,10 +242,10 @@ export default function ManageFolders() {
                         ))}
                     </div>
                 ) : (
-                    <div className="bg-white rounded-lg border border-slate-200 p-12 text-center">
+                    <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-12 text-center">
                         <Folder className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-slate-900 mb-2">No folders yet</h3>
-                        <p className="text-slate-600 mb-4">Create folders to organize your documents</p>
+                        <h3 className="text-lg font-medium text-white mb-2">No folders yet</h3>
+                        <p className="text-blue-300 mb-4">Create folders to organize your documents</p>
                         <Button
                             onClick={() => setShowDialog(true)}
                             className="bg-gradient-to-r from-[#1e90ff] to-[#0066cc] text-white"

@@ -138,8 +138,8 @@ export default function UploadDocument() {
     };
     
     return (
-        <div className="min-h-screen bg-slate-100">
-            <div className="bg-white border-b border-slate-200">
+        <div className="min-h-screen bg-blue-950/50">
+            <div className="bg-[#0f1419] border-b border-blue-900/30">
                 <div className="max-w-3xl mx-auto px-4 py-4 flex items-center gap-4">
                     <Button 
                         variant="ghost" 
@@ -150,14 +150,14 @@ export default function UploadDocument() {
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
                     <div>
-                        <h1 className="text-xl font-bold text-slate-900">Upload Document</h1>
-                        <p className="text-sm text-slate-600">Add a new document to your library</p>
+                        <h1 className="text-xl font-bold text-white">Upload Document</h1>
+                        <p className="text-sm text-blue-300">Add a new document to your library</p>
                     </div>
                 </div>
             </div>
             
             <div className="max-w-3xl mx-auto px-4 py-6">
-                <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm space-y-6">
+                <form onSubmit={handleSubmit} className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-6 shadow-sm space-y-6">
                     {/* File Upload */}
                     <div>
                         <Label>File</Label>
@@ -180,23 +180,23 @@ export default function UploadDocument() {
                                 />
                             </div>
                             
-                            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-blue-400 transition-colors">
+                            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-blue-900/40 rounded-lg cursor-pointer hover:border-blue-400 transition-colors">
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     {file ? (
                                         <>
                                             <FileText className="w-10 h-10 text-blue-600 mb-3" />
-                                            <p className="text-sm text-slate-700 font-medium">{file.name}</p>
-                                            <p className="text-xs text-slate-500">
+                                            <p className="text-sm text-blue-200 font-medium">{file.name}</p>
+                                            <p className="text-xs text-blue-400/70">
                                                 {(file.size / 1024 / 1024).toFixed(2)} MB
                                             </p>
                                         </>
                                     ) : (
                                         <>
-                                            <Upload className="w-10 h-10 text-slate-400 mb-3" />
-                                            <p className="text-sm text-slate-600">
+                                            <Upload className="w-10 h-10 text-blue-400/60 mb-3" />
+                                            <p className="text-sm text-blue-300">
                                                 <span className="font-semibold text-blue-600">Click to upload</span> or drag and drop
                                             </p>
-                                            <p className="text-xs text-slate-500">Any file type supported</p>
+                                            <p className="text-xs text-blue-400/70">Any file type supported</p>
                                         </>
                                     )}
                                 </div>

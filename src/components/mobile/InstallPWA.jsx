@@ -64,7 +64,7 @@ export default function InstallPWA() {
                 >
                     <div className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] p-4 rounded-xl shadow-2xl">
                         <div className="flex items-start gap-3">
-                            <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
+                            <div className="w-12 h-12 bg-[#0f1419] rounded-lg flex items-center justify-center flex-shrink-0">
                                 <img 
                                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/inform-me-by-ora-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png"
                                     alt="InForm Me"
@@ -80,7 +80,7 @@ export default function InstallPWA() {
                                     <Button
                                         onClick={handleInstall}
                                         size="sm"
-                                        className="bg-white text-[#1E40AF] hover:bg-white/90 flex-1"
+                                        className="bg-[#0f1419] text-[#1E40AF] hover:bg-blue-950/40 flex-1"
                                     >
                                         <Download className="w-4 h-4 mr-2" />
                                         Install
@@ -89,7 +89,7 @@ export default function InstallPWA() {
                                         onClick={handleDismiss}
                                         size="sm"
                                         variant="ghost"
-                                        className="text-white hover:bg-white/20"
+                                        className="text-white hover:bg-blue-950/40"
                                     >
                                         Later
                                     </Button>

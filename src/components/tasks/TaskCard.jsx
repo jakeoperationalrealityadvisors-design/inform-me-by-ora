@@ -21,7 +21,7 @@ export default function TaskCard({ task }) {
     };
 
     const statusColors = {
-        todo: 'bg-slate-500/20 text-slate-400',
+        todo: 'bg-blue-900/30 text-blue-400/60',
         in_progress: 'bg-blue-500/20 text-blue-400',
         completed: 'bg-green-500/20 text-green-400',
         cancelled: 'bg-red-500/20 text-red-400'

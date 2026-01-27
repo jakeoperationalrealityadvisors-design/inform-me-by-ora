@@ -30,12 +30,12 @@ export default function TikTokDashboard() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
             {/* Header */}
-            <div className="bg-black/30 backdrop-blur-sm border-b border-white/10 sticky top-0 z-10">
+            <div className="bg-black/30 backdrop-blur-sm border-b border-blue-900/30 sticky top-0 z-10">
                 <div className="max-w-6xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <Link to={createPageUrl('Home')}>
-                                <Button variant="ghost" size="icon" className="rounded-full text-white hover:bg-white/10">
+                                <Button variant="ghost" size="icon" className="rounded-full text-white hover:bg-blue-900/30">
                                     <ArrowLeft className="w-5 h-5" />
                                 </Button>
                             </Link>
@@ -51,7 +51,7 @@ export default function TikTokDashboard() {
                             disabled={isLoading}
                             variant="outline"
                             size="sm"
-                            className="gap-2 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                            className="gap-2 bg-blue-950/40 border-blue-900/40 text-white hover:bg-blue-900/40"
                         >
                             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                             Refresh
@@ -64,12 +64,12 @@ export default function TikTokDashboard() {
                 {isLoading ? (
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                         {[1, 2, 3, 4].map(i => (
-                            <Card key={i} className="bg-white/10 border-white/20 backdrop-blur-sm animate-pulse">
+                            <Card key={i} className="bg-blue-950/40 border-blue-900/40 backdrop-blur-sm animate-pulse">
                                 <CardHeader className="pb-3">
-                                    <div className="h-4 w-20 bg-white/20 rounded" />
+                                    <div className="h-4 w-20 bg-blue-900/40 rounded" />
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="h-8 w-24 bg-white/20 rounded" />
+                                    <div className="h-8 w-24 bg-blue-900/40 rounded" />
                                 </CardContent>
                             </Card>
                         ))}
@@ -86,7 +86,7 @@ export default function TikTokDashboard() {
                             <Button
                                 onClick={() => refetch()}
                                 variant="outline"
-                                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                                className="bg-blue-950/40 border-blue-900/40 text-white hover:bg-blue-900/40"
                             >
                                 Try Again
                             </Button>
@@ -95,7 +95,7 @@ export default function TikTokDashboard() {
                 ) : (
                     <>
                         {/* Profile Card */}
-                        <Card className="bg-white/10 border-white/20 backdrop-blur-sm mb-6">
+                        <Card className="bg-blue-950/40 border-blue-900/40 backdrop-blur-sm mb-6">
                             <CardHeader>
                                 <div className="flex items-center gap-4">
                                     <Avatar className="w-20 h-20 border-4 border-purple-500">
@@ -181,7 +181,7 @@ export default function TikTokDashboard() {
                         </div>
 
                         {/* Additional Info */}
-                        <Card className="bg-white/5 border-white/10 backdrop-blur-sm mt-6">
+                        <Card className="bg-blue-950/30 border-blue-900/30 backdrop-blur-sm mt-6">
                             <CardHeader>
                                 <CardTitle className="text-white text-sm">Quick Stats</CardTitle>
                             </CardHeader>

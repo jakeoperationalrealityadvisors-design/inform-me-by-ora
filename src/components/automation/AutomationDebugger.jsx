@@ -20,7 +20,7 @@ const ExecutionStep = ({ step, index }) => {
             case 'running':
                 return <Clock className="w-4 h-4 text-blue-600 animate-spin" />;
             default:
-                return <AlertCircle className="w-4 h-4 text-gray-400" />;
+                return <AlertCircle className="w-4 h-4 text-blue-400/60" />;
         }
     };
     
@@ -33,7 +33,7 @@ const ExecutionStep = ({ step, index }) => {
             case 'running':
                 return 'border-blue-500 bg-blue-50';
             default:
-                return 'border-gray-300 bg-gray-50';
+                return 'border-blue-900/30 bg-[#0a0e17]';
         }
     };
     
@@ -54,10 +54,10 @@ const ExecutionStep = ({ step, index }) => {
                             </Badge>
                             <span className="font-semibold text-sm">{step.name}</span>
                         </div>
-                        <p className="text-xs text-gray-600">{step.description}</p>
+                        <p className="text-xs text-blue-300">{step.description}</p>
                         
                         {step.duration && (
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-blue-400/70 mt-1">
                                 Duration: {step.duration}ms
                             </p>
                         )}
@@ -81,7 +81,7 @@ const ExecutionStep = ({ step, index }) => {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="mt-3 pt-3 border-t border-gray-200"
+                        className="mt-3 pt-3 border-t border-blue-900/20"
                     >
                         {step.error && (
                             <Alert className="bg-red-100 border-red-300 mb-2">
@@ -327,9 +327,9 @@ export default function AutomationDebugger({ automation, onClose }) {
                     {/* Right: Execution Steps */}
                     <div>
                         <Label className="mb-2 block">Execution Flow</Label>
-                        <div className="h-64 overflow-y-auto border rounded-lg p-3 bg-gray-50">
+                        <div className="h-64 overflow-y-auto border rounded-lg p-3 bg-[#0a0e17]">
                             {executionSteps.length === 0 ? (
-                                <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+                                <div className="flex items-center justify-center h-full text-blue-400/60 text-sm">
                                     Click "Run Debug Session" to start
                                 </div>
                             ) : (

@@ -66,7 +66,7 @@ export default function TaskCalendar({ formTasks = [], checklistTasks = [] }) {
     };
     
     return (
-        <div className="bg-white rounded-2xl p-4 border border-slate-200" style={{ height: '600px' }}>
+        <div className="bg-[#0f1419] rounded-2xl p-4 border border-blue-900/30" style={{ height: '600px' }}>
             <Calendar
                 localizer={localizer}
                 events={events}

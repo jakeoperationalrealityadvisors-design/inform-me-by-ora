@@ -147,7 +147,7 @@ export default function AIAssistantTest() {
                                                 {JSON.stringify(result.data, null, 2)}
                                             </pre>
                                         )}
-                                        <p className="text-xs text-slate-500 mt-1">{new Date(result.timestamp).toLocaleTimeString()}</p>
+                                        <p className="text-xs text-blue-400/70 mt-1">{new Date(result.timestamp).toLocaleTimeString()}</p>
                                     </div>
                                     
                                     <Badge className={
