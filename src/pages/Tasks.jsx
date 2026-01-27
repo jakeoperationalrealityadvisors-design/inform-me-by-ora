@@ -3,14 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { httpClient } from '@/api/httpClient';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ListTodo, Plus, Search, Filter, MoreVertical } from 'lucide-react';
+import { ListTodo, Plus, Filter } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import SearchBar from '@/components/common/SearchBar';
 import TaskCard from '@/components/tasks/TaskCard';
 import EmptyState from '@/components/common/EmptyState';
@@ -19,10 +13,6 @@ import BottomNav from '@/components/navigation/BottomNav';
 import OrgSwitcher from '@/components/navigation/OrgSwitcher';
 import { useLanguage } from '@/components/language/LanguageContext';
 import { useSimpleMode } from '@/components/tutorial/SimpleModeWrapper';
-import GlobalSearch from '@/components/search/GlobalSearch';
-import { offlineStorage } from '@/components/mobile/OfflineStorage';
-import PullToRefresh from '@/components/mobile/PullToRefresh';
-import SwipeActions from '@/components/mobile/SwipeActions';
 import { useNavigate } from 'react-router-dom';
 
 export default function Tasks() {

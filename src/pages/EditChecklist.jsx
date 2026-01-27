@@ -12,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from 'framer-motion';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { Sparkles, Loader2 } from 'lucide-react';
 
 export default function EditChecklist() {
     const urlParams = new URLSearchParams(window.location.search);

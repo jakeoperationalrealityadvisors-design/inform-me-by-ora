@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { httpClient } from '@/api/httpClient';
@@ -12,9 +12,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-import { sampleData } from "../sampleData";
-import AITaskEnhancer from '@/components/ai/AITaskEnhancer';
 
 export default function CreateTask() {
   const navigate = useNavigate();
