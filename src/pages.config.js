@@ -1,72 +1,71 @@
-import { lazy } from 'react';
 import AppShell from "@/app/AppShell"
 
 // IMPORT YOUR PAGES
-const Dashboard = lazy(() => import("@/pages/Dashboard"))
-const MyTasks = lazy(() => import("@/pages/MyTasks"))
-const CreateTask = lazy(() => import("@/pages/CreateTask"))
-const Submissions = lazy(() => import("@/pages/Submissions"))
-const Settings = lazy(() => import("@/pages/Settings"))
-const Home = lazy(() => import("@/pages/Home"))
-const Admin = lazy(() => import("@/pages/Admin"))
-const AnalyticsDashboard = lazy(() => import("@/pages/AnalyticsDashboard"))
-const Documents = lazy(() => import("@/pages/Documents"))
-const Forms = lazy(() => import("@/pages/Forms"))
-const Checklists = lazy(() => import("@/pages/Checklists"))
-const Tasks = lazy(() => import("@/pages/Tasks"))
-const Calendar = lazy(() => import("@/pages/Calendar"))
-const Messages = lazy(() => import("@/pages/Messages"))
-const Reports = lazy(() => import("@/pages/Reports"))
-const UserManagement = lazy(() => import("@/pages/UserManagement"))
-const RoleManagement = lazy(() => import("@/pages/RoleManagement"))
-const OrganizationSettings = lazy(() => import("@/pages/OrganizationSettings"))
-const Integrations = lazy(() => import("@/pages/Integrations"))
-const Support = lazy(() => import("@/pages/Support"))
-const KnowledgeBase = lazy(() => import("@/pages/KnowledgeBase"))
-const ActivityLog = lazy(() => import("@/pages/ActivityLog"))
-const AIAssistantPage = lazy(() => import("@/pages/AIAssistantPage"))
-const AutomationOptimizer = lazy(() => import("@/pages/AutomationOptimizer"))
-const ManageAutomations = lazy(() => import("@/pages/ManageAutomations"))
-const EditAutomation = lazy(() => import("@/pages/EditAutomation"))
-const CreateDocumentWorkflow = lazy(() => import("@/pages/CreateDocumentWorkflow"))
-const DocumentWorkflows = lazy(() => import("@/pages/DocumentWorkflows"))
-const DocumentEditor = lazy(() => import("@/pages/DocumentEditor"))
-const DocumentSearch = lazy(() => import("@/pages/DocumentSearch"))
-const UploadDocument = lazy(() => import("@/pages/UploadDocument"))
-const ViewDocument = lazy(() => import("@/pages/ViewDocument"))
-const CreateForm = lazy(() => import("@/pages/CreateForm"))
-const EditForm = lazy(() => import("@/pages/EditForm"))
-const FillForm = lazy(() => import("@/pages/FillForm"))
-const PublicForm = lazy(() => import("@/pages/PublicForm"))
-const ViewFormSubmission = lazy(() => import("@/pages/ViewFormSubmission"))
-const CreateChecklist = lazy(() => import("@/pages/CreateChecklist"))
-const EditChecklist = lazy(() => import("@/pages/EditChecklist"))
-const FillChecklist = lazy(() => import("@/pages/FillChecklist"))
-const PublicChecklist = lazy(() => import("@/pages/PublicChecklist"))
-const ViewChecklistSubmission = lazy(() => import("@/pages/ViewChecklistSubmission"))
-const EditCategory = lazy(() => import("@/pages/EditCategory"))
-const ManageFolders = lazy(() => import("@/pages/ManageFolders"))
-const Scanner = lazy(() => import("@/pages/Scanner"))
-const SendFax = lazy(() => import("@/pages/SendFax"))
-const TikTokDashboard = lazy(() => import("@/pages/TikTokDashboard"))
-const CustomerPortal = lazy(() => import("@/pages/CustomerPortal"))
-const BillingTest = lazy(() => import("@/pages/BillingTest"))
-const Pricing = lazy(() => import("@/pages/Pricing"))
-const TermsOfService = lazy(() => import("@/pages/TermsOfService"))
-const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"))
-const VerifyEmail = lazy(() => import("@/pages/VerifyEmail"))
-const NetworkOnboarding = lazy(() => import("@/pages/NetworkOnboarding"))
-const HopCode = lazy(() => import("@/pages/HopCode"))
-const ProductionChecklist = lazy(() => import("@/pages/ProductionChecklist"))
-const LoadTesting = lazy(() => import("@/pages/LoadTesting"))
-const SystemHealth = lazy(() => import("@/pages/SystemHealth"))
-const ExportData = lazy(() => import("@/pages/ExportData"))
-const AIAssistantTest = lazy(() => import("@/pages/AIAssistantTest"))
-const AIWorkflowBuilder = lazy(() => import("@/pages/AIWorkflowBuilder"))
-const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"))
-const DailyTasks = lazy(() => import("@/pages/DailyTasks"))
-const ManageDailyTasks = lazy(() => import("@/pages/ManageDailyTasks"))
-const Documentation = lazy(() => import("@/pages/Documentation"))
+import Dashboard from "@/pages/Dashboard"
+import MyTasks from "@/pages/MyTasks"
+import CreateTask from "@/pages/CreateTask"
+import Submissions from "@/pages/Submissions"
+import Settings from "@/pages/Settings"
+import Home from "@/pages/Home"
+import Admin from "@/pages/Admin"
+import AnalyticsDashboard from "@/pages/AnalyticsDashboard"
+import Documents from "@/pages/Documents"
+import Forms from "@/pages/Forms"
+import Checklists from "@/pages/Checklists"
+import Tasks from "@/pages/Tasks"
+import Calendar from "@/pages/Calendar"
+import Messages from "@/pages/Messages"
+import Reports from "@/pages/Reports"
+import UserManagement from "@/pages/UserManagement"
+import RoleManagement from "@/pages/RoleManagement"
+import OrganizationSettings from "@/pages/OrganizationSettings"
+import Integrations from "@/pages/Integrations"
+import Support from "@/pages/Support"
+import KnowledgeBase from "@/pages/KnowledgeBase"
+import ActivityLog from "@/pages/ActivityLog"
+import AIAssistantPage from "@/pages/AIAssistantPage"
+import AutomationOptimizer from "@/pages/AutomationOptimizer"
+import ManageAutomations from "@/pages/ManageAutomations"
+import EditAutomation from "@/pages/EditAutomation"
+import CreateDocumentWorkflow from "@/pages/CreateDocumentWorkflow"
+import DocumentWorkflows from "@/pages/DocumentWorkflows"
+import DocumentEditor from "@/pages/DocumentEditor"
+import DocumentSearch from "@/pages/DocumentSearch"
+import UploadDocument from "@/pages/UploadDocument"
+import ViewDocument from "@/pages/ViewDocument"
+import CreateForm from "@/pages/CreateForm"
+import EditForm from "@/pages/EditForm"
+import FillForm from "@/pages/FillForm"
+import PublicForm from "@/pages/PublicForm"
+import ViewFormSubmission from "@/pages/ViewFormSubmission"
+import CreateChecklist from "@/pages/CreateChecklist"
+import EditChecklist from "@/pages/EditChecklist"
+import FillChecklist from "@/pages/FillChecklist"
+import PublicChecklist from "@/pages/PublicChecklist"
+import ViewChecklistSubmission from "@/pages/ViewChecklistSubmission"
+import EditCategory from "@/pages/EditCategory"
+import ManageFolders from "@/pages/ManageFolders"
+import Scanner from "@/pages/Scanner"
+import SendFax from "@/pages/SendFax"
+import TikTokDashboard from "@/pages/TikTokDashboard"
+import CustomerPortal from "@/pages/CustomerPortal"
+import BillingTest from "@/pages/BillingTest"
+import Pricing from "@/pages/Pricing"
+import TermsOfService from "@/pages/TermsOfService"
+import PrivacyPolicy from "@/pages/PrivacyPolicy"
+import VerifyEmail from "@/pages/VerifyEmail"
+import NetworkOnboarding from "@/pages/NetworkOnboarding"
+import HopCode from "@/pages/HopCode"
+import ProductionChecklist from "@/pages/ProductionChecklist"
+import LoadTesting from "@/pages/LoadTesting"
+import SystemHealth from "@/pages/SystemHealth"
+import ExportData from "@/pages/ExportData"
+import AIAssistantTest from "@/pages/AIAssistantTest"
+import AIWorkflowBuilder from "@/pages/AIWorkflowBuilder"
+import AdminDashboard from "@/pages/AdminDashboard"
+import DailyTasks from "@/pages/DailyTasks"
+import ManageDailyTasks from "@/pages/ManageDailyTasks"
+import Documentation from "@/pages/Documentation"
 
 // 🔒 ORA INFORM ME – GLOBAL PAGE CONFIG
 export const pagesConfig = {
