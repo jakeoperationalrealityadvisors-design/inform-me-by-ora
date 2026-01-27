@@ -22,7 +22,6 @@ export default function Tasks() {
     const { isSeniorMode, isSimpleMode, isExpertMode, technicalLevel } = useSimpleMode();
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [showGlobalSearch, setShowGlobalSearch] = useState(false);
     const [viewMode, setViewMode] = useState(isSimpleMode ? 'grid' : 'list');
     const [statusFilter, setStatusFilter] = useState('all');
     
