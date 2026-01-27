@@ -94,7 +94,7 @@ export default function OrganizationSettings() {
                 throw new Error('Organization has reached maximum users');
             }
             
-            // Invite user using Base44's built-in invitation system
+            // Invite user using InForm' Me by ORA's built-in invitation system
             await httpClient.users.inviteUser(email, 'user');
             
             toast.success(`Invitation sent to ${email}. They will be added to the organization upon first login.`);

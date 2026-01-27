@@ -4,26 +4,25 @@ import { httpClient } from '@/api/httpClient';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Loader2, CheckCircle2, FileText, CheckSquare } from 'lucide-react';
+import { Sparkles, Loader2, CheckCircle2, FileText, CheckSquare, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function SampleDataGenerator() {
     const queryClient = useQueryClient();
     const [results, setResults] = useState(null);
     
-    const generateMutation = useMutation({
-        mutationFn: async (type) => {
-            const response = await httpClient.functions.invoke('generateSampleData', { type });
+    const initializeTemplatesMutation = useMutation({
+        mutationFn: async () => {
+            const response = await httpClient.functions.invoke('initializeFormTemplates');
             return response.data;
         },
         onSuccess: (data) => {
             setResults(data);
-            queryClient.invalidateQueries(['form-submissions']);
-            queryClient.invalidateQueries(['checklist-submissions']);
+            queryClient.invalidateQueries(['all-forms']);
             toast.success(data.message);
         },
         onError: (error) => {
-            toast.error('Failed to generate samples: ' + error.message);
+            toast.error('Failed to initialize templates: ' + error.message);
         }
     });
     
@@ -39,6 +38,26 @@ export default function SampleDataGenerator() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 gap-3 mb-4">
+                    <Button
+                        onClick={() => initializeTemplatesMutation.mutate()}
+                        disabled={initializeTemplatesMutation.isPending}
+                        className="bg-gradient-to-r from-orange-600 to-red-600"
+                    >
+                        {initializeTemplatesMutation.isPending ? (
+                            <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Creating Templates...
+                            </>
+                        ) : (
+                            <>
+                                <Plus className="w-4 h-4 mr-2" />
+                                Initialize Form Templates
+                            </>
+                        )}
+                    </Button>
+                </div>
+                
                 <div className="grid grid-cols-2 gap-3">
                     <Button
                         onClick={() => generateMutation.mutate('forms')}
@@ -105,11 +124,28 @@ export default function SampleDataGenerator() {
                                 ))}
                             </div>
                         )}
+                        
+                        {results.templates && results.templates.length > 0 && (
+                            <div className="space-y-2">
+                                {results.templates.map((template, idx) => (
+                                    <div key={idx} className="flex items-center justify-between p-2 bg-[#0f1419] rounded border border-blue-900/20">
+                                        <div>
+                                            <p className="text-sm text-white">{template.title}</p>
+                                            <p className="text-xs text-blue-400">ID: {template.id}</p>
+                                        </div>
+                                        <Badge className="bg-blue-950/50 text-blue-300">
+                                            {template.fieldCount} fields
+                                        </Badge>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
                 
                 <div className="text-xs text-blue-400/70 bg-blue-950/20 p-3 rounded-lg">
-                    <strong>Note:</strong> This will create one realistic sample submission for each active form and checklist template using AI-generated data appropriate for each field type and context.
+                    <strong>Initialize Form Templates:</strong> Creates 7 pre-built form templates (Employee Onboarding, IT Support, Expense Reports, etc.) with all necessary fields.<br />
+                    <strong>Generate Samples:</strong> Creates one realistic sample submission for each active form and checklist template using AI-generated data appropriate for each field type and context.
                 </div>
             </CardContent>
         </Card>

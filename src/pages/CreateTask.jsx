@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { httpClient } from '@/api/httpClient';
 import { ArrowLeft, Plus } from "lucide-react";
 import { createPageUrl } from "@/utils";
+import { toast } from 'sonner';
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,50 +15,55 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { sampleData } from "../sampleData";
 
-const STORAGE_KEY = "ora_tasks";
-
 export default function CreateTask() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const [tasks, setTasks] = useState([]);
   const [taskData, setTaskData] = useState({
     title: "",
     description: "",
-    assigned_to_name: "",
+    assigned_to: "",
     due_date: "",
     priority: "medium",
     status: "todo",
     category: ""
   });
 
-  /* Load tasks from localStorage or sampleData */
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      setTasks(JSON.parse(stored));
-    } else {
-      setTasks(sampleData.tasks || []);
+  const createMutation = useMutation({
+    mutationFn: async (data) => {
+      const task = await httpClient.entities.Task.create(data);
+      
+      // Trigger automations
+      try {
+        await httpClient.functions.invoke('executeAutomations', {
+          trigger_type: 'task_created',
+          trigger_data: { ...task, category_id: task.category_id }
+        });
+      } catch (error) {
+        console.error('Failed to trigger automations:', error);
+        // Don't fail the task creation if automation fails
+      }
+      
+      return task;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      toast.success('Task created successfully');
+      navigate(createPageUrl("Tasks"));
+    },
+    onError: (error) => {
+      toast.error('Failed to create task: ' + error.message);
     }
-  }, []);
-
-  /* Save tasks to localStorage */
-  const persistTasks = (newTasks) => {
-    setTasks(newTasks);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newTasks));
-  };
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!taskData.title) return;
 
-    const newTask = {
-      id: `task-${Date.now()}`,
+    createMutation.mutate({
       ...taskData,
-      created_at: new Date().toISOString()
-    };
-
-    persistTasks([...tasks, newTask]);
-    navigate(createPageUrl("MyTasks"));
+      due_date: taskData.due_date ? new Date(taskData.due_date).toISOString() : null
+    });
   };
 
   return (
@@ -66,7 +74,7 @@ export default function CreateTask() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate(createPageUrl("MyTasks"))}
+            onClick={() => navigate(createPageUrl("Tasks"))}
             className="text-[#FF8C00]"
           >
             <ArrowLeft />
@@ -75,9 +83,6 @@ export default function CreateTask() {
             <h1 className="text-xl font-bold text-[#FF8C00]">
               Create New Task
             </h1>
-            <p className="text-sm text-[#FF8C00]/70">
-              Offline · Local · Instant
-            </p>
           </div>
         </div>
       </div>
@@ -119,14 +124,14 @@ export default function CreateTask() {
                 <div>
                   <Label>Assigned To</Label>
                   <Input
-                    value={taskData.assigned_to_name}
+                    value={taskData.assigned_to}
                     onChange={(e) =>
                       setTaskData({
                         ...taskData,
-                        assigned_to_name: e.target.value
+                        assigned_to: e.target.value
                       })
                     }
-                    placeholder="Driver / Admin / Dispatcher"
+                    placeholder="Email or name"
                   />
                 </div>
 
@@ -181,16 +186,17 @@ export default function CreateTask() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate(createPageUrl("MyTasks"))}
+              onClick={() => navigate(createPageUrl("Tasks"))}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black"
+              disabled={createMutation.isPending}
             >
-              <Plus className="w-4 h-4 mr-2" />
-              Create Task
+              {createMutation.isPending ? 'Creating...' : 'Create Task'}
+              <Plus className="w-4 h-4 ml-2" />
             </Button>
           </div>
         </form>

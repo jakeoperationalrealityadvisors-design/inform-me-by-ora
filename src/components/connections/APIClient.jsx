@@ -144,5 +144,5 @@ class APIClient {
 export const apiClient = new APIClient();
 
 // Initialize default clients
-apiClient.createClient('base44', window.location.origin);
+apiClient.createClient('inform-me-by-ora', window.location.origin);
 apiClient.createClient('external', 'https://api.example.com');

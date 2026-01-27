@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Clean Vite config — no Base44
+// Clean Vite config — no InForm' Me by ORA
 export default defineConfig({
   logLevel: 'error',
   plugins: [

@@ -121,6 +121,16 @@ export default function UploadDocument() {
                 description: `Uploaded document: ${formData.title}`,
                 metadata: { file_name: file.name, file_size: file.size }
             });
+            
+            // Trigger automations
+            try {
+                await httpClient.functions.invoke('executeAutomations', {
+                    trigger_type: 'document_uploaded',
+                    trigger_data: { ...newDoc, category_id: newDoc.folder_id }
+                });
+            } catch (error) {
+                console.error('Failed to trigger automations:', error);
+            }
         } catch (error) {
             toast.error('Failed to upload document');
             setUploading(false);

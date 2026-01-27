@@ -28,7 +28,32 @@ export default function TaskCard({ task }) {
     };
 
     const updateMutation = useMutation({
-        mutationFn: (updates) => httpClient.entities.Task.update(task.id, updates),
+        mutationFn: async (updates) => {
+            const updatedTask = await httpClient.entities.Task.update(task.id, updates);
+            
+            // Trigger automations based on status change
+            if (updates.status) {
+                let triggerType = 'task_completed';
+                if (updates.status === 'in_progress') {
+                    triggerType = 'task_started'; // or similar
+                } else if (updates.status === 'completed') {
+                    triggerType = 'task_completed';
+                } else if (updates.status === 'cancelled') {
+                    triggerType = 'task_cancelled';
+                }
+                
+                try {
+                    await httpClient.functions.invoke('executeAutomations', {
+                        trigger_type: triggerType,
+                        trigger_data: { ...updatedTask, category_id: updatedTask.category_id }
+                    });
+                } catch (error) {
+                    console.error('Failed to trigger automations:', error);
+                }
+            }
+            
+            return updatedTask;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             toast.success('Task updated');

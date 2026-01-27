@@ -85,15 +85,14 @@ export default function Scanner() {
                 description: image.ocrText || undefined
             });
             
-            // Trigger workflows
+            // Trigger automations
             try {
-                await httpClient.functions.invoke('triggerDocumentWorkflow', {
-                    documentId: doc.id,
-                    triggerType: 'document_uploaded',
-                    documentData: doc
+                await httpClient.functions.invoke('executeAutomations', {
+                    trigger_type: 'document_uploaded',
+                    trigger_data: { ...doc, category_id: doc.folder_id }
                 });
             } catch (e) {
-                // Workflow trigger failed but document saved
+                console.error('Failed to trigger automations:', e);
             }
             
             toast.success(`Saved to ${storageType === 'cloud' ? 'Cloud' : 'Internal'} Storage`);

@@ -66,7 +66,7 @@ export default function InstallPWA() {
                         <div className="flex items-start gap-3">
                             <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
                                 <img 
-                                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png"
+                                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/inform-me-by-ora-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png"
                                     alt="InForm Me"
                                     className="w-10 h-10 rounded"
                                 />

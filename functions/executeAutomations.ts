@@ -67,9 +67,9 @@ function evaluateConditionLogic(conditionLogic, data) {
 
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
+        const informMeByOra = createClientFromRequest(req);
         
-        const user = await base44.auth.me();
+        const user = await informMeByOra.auth.me();
         if (!user) {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
         const { trigger_type, trigger_data } = await req.json();
 
         // Fetch all enabled automation rules
-        const rules = await base44.asServiceRole.entities.AutomationRule.filter({ 
+        const rules = await informMeByOra.asServiceRole.entities.AutomationRule.filter({ 
             enabled: true, 
             trigger_type 
         });

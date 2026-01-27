@@ -49,6 +49,16 @@ Deno.serve(async (req) => {
                             message: `Your form submission "${form.form_title}" is due within 24 hours.`
                         }));
 
+                        // Trigger automations
+                        try {
+                            await base44.asServiceRole.functions.invoke('executeAutomations', {
+                                trigger_type: 'task_due_soon',
+                                trigger_data: form
+                            });
+                        } catch (e) {
+                            console.error('Failed to trigger automations for form due soon:', e);
+                        }
+
                         notificationsSent.push({ type: 'form', id: form.id, user: form.assigned_to_email });
                     } catch (error) {
                         console.error('Failed to send form notification:', error);
@@ -80,6 +90,16 @@ Deno.serve(async (req) => {
                             subject: 'Checklist Due Soon - InForm Me',
                             message: `Your checklist "${checklist.checklist_title}" is due within 24 hours.`
                         }));
+
+                        // Trigger automations
+                        try {
+                            await base44.asServiceRole.functions.invoke('executeAutomations', {
+                                trigger_type: 'task_due_soon',
+                                trigger_data: checklist
+                            });
+                        } catch (e) {
+                            console.error('Failed to trigger automations for checklist due soon:', e);
+                        }
 
                         notificationsSent.push({ type: 'checklist', id: checklist.id, user: checklist.assigned_to_email });
                     } catch (error) {
@@ -113,9 +133,46 @@ Deno.serve(async (req) => {
                             message: `Your task "${task.title}" is due within 24 hours.`
                         }));
 
+                        // Trigger automations
+                        try {
+                            await base44.asServiceRole.functions.invoke('executeAutomations', {
+                                trigger_type: 'task_due_soon',
+                                trigger_data: task
+                            });
+                        } catch (e) {
+                            console.error('Failed to trigger automations for task due soon:', e);
+                        }
+
                         notificationsSent.push({ type: 'task', id: task.id, user: task.assigned_to_email });
                     } catch (error) {
                         console.error('Failed to send task notification:', error);
+                    }
+                } else if (dueDate < now) {
+                    // Task is overdue
+                    try {
+                        await retryOperation(() => base44.asServiceRole.entities.Notification.create({
+                            user_email: task.assigned_to_email,
+                            title: 'Task Overdue',
+                            message: `Task "${task.title}" is overdue`,
+                            type: 'task_overdue',
+                            link_page: 'MyTasks',
+                            link_params: '',
+                            read: false
+                        }));
+
+                        // Trigger automations for overdue
+                        try {
+                            await base44.asServiceRole.functions.invoke('executeAutomations', {
+                                trigger_type: 'task_overdue',
+                                trigger_data: task
+                            });
+                        } catch (e) {
+                            console.error('Failed to trigger automations for task overdue:', e);
+                        }
+
+                        notificationsSent.push({ type: 'task_overdue', id: task.id, user: task.assigned_to_email });
+                    } catch (error) {
+                        console.error('Failed to send overdue task notification:', error);
                     }
                 }
             }

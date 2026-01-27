@@ -143,7 +143,7 @@ export default function PublicSubmission() {
                     <CardHeader>
                         <div className="text-center mb-2">
                             <img 
-                                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png"
+                                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/inform-me-by-ora-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png"
                                 alt="InForm Me"
                                 className="h-12 mx-auto mb-4"
                             />
