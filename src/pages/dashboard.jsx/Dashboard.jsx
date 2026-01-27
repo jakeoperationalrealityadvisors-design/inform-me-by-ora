@@ -1,5 +1,6 @@
 import { ClipboardList, FileText, AlertTriangle, PlusCircle } from "lucide-react"
 import { Link } from "react-router-dom"
+import { createPageUrl } from "@/utils"
 
 export default function Dashboard() {
   return (
@@ -46,17 +47,17 @@ export default function Dashboard() {
 
         <div className="flex flex-wrap gap-3">
           <QuickAction
-            to="/CreateTask"
+            to={createPageUrl("CreateTask")}
             label="Create Task"
             icon={PlusCircle}
           />
           <QuickAction
-            to="/ManageDailyTasks"
+            to={createPageUrl("ManageDailyTasks")}
             label="Daily Tasks"
             icon={ClipboardList}
           />
           <QuickAction
-            to="/ViewForms"
+            to={createPageUrl("Forms")}
             label="View Forms"
             icon={FileText}
           />

@@ -74,7 +74,7 @@ export default function CategorySidebar({ selectedCategory, onSelectCategory, sh
                     Quick Links
                 </h3>
                 <div className="space-y-1">
-                    <Link to={createPageUrl('Dashboard')}>
+                    <Link to={createPageUrl('dashboard')}>
                         <button className="w-full text-left px-3 py-2 rounded-lg text-sm text-blue-300 hover:bg-blue-950/40 transition-colors">
                             📊 Dashboard
                         </button>

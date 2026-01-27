@@ -135,7 +135,7 @@ function DocumentWorkflowsContent() {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                onClick={() => navigate(createPageUrl('EditDocumentWorkflow') + `?id=${workflow.id}`)}
+                                                onClick={() => navigate(createPageUrl('EditAutomation') + `?id=${workflow.id}`)}
                                             >
                                                 <Edit className="w-4 h-4 text-blue-400" />
                                             </Button>
