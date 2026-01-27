@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { useLanguage } from '@/components/language/LanguageContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import { logActivity } from '@/components/activity/ActivityLogger';
+import { SuggestFieldsButton } from '@/components/ai/AIFormHelper';
 
 function CreateFormContent() {
     const navigate = useNavigate();
@@ -327,15 +328,21 @@ Return JSON with: { title, description, fields: [...] }`,
                     <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                             <CardTitle className="text-sm sm:text-base text-slate-900 dark:text-[#FF8C00]">Fields ({fields.length})</CardTitle>
-                            <Button
-                                type="button"
-                                onClick={addField}
-                                size="sm"
-                                className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] hover:opacity-90 text-black h-8 sm:h-9 text-xs sm:text-sm"
-                            >
-                                <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                                Add
-                            </Button>
+                            <div className="flex gap-2">
+                                <SuggestFieldsButton 
+                                    formTitle={formData.title} 
+                                    onFieldsSuggested={(suggestedFields) => setFields([...fields, ...suggestedFields])} 
+                                />
+                                <Button
+                                    type="button"
+                                    onClick={addField}
+                                    size="sm"
+                                    className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] hover:opacity-90 text-black h-8 sm:h-9 text-xs sm:text-sm"
+                                >
+                                    <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                                    Add
+                                </Button>
+                            </div>
                         </CardHeader>
                         <CardContent className="space-y-2 max-h-[60vh] overflow-y-auto">
                             {fields.length === 0 ? (

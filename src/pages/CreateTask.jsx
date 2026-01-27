@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { sampleData } from "../sampleData";
+import AITaskEnhancer from '@/components/ai/AITaskEnhancer';
 
 export default function CreateTask() {
   const navigate = useNavigate();
