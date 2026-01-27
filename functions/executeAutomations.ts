@@ -117,13 +117,27 @@ Deno.serve(async (req) => {
             for (const action of rule.actions || []) {
                 // Handle delayed actions
                 if (action.delay_minutes && action.delay_minutes > 0) {
-                    // In a real system, you'd use a queue/scheduler
-                    // For now, we'll just skip delayed actions
+                    const executeAt = new Date();
+                    executeAt.setMinutes(executeAt.getMinutes() + action.delay_minutes);
+                    
+                    await base44.asServiceRole.entities.DelayedAutomationAction.create({
+                        rule_id: rule.id,
+                        rule_name: rule.name,
+                        trigger_type: trigger_type,
+                        trigger_data: trigger_data,
+                        action_type: action.type,
+                        action_config: action.config,
+                        action_code: action.code_snippet,
+                        execute_at: executeAt.toISOString(),
+                        status: 'pending',
+                        created_at: new Date().toISOString()
+                    });
+                    
                     executedActions.push({
                         rule: rule.name,
                         action: action.type,
                         success: true,
-                        note: `Scheduled for ${action.delay_minutes} minutes from now`
+                        note: `Scheduled for execution in ${action.delay_minutes} minutes`
                     });
                     continue;
                 }
@@ -233,6 +247,25 @@ Deno.serve(async (req) => {
                                 contact_email: trigger_data.submitted_by_email,
                                 contact_name: trigger_data.submitted_by_name
                             });
+                        } else if (action.type === 'call_webhook') {
+                            // Call external webhook
+                            const webhookResponse = await fetch(action.config.webhook_url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': action.config.auth_header || ''
+                                },
+                                body: JSON.stringify({
+                                    trigger_type: trigger_type,
+                                    trigger_data: trigger_data,
+                                    action_config: action.config,
+                                    timestamp: new Date().toISOString()
+                                })
+                            });
+                            
+                            if (!webhookResponse.ok) {
+                                throw new Error(`Webhook call failed: ${webhookResponse.status}`);
+                            }
                         }
                     });
 
