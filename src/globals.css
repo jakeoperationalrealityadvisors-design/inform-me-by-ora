@@ -1,41 +1,245 @@
-/* ================================
-   ORA INFORM ME – GLOBAL THEME
-   Fleet (Blue) • Construction (Orange) • Ops (Black)
-   ================================ */
+:root{
+  /* Core palette (matches your screenshot vibe) */
+  --bg0:#070a12;          /* page base */
+  --bg1:#0a1020;          /* gradient mid */
+  --panel:#0c1426;        /* inputs / list items */
+  --card:#0f1931;         /* cards */
+  --card2:#0b1326;        /* deeper card layer */
+  --stroke:rgba(255,255,255,.08);
 
-/* ---------- CORE PALETTE ---------- */
-:root {
-  /* Backgrounds */
-  --ora-black: #0a0e17;
-  --ora-black-soft: #0f1419;
-  --ora-black-panel: #111827;
+  --text:#f2f5ff;
+  --muted:#aab3c7;
 
-  /* Primary Colors */
-  --ora-orange: #ff8c00;
-  --ora-blue: #1e40af;
+  --blue:#3b74ff;
+  --blue2:#2257d8;
 
-  /* Soft Accents */
-  --ora-orange-soft: rgba(255, 140, 0, 0.15);
-  --ora-blue-soft: rgba(30, 64, 175, 0.15);
-
-  /* Borders & Lines */
-  --ora-border: rgba(59, 130, 246, 0.25);
-
-  /* Text */
-  --ora-text-primary: #ffffff;
-  --ora-text-secondary: rgba(255, 255, 255, 0.72);
-  --ora-text-muted: rgba(255, 255, 255, 0.45);
-
-  /* Radius */
-  --ora-radius: 12px;
+  --orange:#ff8a1a;
+  --orange2:#f06d00;
 }
 
-/* ---------- GLOBAL BASE ---------- */
-html,
-body,
-#root {
-  height: 100%;
-  background-color: var(--ora-black);
-  color: var(--ora-text-primary);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Ubuntu, Cantarell, "Helvetica
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  color:var(--text);
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+
+  /* Deep navy background (not grey) */
+  background:
+    radial-gradient(900px 600px at 20% -10%, rgba(59,116,255,.18), transparent 55%),
+    radial-gradient(900px 600px at 90% 10%, rgba(255,138,26,.14), transparent 55%),
+    linear-gradient(180deg, var(--bg1), var(--bg0));
+}
+
+/* Keep mobile-app feel centered on desktop */
+.app-shell{
+  max-width: 440px;
+  margin: 0 auto;
+  padding-bottom: 88px;
+}
+
+/* Top Bar */
+.top-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding: 18px 16px 10px;
+}
+
+.brand{
+  margin:0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.brand-accent{ color: var(--orange); }
+
+.top-icons .icon{
+  margin-left: 12px;
+  opacity:.9;
+  font-size: 18px;
+}
+
+/* Search */
+.search-wrap{ padding: 10px 16px 8px; }
+
+.search{
+  width:100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,0)),
+    var(--panel);
+  color: var(--text);
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.35);
+}
+.search::placeholder{ color: rgba(170,179,199,.55); }
+
+/* Section title */
+.section{ padding: 14px 16px 6px; }
+.section-title{
+  margin: 12px 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(242,245,255,.85);
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+/* Cards (AI Suggestions) */
+.card{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,0)),
+    linear-gradient(180deg, var(--card), var(--card2));
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.35),
+    0 0 0 1px rgba(0,0,0,.25);
+}
+
+.card-header{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom: 6px;
+}
+.card p{
+  margin: 6px 0 0;
+  color: rgba(170,179,199,.9);
+  font-size: 13px;
+}
+
+/* Buttons */
+button{ border:none; cursor:pointer; }
+
+.btn-primary{
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  color: #0b0f1a;
+  background: linear-gradient(180deg, var(--orange), var(--orange2));
+  box-shadow:
+    0 10px 22px rgba(255,138,26,.20),
+    0 0 0 1px rgba(0,0,0,.25);
+}
+
+.btn-secondary{
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(180deg, var(--blue), var(--blue2));
+  box-shadow:
+    0 10px 22px rgba(59,116,255,.18),
+    0 0 0 1px rgba(0,0,0,.25);
+}
+
+/* Tabs */
+.tabs{
+  display:flex;
+  gap: 12px;
+  padding: 10px 16px 6px;
+}
+
+.tab{
+  flex:1;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--stroke);
+  color: rgba(170,179,199,.75);
+  font-weight: 700;
+}
+
+.tab.active{
+  border: 0;
+  color: #ffffff;
+  background: linear-gradient(90deg, var(--orange), var(--blue));
+  box-shadow: 0 12px 24px rgba(0,0,0,.35);
+}
+
+/* List */
+.list{ padding: 10px 16px 14px; }
+
+.list-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 12px;
+  padding: 14px 14px;
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,0)),
+    var(--panel);
+  border: 1px solid rgba(255,255,255,.06);
+  margin-bottom: 12px;
+}
+
+.list-left{ display:flex; gap: 12px; align-items:flex-start; }
+
+.doc-icon{ font-size: 20px; opacity: .95; margin-top: 2px; }
+
+.meta{
+  display:flex;
+  gap: 10px;
+  margin-top: 6px;
+  align-items:center;
+  flex-wrap: wrap;
+}
+
+.pill{
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: rgba(242,245,255,.9);
+  background: rgba(59,116,255,.16);
+  border: 1px solid rgba(59,116,255,.22);
+}
+
+.muted{ color: rgba(170,179,199,.75); font-size: 12px; }
+
+.btn-fill{
+  padding: 9px 14px;
+  border-radius: 12px;
+  font-weight: 900;
+  color: #0b0f1a;
+  background: linear-gradient(180deg, var(--orange), var(--orange2));
+  box-shadow: 0 10px 18px rgba(255,138,26,.18);
+}
+
+/* Bottom Nav */
+.bottom-nav{
+  position: fixed;
+  left:0; right:0; bottom:0;
+  display:flex;
+  justify-content:space-around;
+  padding: 12px 0;
+  background: rgba(7,10,18,.78);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.bottom-nav span{
+  color: rgba(170,179,199,.75);
+  font-size: 12px;
+}
+
+.bottom-nav .active{ color: var(--orange); font-weight: 800; }
+
+.bottom-nav .temp{
+  background: linear-gradient(180deg, var(--orange), var(--orange2));
+  color: #0b0f1a;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 900;
+}

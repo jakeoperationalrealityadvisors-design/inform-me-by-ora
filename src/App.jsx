@@ -1,94 +1,87 @@
-import { Toaster } from "@/components/ui/toaster";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClientInstance } from "@/lib/query-client";
-import NavigationTracker from "@/lib/NavigationTracker";
-import { pagesConfig } from "./pages.config";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import PageNotFound from "./lib/PageNotFound";
-import { AuthProvider, useAuth } from "@/lib/AuthContext";
-import UserNotRegisteredError from "@/components/UserNotRegisteredError";
+import "./globals.css";
 
-/* ORA GLOBAL BASE WRAPPER */
-const ORAAppShell = ({ children }) => (
-  <div className="min-h-screen bg-[#0a0e17] text-white">
-    {children}
-  </div>
-);
-
-const { Pages, Layout, mainPage } = pagesConfig;
-const mainPageKey = mainPage ?? Object.keys(Pages)[0];
-const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
-
-const LayoutWrapper = ({ children, currentPageName }) =>
-  Layout ? (
-    <Layout currentPageName={currentPageName}>{children}</Layout>
-  ) : (
-    <>{children}</>
-  );
-
-const AuthenticatedApp = () => {
-  const {
-    isLoadingAuth,
-    isLoadingPublicSettings,
-    authError,
-    navigateToLogin,
-  } = useAuth();
-
-  /* ORA-BRANDED LOADING STATE */
-  if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[#0a0e17]">
-        <div className="w-10 h-10 border-4 border-[#1e40af] border-t-[#ff8c00] rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  /* AUTH ERRORS */
-  if (authError) {
-    if (authError.type === "user_not_registered") {
-      return <UserNotRegisteredError />;
-    }
-    if (authError.type === "auth_required") {
-      navigateToLogin();
-      return null;
-    }
-  }
-
-  /* MAIN ROUTES */
+export default function App() {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <LayoutWrapper currentPageName={mainPageKey}>
-            <MainPage />
-          </LayoutWrapper>
-        }
-      />
+    <div className="app-shell">
+      {/* Top Bar */}
+      <header className="top-bar">
+        <h1 className="brand">
+          <span className="brand-accent">In</span>Form Me
+        </h1>
+        <div className="top-icons">
+          <span className="icon">🔔</span>
+          <span className="icon">⋮</span>
+        </div>
+      </header>
 
-      {Object.entries(Pages).map(([path, Page]) => (
-        <Route
-          key={path}
-          path={`/${path}`}
-          element={
-            <LayoutWrapper currentPageName={path}>
-              <Page />
-            </LayoutWrapper>
-          }
+      {/* Search */}
+      <div className="search-wrap">
+        <input
+          className="search"
+          placeholder="Search forms and checklists..."
         />
-      ))}
+      </div>
 
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
-  );
-};
+      {/* AI Suggestions */}
+      <section className="section">
+        <h2 className="section-title">✨ AI Suggestions</h2>
 
-function App() {
-  return (
-    <div style={{ padding: 40 }}>
-      <h1>Inform-Me by ORA</h1>
-      <p>Frontend is running.</p>
-      <p>Providers temporarily bypassed.</p>
+        <div className="card">
+          <div className="card-header">
+            <span>📈</span>
+            <strong>Frequently Used</strong>
+          </div>
+          <p>You often use “Orchard Inspection”</p>
+          <button className="btn-primary">Fill Now</button>
+        </div>
+
+        <div className="card">
+          <div className="card-header">
+            <span>⏰</span>
+            <strong>Overdue Tasks</strong>
+          </div>
+          <p>You have 3 overdue tasks</p>
+          <button className="btn-secondary">View Tasks</button>
+        </div>
+      </section>
+
+      {/* Tabs */}
+      <div className="tabs">
+        <button className="tab active">Forms</button>
+        <button className="tab">Checklists</button>
+      </div>
+
+      {/* List */}
+      <section className="list">
+        {[
+          ["Soil Sample Collection", "Field Analysis", "13 fields"],
+          ["Timber Harvest Plan", "Forestry", "13 fields"],
+          ["Orchard Inspection", "Horticulture", "13 fields"],
+          ["Poultry Production Log", "Poultry Farming", "11 fields"],
+        ].map(([title, tag, meta]) => (
+          <div key={title} className="list-item">
+            <div className="list-left">
+              <span className="doc-icon">📄</span>
+              <div>
+                <strong>{title}</strong>
+                <div className="meta">
+                  <span className="pill">{tag}</span>
+                  <span className="muted">{meta}</span>
+                </div>
+              </div>
+            </div>
+            <button className="btn-fill">Fill</button>
+          </div>
+        ))}
+      </section>
+
+      {/* Bottom Nav */}
+      <nav className="bottom-nav">
+        <span className="active">🏠 Home</span>
+        <span>📝 Forms</span>
+        <span className="temp">Temp</span>
+        <span>📁 Docs</span>
+      </nav>
     </div>
   );
 }

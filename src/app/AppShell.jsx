@@ -1,17 +1,8 @@
-import { Outlet, useLocation } from "react-router-dom"
-import Layout from "@/Layout"
-
-export default function AppShell() {
-  const location = useLocation()
-
-  // Convert route path → page name
-  const currentPageName = location.pathname === "/"
-    ? "Dashboard"
-    : location.pathname.replace("/", "")
-
+export default function AppShell({ children }) {
   return (
-    <Layout currentPageName={currentPageName}>
-      <Outlet />
-    </Layout>
-  )
+    <div style={{ border: "3px solid #00bcd4", padding: 20 }}>
+      <h2>AppShell loaded</h2>
+      {children}
+    </div>
+  );
 }
