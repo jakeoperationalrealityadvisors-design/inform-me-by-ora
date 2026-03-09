@@ -12,6 +12,7 @@ import SyncIndicator from './components/mobile/SyncManager';
 import MobileNav from './components/mobile/MobileNav';
 import { useBackgroundSync } from './components/mobile/BackgroundSync';
 import UserProfile from './components/navigation/UserProfile';
+import ErrorBoundary from './components/error/ErrorBoundary';
 
 export default function Layout({ children, currentPageName }) {
     // Initialize background sync

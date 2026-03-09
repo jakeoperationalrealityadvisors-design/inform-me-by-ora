@@ -46,7 +46,6 @@ export default function Home() {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeTab, setActiveTab] = useState('forms');
     const [showGlobalSearch, setShowGlobalSearch] = useState(false);
-    const [viewMode, setViewMode] = useState(isSimpleMode ? 'grid' : 'list');
     
     // Redirect to onboarding if no organization
     React.useEffect(() => {
