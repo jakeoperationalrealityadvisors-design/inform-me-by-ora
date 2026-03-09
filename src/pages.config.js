@@ -48,6 +48,9 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AIAssistantPage from './pages/AIAssistantPage';
+import AIAssistantTest from './pages/AIAssistantTest';
+import AIWorkflowBuilder from './pages/AIWorkflowBuilder';
+import ActivityLog from './pages/ActivityLog';
 import Admin from './pages/Admin';
 import AdminDashboard from './pages/AdminDashboard';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
@@ -62,58 +65,58 @@ import DailyTasks from './pages/DailyTasks';
 import Dashboard from './pages/Dashboard';
 import DocumentEditor from './pages/DocumentEditor';
 import DocumentSearch from './pages/DocumentSearch';
+import DocumentWorkflows from './pages/DocumentWorkflows';
 import Documentation from './pages/Documentation';
+import Documents from './pages/Documents';
+import EditAutomation from './pages/EditAutomation';
 import EditCategory from './pages/EditCategory';
 import EditChecklist from './pages/EditChecklist';
+import EditForm from './pages/EditForm';
 import ExportData from './pages/ExportData';
 import FillChecklist from './pages/FillChecklist';
 import FillForm from './pages/FillForm';
 import Home from './pages/Home';
 import HopCode from './pages/HopCode';
-import LoadTesting from './pages/LoadTesting';
-import Messages from './pages/Messages';
-import Settings from './pages/Settings';
 import Integrations from './pages/Integrations';
-import MyTasks from './pages/MyTasks';
-import Pricing from './pages/Pricing';
-import Scanner from './pages/Scanner';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import ProductionChecklist from './pages/ProductionChecklist';
-import Submissions from './pages/Submissions';
-import SystemHealth from './pages/SystemHealth';
-import VerifyEmail from './pages/VerifyEmail';
-import TermsOfService from './pages/TermsOfService';
-import DocumentWorkflows from './pages/DocumentWorkflows';
-import Documents from './pages/Documents';
-import EditAutomation from './pages/EditAutomation';
-import EditForm from './pages/EditForm';
 import KnowledgeBase from './pages/KnowledgeBase';
+import LoadTesting from './pages/LoadTesting';
 import ManageAutomations from './pages/ManageAutomations';
 import ManageDailyTasks from './pages/ManageDailyTasks';
 import ManageFolders from './pages/ManageFolders';
+import Messages from './pages/Messages';
+import MyTasks from './pages/MyTasks';
 import NetworkOnboarding from './pages/NetworkOnboarding';
+import OrganizationSettings from './pages/OrganizationSettings';
+import Pricing from './pages/Pricing';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import ProductionChecklist from './pages/ProductionChecklist';
 import PublicChecklist from './pages/PublicChecklist';
 import PublicForm from './pages/PublicForm';
+import PublicSubmission from './pages/PublicSubmission';
 import Reports from './pages/Reports';
 import RoleManagement from './pages/RoleManagement';
+import Scanner from './pages/Scanner';
+import SendFax from './pages/SendFax';
+import Settings from './pages/Settings';
+import Submissions from './pages/Submissions';
 import Support from './pages/Support';
+import SystemHealth from './pages/SystemHealth';
+import TermsOfService from './pages/TermsOfService';
 import TikTokDashboard from './pages/TikTokDashboard';
+import UploadDocument from './pages/UploadDocument';
 import UserManagement from './pages/UserManagement';
+import VerifyEmail from './pages/VerifyEmail';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import AIAssistantTest from './pages/AIAssistantTest';
-import AIWorkflowBuilder from './pages/AIWorkflowBuilder';
-import OrganizationSettings from './pages/OrganizationSettings';
-import PublicSubmission from './pages/PublicSubmission';
-import SendFax from './pages/SendFax';
-import UploadDocument from './pages/UploadDocument';
-import ActivityLog from './pages/ActivityLog';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AIAssistantPage": AIAssistantPage,
+    "AIAssistantTest": AIAssistantTest,
+    "AIWorkflowBuilder": AIWorkflowBuilder,
+    "ActivityLog": ActivityLog,
     "Admin": Admin,
     "AdminDashboard": AdminDashboard,
     "AnalyticsDashboard": AnalyticsDashboard,
@@ -128,53 +131,50 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "DocumentEditor": DocumentEditor,
     "DocumentSearch": DocumentSearch,
+    "DocumentWorkflows": DocumentWorkflows,
     "Documentation": Documentation,
+    "Documents": Documents,
+    "EditAutomation": EditAutomation,
     "EditCategory": EditCategory,
     "EditChecklist": EditChecklist,
+    "EditForm": EditForm,
     "ExportData": ExportData,
     "FillChecklist": FillChecklist,
     "FillForm": FillForm,
     "Home": Home,
     "HopCode": HopCode,
-    "LoadTesting": LoadTesting,
-    "Messages": Messages,
-    "Settings": Settings,
     "Integrations": Integrations,
-    "MyTasks": MyTasks,
-    "Pricing": Pricing,
-    "Scanner": Scanner,
-    "PrivacyPolicy": PrivacyPolicy,
-    "ProductionChecklist": ProductionChecklist,
-    "Submissions": Submissions,
-    "SystemHealth": SystemHealth,
-    "VerifyEmail": VerifyEmail,
-    "TermsOfService": TermsOfService,
-    "DocumentWorkflows": DocumentWorkflows,
-    "Documents": Documents,
-    "EditAutomation": EditAutomation,
-    "EditForm": EditForm,
     "KnowledgeBase": KnowledgeBase,
+    "LoadTesting": LoadTesting,
     "ManageAutomations": ManageAutomations,
     "ManageDailyTasks": ManageDailyTasks,
     "ManageFolders": ManageFolders,
+    "Messages": Messages,
+    "MyTasks": MyTasks,
     "NetworkOnboarding": NetworkOnboarding,
+    "OrganizationSettings": OrganizationSettings,
+    "Pricing": Pricing,
+    "PrivacyPolicy": PrivacyPolicy,
+    "ProductionChecklist": ProductionChecklist,
     "PublicChecklist": PublicChecklist,
     "PublicForm": PublicForm,
+    "PublicSubmission": PublicSubmission,
     "Reports": Reports,
     "RoleManagement": RoleManagement,
+    "Scanner": Scanner,
+    "SendFax": SendFax,
+    "Settings": Settings,
+    "Submissions": Submissions,
     "Support": Support,
+    "SystemHealth": SystemHealth,
+    "TermsOfService": TermsOfService,
     "TikTokDashboard": TikTokDashboard,
+    "UploadDocument": UploadDocument,
     "UserManagement": UserManagement,
+    "VerifyEmail": VerifyEmail,
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "AIAssistantTest": AIAssistantTest,
-    "AIWorkflowBuilder": AIWorkflowBuilder,
-    "OrganizationSettings": OrganizationSettings,
-    "PublicSubmission": PublicSubmission,
-    "SendFax": SendFax,
-    "UploadDocument": UploadDocument,
-    "ActivityLog": ActivityLog,
 }
 
 export const pagesConfig = {
