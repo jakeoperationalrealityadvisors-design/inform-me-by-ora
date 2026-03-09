@@ -23,7 +23,7 @@ export default function MobileNav() {
     };
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#0a0e17] border-t border-slate-200 dark:border-blue-900/20 z-50 pb-safe">
+        <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-[#0a0e17] border-t border-slate-200 dark:border-blue-900/20 z-50 pb-safe">
             <div className="flex items-center justify-around h-16">
                 {navItems.map((item) => {
                     const Icon = item.icon;
