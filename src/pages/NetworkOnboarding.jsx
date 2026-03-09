@@ -141,8 +141,8 @@ export default function NetworkOnboarding() {
             
             return org;
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['current-user']);
+        onSuccess: async () => {
+            await queryClient.refetchQueries({ queryKey: ['current-user'] });
             toast.success('Successfully joined network!');
             navigate(createPageUrl('Home'));
         },
