@@ -17,20 +17,21 @@ export function useSimpleMode() {
     };
 }
 
-export function SimpleModeButton({ children, label, ...props }) {
+export function SimpleModeButton({ children, label, id, ...props }) {
     const { isSimpleMode } = useSimpleMode();
     
     if (isSimpleMode) {
         return (
             <button
+                id={id}
                 {...props}
-                className={`${props.className || ''} ${isSimpleMode ? 'min-h-[48px] text-base font-semibold' : ''}`}
+                className={`${props.className || ''} min-h-[48px] text-base font-semibold`}
             >
                 {children}
-                {isSimpleMode && label && <span className="block text-xs font-normal mt-1 opacity-80">{label}</span>}
+                {label && <span className="block text-xs font-normal mt-1 opacity-80">{label}</span>}
             </button>
         );
     }
     
-    return <button {...props}>{children}</button>;
+    return <button id={id} {...props}>{children}</button>;
 }
