@@ -345,7 +345,6 @@ export default function Home() {
                     </div>
                     </PullToRefresh>
                     <GlobalSearch open={showGlobalSearch} onOpenChange={setShowGlobalSearch} />
-                    <BottomNav />
                     </div>
                     );
                     }
