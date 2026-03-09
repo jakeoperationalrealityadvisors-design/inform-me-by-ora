@@ -13,6 +13,7 @@ import MobileNav from './components/mobile/MobileNav';
 import { useBackgroundSync } from './components/mobile/BackgroundSync';
 import UserProfile from './components/navigation/UserProfile';
 import ErrorBoundary from './components/error/ErrorBoundary';
+import CookieConsent from './components/common/CookieConsent';
 
 export default function Layout({ children, currentPageName }) {
     // Initialize background sync
@@ -33,19 +34,15 @@ export default function Layout({ children, currentPageName }) {
         checkUser();
     }, []);
     
-    // Register service worker for PWA
+    // Register service worker for PWA (only if the file exists)
     React.useEffect(() => {
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/service-worker.js')
                 .then(registration => {
-                    console.log('SW registered:', registration.scope);
-
-                    // Check for updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
                         newWorker.addEventListener('statechange', () => {
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                // New update available
                                 if (confirm('New version available! Reload to update?')) {
                                     window.location.reload();
                                 }
@@ -53,7 +50,9 @@ export default function Layout({ children, currentPageName }) {
                         });
                     });
                 })
-                .catch(err => console.log('SW registration failed', err));
+                .catch(() => {
+                    // Service worker not available — PWA features disabled
+                });
         }
     }, []);
 
@@ -173,6 +172,7 @@ export default function Layout({ children, currentPageName }) {
                             {children}
                         </ErrorBoundary>
                         <MobileNav />
+                        <CookieConsent />
                     </div>
                     </WebSocketProvider>
                     </ConnectionManager>
