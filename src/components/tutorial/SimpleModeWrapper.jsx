@@ -9,6 +9,7 @@ export function useSimpleMode() {
     });
     
     return {
+        isSeniorMode: user?.technical_level === 'senior',
         isSimpleMode: user?.technical_level === 'simple',
         isBeginnerMode: user?.technical_level === 'beginner',
         isExpertMode: user?.technical_level === 'expert',
