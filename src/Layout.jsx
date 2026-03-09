@@ -169,7 +169,9 @@ export default function Layout({ children, currentPageName }) {
                             background: linear-gradient(135deg, var(--ora-blue) 0%, var(--ora-blue-dark) 100%);
                         }
                     `}</style>
-                        {children}
+                        <ErrorBoundary>
+                            {children}
+                        </ErrorBoundary>
                         <MobileNav />
                     </div>
                     </WebSocketProvider>
