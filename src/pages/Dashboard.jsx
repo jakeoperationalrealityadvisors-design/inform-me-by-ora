@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ListTodo, FileText, CheckSquare, Plus, Activity, Calendar, AlertCircle, TrendingUp, ArrowRight } from 'lucide-react';
@@ -18,7 +18,7 @@ export default function Dashboard() {
     const { data: standaloneTasks = [] } = useQuery({
         queryKey: ['my-standalone-tasks'],
         queryFn: async () => {
-            const all = await httpClient.entities.Task.list('-created_date', 50);
+            const all = await base44.entities.Task.list('-created_date', 50);
             return all.filter(t => t.assigned_to_email === user?.email);
         },
         enabled: !!user
@@ -27,7 +27,7 @@ export default function Dashboard() {
     const { data: formSubmissions = [] } = useQuery({
         queryKey: ['my-form-submissions'],
         queryFn: async () => {
-            const all = await httpClient.entities.FormSubmission.list('-created_date', 50);
+            const all = await base44.entities.FormSubmission.list('-created_date', 50);
             return all.filter(f => f.assigned_to_email === user?.email);
         },
         enabled: !!user
@@ -36,7 +36,7 @@ export default function Dashboard() {
     const { data: checklistSubmissions = [] } = useQuery({
         queryKey: ['my-checklist-submissions'],
         queryFn: async () => {
-            const all = await httpClient.entities.ChecklistSubmission.list('-created_date', 50);
+            const all = await base44.entities.ChecklistSubmission.list('-created_date', 50);
             return all.filter(c => c.assigned_to_email === user?.email);
         },
         enabled: !!user
@@ -45,7 +45,7 @@ export default function Dashboard() {
     const { data: recentActivity = [] } = useQuery({
         queryKey: ['my-activity'],
         queryFn: async () => {
-            const all = await httpClient.entities.ActivityLog.list('-created_date', 20);
+            const all = await base44.entities.ActivityLog.list('-created_date', 20);
             return all.filter(a => a.user_email === user?.email);
         },
         enabled: !!user

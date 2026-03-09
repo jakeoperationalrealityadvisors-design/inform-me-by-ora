@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,17 +22,17 @@ export default function DocumentUploadDialog({ open, onOpenChange, currentFolder
 
     const { data: existingTags = [] } = useQuery({
         queryKey: ['document-tags'],
-        queryFn: () => httpClient.entities.DocumentTag.list()
+        queryFn: () => base44.entities.DocumentTag.list()
     });
 
     const uploadMutation = useMutation({
         mutationFn: async (data) => {
             // First upload file
             setUploading(true);
-            const { file_url } = await httpClient.integrations.Core.UploadFile({ file: data.file });
+            const { file_url } = await base44.integrations.Core.UploadFile({ file: data.file });
             
             // Create document record
-            return httpClient.entities.Document.create({
+            return base44.entities.Document.create({
                 name: data.name,
                 description: data.description,
                 file_url,
@@ -71,7 +71,7 @@ export default function DocumentUploadDialog({ open, onOpenChange, currentFolder
             
             // Create tag if it doesn't exist
             if (!existingTags.find(t => t.name === newTag)) {
-                httpClient.entities.DocumentTag.create({ name: newTag, color: '#1e90ff' });
+                base44.entities.DocumentTag.create({ name: newTag, color: '#1e90ff' });
             }
             
             setTagInput('');
@@ -118,13 +118,13 @@ export default function DocumentUploadDialog({ open, onOpenChange, currentFolder
                     <div>
                         <Label>File</Label>
                         <div className="mt-2">
-                            <label className="flex items-center justify-center w-full h-32 border-2 border-dashed border-blue-900/40 rounded-lg cursor-pointer hover:border-[#1e90ff] transition-colors">
+                            <label className="flex items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-[#1e90ff] transition-colors">
                                 <div className="text-center">
-                                    <Upload className="w-8 h-8 mx-auto text-blue-400/60 mb-2" />
-                                    <p className="text-sm text-blue-300">
+                                    <Upload className="w-8 h-8 mx-auto text-slate-400 mb-2" />
+                                    <p className="text-sm text-slate-600">
                                         {file ? file.name : 'Click to select file'}
                                     </p>
-                                    <p className="text-xs text-blue-400/70 mt-1">
+                                    <p className="text-xs text-slate-500 mt-1">
                                         {file && `${(file.size / 1024 / 1024).toFixed(2)} MB`}
                                     </p>
                                 </div>

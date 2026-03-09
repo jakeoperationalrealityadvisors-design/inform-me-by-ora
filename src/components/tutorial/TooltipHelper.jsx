@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { HelpCircle, X } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ export default function TooltipHelper({ id, title, description, position = 'bott
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => httpClient.auth.me()
+        queryFn: () => base44.auth.me()
     });
     
     useEffect(() => {
@@ -26,7 +26,7 @@ export default function TooltipHelper({ id, title, description, position = 'bott
         
         if (user) {
             const completedTutorials = user.completed_tutorials || [];
-            await httpClient.auth.updateMe({
+            await base44.auth.updateMe({
                 completed_tutorials: [...completedTutorials, id]
             });
         }

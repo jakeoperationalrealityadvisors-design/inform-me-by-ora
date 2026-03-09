@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookTemplate, Star, Zap, Bell, FileCheck, Search, Sparkles } from 'lucide-react';
+import { BookTemplate, Star, Zap, Bell, FileCheck, Users, Search, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 const categoryIcons = {
@@ -40,8 +40,8 @@ const TemplateCard = ({ template, onSelect }) => {
                             </Badge>
                         )}
                     </div>
-                    <p className="text-xs text-blue-300 line-clamp-2 mb-2">{template.description}</p>
-                    <div className="flex items-center gap-2 text-xs text-blue-400/70">
+                    <p className="text-xs text-gray-600 line-clamp-2 mb-2">{template.description}</p>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
                         <Badge variant="secondary" className="text-xs">
                             {template.trigger_type.replace(/_/g, ' ')}
                         </Badge>
@@ -67,13 +67,13 @@ export default function AutomationTemplateLibrary({ open, onOpenChange, onSelect
     
     const { data: templates = [], isLoading } = useQuery({
         queryKey: ['automation-templates'],
-        queryFn: () => httpClient.entities.AutomationTemplate.list('-usage_count')
+        queryFn: () => base44.entities.AutomationTemplate.list('-usage_count')
     });
     
     const incrementUsage = useMutation({
         mutationFn: (templateId) => {
             const template = templates.find(t => t.id === templateId);
-            return httpClient.entities.AutomationTemplate.update(templateId, {
+            return base44.entities.AutomationTemplate.update(templateId, {
                 usage_count: (template?.usage_count || 0) + 1
             });
         }
@@ -124,7 +124,7 @@ export default function AutomationTemplateLibrary({ open, onOpenChange, onSelect
                 <div className="space-y-4 flex-1 overflow-hidden flex flex-col">
                     {/* Search */}
                     <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-blue-400/60" />
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <Input
                             placeholder="Search templates..."
                             value={search}
@@ -168,7 +168,7 @@ export default function AutomationTemplateLibrary({ open, onOpenChange, onSelect
                                     />
                                 ))}
                                 {systemTemplates.length === 0 && (
-                                    <div className="col-span-2 text-center py-8 text-blue-400/70 text-sm">
+                                    <div className="col-span-2 text-center py-8 text-gray-500 text-sm">
                                         No system templates found
                                     </div>
                                 )}
@@ -185,7 +185,7 @@ export default function AutomationTemplateLibrary({ open, onOpenChange, onSelect
                                     />
                                 ))}
                                 {customTemplates.length === 0 && (
-                                    <div className="col-span-2 text-center py-8 text-blue-400/70 text-sm">
+                                    <div className="col-span-2 text-center py-8 text-gray-500 text-sm">
                                         No custom templates yet. Save an automation as a template to see it here.
                                     </div>
                                 )}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Bell, BellOff } from 'lucide-react';
 import { toast } from 'sonner';
+import { base44 } from '@/api/base44Client';
 
 export function usePushNotifications() {
     const [permission, setPermission] = useState(Notification.permission);
@@ -39,8 +40,8 @@ export function usePushNotifications() {
     const showNotification = (title, options = {}) => {
         if (permission === 'granted') {
             const notification = new Notification(title, {
-                icon: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/inform-me-by-ora-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png',
-                badge: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/inform-me-by-ora-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png',
+                icon: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png',
+                badge: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png',
                 vibrate: [200, 100, 200],
                 ...options
             });
@@ -78,7 +79,7 @@ export default function PushNotificationToggle() {
             {permission === 'granted' ? (
                 <Bell className="w-5 h-5 text-green-500" />
             ) : (
-                <BellOff className="w-5 h-5 text-blue-400/60" />
+                <BellOff className="w-5 h-5 text-slate-400" />
             )}
         </Button>
     );

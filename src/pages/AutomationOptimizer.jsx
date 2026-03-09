@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Sparkles, Loader2, AlertTriangle, TrendingUp, Zap, CheckCircle2, Plus } from 'lucide-react';
@@ -27,22 +27,22 @@ function AutomationOptimizerContent() {
     
     const { data: automations = [] } = useQuery({
         queryKey: ['automation-rules'],
-        queryFn: () => httpClient.entities.AutomationRule.list()
+        queryFn: () => base44.entities.AutomationRule.list()
     });
     
     const { data: activityLogs = [] } = useQuery({
         queryKey: ['activity-logs-optimizer'],
-        queryFn: () => httpClient.entities.ActivityLog.list('-created_date', 2000)
+        queryFn: () => base44.entities.ActivityLog.list('-created_date', 2000)
     });
     
     const { data: formSubmissions = [] } = useQuery({
         queryKey: ['form-submissions-optimizer'],
-        queryFn: () => httpClient.entities.FormSubmission.list('-created_date', 500)
+        queryFn: () => base44.entities.FormSubmission.list('-created_date', 500)
     });
     
     const { data: checklistSubmissions = [] } = useQuery({
         queryKey: ['checklist-submissions-optimizer'],
-        queryFn: () => httpClient.entities.ChecklistSubmission.list('-created_date', 500)
+        queryFn: () => base44.entities.ChecklistSubmission.list('-created_date', 500)
     });
     
     const analyzeMutation = useMutation({
@@ -75,7 +75,7 @@ function AutomationOptimizerContent() {
                 }
             });
             
-            const response = await httpClient.integrations.Core.InvokeLLM({
+            const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `You are an automation optimization expert. Analyze this workflow data and provide actionable recommendations:
 
 **Current Automations (${automations.length} total):**
@@ -188,7 +188,7 @@ Provide specific, actionable recommendations with priority levels.`,
                 enabled: false // Start disabled for review
             };
             
-            await httpClient.entities.AutomationRule.create(newAutomation);
+            await base44.entities.AutomationRule.create(newAutomation);
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['automation-rules']);

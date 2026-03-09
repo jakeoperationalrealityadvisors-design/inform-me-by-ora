@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Zap, CheckCircle2 } from 'lucide-react';
+import { Zap, CheckCircle2, XCircle, Clock } from 'lucide-react';
 
 export default function AutomationAnalytics({ automations, activityLogs }) {
     const enabledAutomations = automations.filter(a => a.enabled);

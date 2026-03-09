@@ -76,7 +76,7 @@ return formattedData;`
                     <ul className="text-xs text-blue-700 space-y-1 ml-4">
                         <li><code className="bg-blue-100 px-1 rounded">trigger_data</code> - Data from the trigger event</li>
                         <li><code className="bg-blue-100 px-1 rounded">action_config</code> - Configuration from this action</li>
-                        <li><code className="bg-blue-100 px-1 rounded">base44</code> - Access to InForm' Me by ORA SDK (asServiceRole)</li>
+                        <li><code className="bg-blue-100 px-1 rounded">base44</code> - Access to Base44 SDK (asServiceRole)</li>
                     </ul>
 
                     <div className="mt-3">
@@ -113,8 +113,8 @@ return formattedData;`
                 spellCheck={false}
             />
 
-            <p className="text-xs text-blue-400/70">
-                Code executes in a sandboxed environment. Use <code className="bg-blue-950/50 px-1 rounded">return</code> to pass data to subsequent actions.
+            <p className="text-xs text-slate-500">
+                Code executes in a sandboxed environment. Use <code className="bg-slate-100 px-1 rounded">return</code> to pass data to subsequent actions.
             </p>
         </div>
     );

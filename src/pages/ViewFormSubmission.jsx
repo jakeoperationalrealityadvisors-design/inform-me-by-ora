@@ -1,9 +1,9 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, User, MapPin, Clock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, User, MapPin, Clock, FileText, Image, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
@@ -21,7 +21,7 @@ export default function ViewFormSubmission() {
     const { data: submission, isLoading: subLoading } = useQuery({
         queryKey: ['form-submission', submissionId],
         queryFn: async () => {
-            const subs = await httpClient.entities.FormSubmission.filter({ id: submissionId });
+            const subs = await base44.entities.FormSubmission.filter({ id: submissionId });
             return subs[0];
         },
         enabled: !!submissionId
@@ -30,19 +30,19 @@ export default function ViewFormSubmission() {
     const { data: formTemplate } = useQuery({
         queryKey: ['form-template', submission?.form_template_id],
         queryFn: async () => {
-            const forms = await httpClient.entities.FormTemplate.filter({ id: submission.form_template_id });
+            const forms = await base44.entities.FormTemplate.filter({ id: submission.form_template_id });
             return forms[0];
         },
         enabled: !!submission?.form_template_id
     });
     
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }) => httpClient.entities.FormSubmission.update(id, data),
+        mutationFn: ({ id, data }) => base44.entities.FormSubmission.update(id, data),
         onSuccess: () => queryClient.invalidateQueries(['form-submission', submissionId])
     });
     
     const updateAssignmentMutation = useMutation({
-        mutationFn: (updates) => httpClient.entities.FormSubmission.update(submissionId, updates),
+        mutationFn: (updates) => base44.entities.FormSubmission.update(submissionId, updates),
         onSuccess: () => {
             queryClient.invalidateQueries(['form-submission', submissionId]);
         }
@@ -68,7 +68,7 @@ export default function ViewFormSubmission() {
     const renderValue = (fieldId, value) => {
         const type = getFieldType(fieldId);
         
-        if (!value && value !== false) return <span className="text-blue-400/60">—</span>;
+        if (!value && value !== false) return <span className="text-slate-400">—</span>;
         
         if (type === 'checkbox') {
             return value ? (
@@ -76,7 +76,7 @@ export default function ViewFormSubmission() {
                     <CheckCircle className="w-4 h-4" /> Yes
                 </span>
             ) : (
-                <span className="flex items-center gap-2 text-blue-400/60">
+                <span className="flex items-center gap-2 text-slate-400">
                     <XCircle className="w-4 h-4" /> No
                 </span>
             );

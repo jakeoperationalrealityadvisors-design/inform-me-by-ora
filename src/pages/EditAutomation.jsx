@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Plus, Trash2, Save, Workflow, BookTemplate, History, Share2 } from 'lucide-react';
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoleGuard from '@/components/auth/RoleGuard';
 import { toast } from 'sonner';
 import AutomationTester from '@/components/automation/AutomationTester';
@@ -34,23 +34,23 @@ function EditAutomationContent() {
 
     const { data: rule } = useQuery({
         queryKey: ['automation-rule', ruleId],
-        queryFn: () => httpClient.entities.AutomationRule.filter({ id: ruleId }).then(r => r[0]),
+        queryFn: () => base44.entities.AutomationRule.filter({ id: ruleId }).then(r => r[0]),
         enabled: !!ruleId
     });
 
     const { data: forms = [] } = useQuery({
         queryKey: ['forms'],
-        queryFn: () => httpClient.entities.FormTemplate.filter({ status: 'active' })
+        queryFn: () => base44.entities.FormTemplate.filter({ status: 'active' })
     });
 
     const { data: checklists = [] } = useQuery({
         queryKey: ['checklists'],
-        queryFn: () => httpClient.entities.ChecklistTemplate.filter({ status: 'active' })
+        queryFn: () => base44.entities.ChecklistTemplate.filter({ status: 'active' })
     });
 
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
-        queryFn: () => httpClient.entities.User.list()
+        queryFn: () => base44.entities.User.list()
     });
 
     const [formData, setFormData] = useState({
@@ -88,21 +88,21 @@ function EditAutomationContent() {
         mutationFn: async (data) => {
             let savedRule;
             if (ruleId) {
-                savedRule = await httpClient.entities.AutomationRule.update(ruleId, data);
+                savedRule = await base44.entities.AutomationRule.update(ruleId, data);
                 
                 // Get current version count
-                const versions = await httpClient.entities.AutomationRuleVersion.filter({ rule_id: ruleId });
+                const versions = await base44.entities.AutomationRuleVersion.filter({ rule_id: ruleId });
                 const versionNumber = versions.length + 1;
                 
                 // Mark all previous versions as inactive
                 for (const v of versions) {
                     if (v.is_active) {
-                        await httpClient.entities.AutomationRuleVersion.update(v.id, { is_active: false });
+                        await base44.entities.AutomationRuleVersion.update(v.id, { is_active: false });
                     }
                 }
                 
                 // Create new version
-                await httpClient.entities.AutomationRuleVersion.create({
+                await base44.entities.AutomationRuleVersion.create({
                     rule_id: ruleId,
                     version_number: versionNumber,
                     name: data.name,
@@ -115,10 +115,10 @@ function EditAutomationContent() {
                     is_active: true
                 });
             } else {
-                savedRule = await httpClient.entities.AutomationRule.create(data);
+                savedRule = await base44.entities.AutomationRule.create(data);
                 
                 // Create initial version
-                await httpClient.entities.AutomationRuleVersion.create({
+                await base44.entities.AutomationRuleVersion.create({
                     rule_id: savedRule.id,
                     version_number: 1,
                     name: data.name,
@@ -207,9 +207,9 @@ function EditAutomationContent() {
     };
 
     return (
-        <div className="min-h-screen bg-blue-950/50">
+        <div className="min-h-screen bg-slate-100">
             {/* Header */}
-            <div className="bg-[#0f1419] border-b border-blue-900/30 sticky top-0 z-10 shadow-sm">
+            <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
                 <div className="max-w-4xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -219,10 +219,10 @@ function EditAutomationContent() {
                                 </Button>
                             </Link>
                             <div>
-                                <h1 className="text-xl font-bold text-white">
+                                <h1 className="text-xl font-bold text-slate-900">
                                     {ruleId ? 'Edit Automation' : 'New Automation'}
                                 </h1>
-                                <p className="text-sm text-blue-300">Configure triggers and actions</p>
+                                <p className="text-sm text-slate-600">Configure triggers and actions</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -432,7 +432,7 @@ function EditAutomationContent() {
                     <Card>
                         <CardHeader>
                             <CardTitle>Complex Conditions (Optional)</CardTitle>
-                            <p className="text-sm text-blue-300 mt-1">Build advanced logic with AND/OR operators between condition groups</p>
+                            <p className="text-sm text-slate-600 mt-1">Build advanced logic with AND/OR operators between condition groups</p>
                         </CardHeader>
                         <CardContent>
                             <ComplexConditionBuilder
@@ -455,7 +455,7 @@ function EditAutomationContent() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {formData.actions.map((action, index) => (
-                                <div key={index} className="border border-blue-900/30 rounded-lg p-4 space-y-3">
+                                <div key={index} className="border border-slate-200 rounded-lg p-4 space-y-3">
                                     <div className="flex items-center justify-between">
                                         <Label>Action {index + 1}</Label>
                                         {formData.actions.length > 1 && (
@@ -725,7 +725,7 @@ function EditAutomationContent() {
                                     )}
 
                                     {/* Action Delay - Available for all action types */}
-                                    <div className="pt-3 border-t border-blue-900/30">
+                                    <div className="pt-3 border-t border-slate-200">
                                         <Label>Delay Action (Optional)</Label>
                                         <div className="flex items-center gap-2 mt-2">
                                             <Input
@@ -740,7 +740,7 @@ function EditAutomationContent() {
                                                 min="0"
                                                 className="w-24"
                                             />
-                                            <span className="text-sm text-blue-300">minutes after trigger</span>
+                                            <span className="text-sm text-slate-600">minutes after trigger</span>
                                         </div>
                                         {action.delay_minutes > 0 && (
                                             <p className="text-xs text-blue-600 mt-1">

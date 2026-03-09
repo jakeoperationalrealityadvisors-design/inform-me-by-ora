@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,7 @@ export default function PublicChecklist() {
     const { data: checklist, isLoading } = useQuery({
         queryKey: ['public-checklist', checklistId],
         queryFn: async () => {
-            const checklists = await httpClient.entities.ChecklistTemplate.filter({ id: checklistId });
+            const checklists = await base44.entities.ChecklistTemplate.filter({ id: checklistId });
             return checklists[0];
         },
         enabled: !!checklistId
@@ -28,7 +28,7 @@ export default function PublicChecklist() {
     
     const submitMutation = useMutation({
         mutationFn: async (data) => {
-            return await httpClient.entities.ChecklistSubmission.create(data);
+            return await base44.entities.ChecklistSubmission.create(data);
         },
         onSuccess: () => {
             setSubmitted(true);
@@ -80,18 +80,18 @@ export default function PublicChecklist() {
     
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
             </div>
         );
     }
     
     if (!checklist) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] flex items-center justify-center p-4">
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
                 <Card className="max-w-md w-full">
                     <CardContent className="pt-6 text-center">
-                        <p className="text-blue-300">Checklist not found</p>
+                        <p className="text-slate-600">Checklist not found</p>
                     </CardContent>
                 </Card>
             </div>
@@ -100,12 +100,12 @@ export default function PublicChecklist() {
     
     if (submitted) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] flex items-center justify-center p-4">
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
                 <Card className="max-w-md w-full">
                     <CardContent className="pt-12 pb-12 text-center">
                         <CheckCircle2 className="w-16 h-16 text-green-600 mx-auto mb-4" />
-                        <h2 className="text-2xl font-bold text-white mb-2">Thank You!</h2>
-                        <p className="text-blue-300 mb-6">Your checklist has been submitted successfully.</p>
+                        <h2 className="text-2xl font-bold text-slate-900 mb-2">Thank You!</h2>
+                        <p className="text-slate-600 mb-6">Your checklist has been submitted successfully.</p>
                         <Button onClick={() => window.location.reload()} className="bg-blue-600 hover:bg-blue-700">
                             Submit Another Response
                         </Button>
@@ -120,7 +120,7 @@ export default function PublicChecklist() {
         : 0;
     
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] py-12 px-4">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4">
             <Card className="max-w-2xl mx-auto">
                 <CardHeader className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white">
                     <CardTitle className="text-2xl">{checklist.title}</CardTitle>
@@ -130,9 +130,9 @@ export default function PublicChecklist() {
                             <span>Progress</span>
                             <span>{completionPercentage}%</span>
                         </div>
-                        <div className="w-full bg-blue-950/40 rounded-full h-2">
+                        <div className="w-full bg-white/20 rounded-full h-2">
                             <div
-                                className="bg-[#0f1419] rounded-full h-2 transition-all duration-300"
+                                className="bg-white rounded-full h-2 transition-all duration-300"
                                 style={{ width: `${completionPercentage}%` }}
                             />
                         </div>
@@ -141,19 +141,19 @@ export default function PublicChecklist() {
                 <CardContent className="pt-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <Label className="text-blue-200">Your Name *</Label>
+                            <Label className="text-slate-700">Your Name *</Label>
                             <Input
                                 value={submitterName}
                                 onChange={(e) => setSubmitterName(e.target.value)}
                                 placeholder="Enter your name"
                                 required
-                                className="bg-[#0f1419] border-blue-900/40"
+                                className="bg-white border-slate-300"
                             />
                         </div>
                         
                         <div className="space-y-3">
                             {checklist.items?.map((item) => (
-                                <div key={item.id} className="border border-blue-900/30 rounded-lg p-4 space-y-3">
+                                <div key={item.id} className="border border-slate-200 rounded-lg p-4 space-y-3">
                                     <button
                                         type="button"
                                         onClick={() => toggleItem(item.id)}
@@ -162,10 +162,10 @@ export default function PublicChecklist() {
                                         {completed.includes(item.id) ? (
                                             <CheckSquare className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                                         ) : (
-                                            <Square className="w-5 h-5 text-blue-400/60 flex-shrink-0 mt-0.5" />
+                                            <Square className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" />
                                         )}
                                         <div className="flex-1">
-                                            <span className={`text-white ${completed.includes(item.id) ? 'line-through' : ''}`}>
+                                            <span className={`text-slate-900 ${completed.includes(item.id) ? 'line-through' : ''}`}>
                                                 {item.text}
                                             </span>
                                             {item.required && <span className="text-red-600 ml-1">*</span>}
@@ -177,7 +177,7 @@ export default function PublicChecklist() {
                                             value={notes[item.id] || ''}
                                             onChange={(e) => setNotes({ ...notes, [item.id]: e.target.value })}
                                             placeholder="Add notes..."
-                                            className="bg-[#0f1419] border-blue-900/40"
+                                            className="bg-white border-slate-300"
                                             rows={2}
                                         />
                                     )}

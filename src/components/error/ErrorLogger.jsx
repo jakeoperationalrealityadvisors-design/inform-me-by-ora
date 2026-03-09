@@ -1,4 +1,4 @@
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 
 class ErrorLogger {
     constructor() {
@@ -64,14 +64,14 @@ class ErrorLogger {
         this.isProcessing = true;
 
         try {
-            const user = await httpClient.auth.me().catch(() => null);
+            const user = await base44.auth.me().catch(() => null);
             
             while (this.errorQueue.length > 0) {
                 const error = this.errorQueue.shift();
                 
                 try {
                     // Log to backend
-                    await httpClient.entities.ErrorLog.create({
+                    await base44.entities.ErrorLog.create({
                         user_email: user?.email || 'anonymous',
                         error_type: error.type,
                         message: error.message,

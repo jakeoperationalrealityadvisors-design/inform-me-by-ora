@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { FileText, Download, Eye, MoreVertical, Clock, Upload, Trash2 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ export default function DocumentCard({ document, currentFolderId }) {
     const queryClient = useQueryClient();
 
     const deleteMutation = useMutation({
-        mutationFn: (id) => httpClient.entities.Document.delete(id),
+        mutationFn: (id) => base44.entities.Document.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries(['documents']);
             toast.success('Document deleted');
@@ -51,7 +51,7 @@ export default function DocumentCard({ document, currentFolderId }) {
 
     return (
         <>
-            <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-4 hover:shadow-lg transition-all group">
+            <div className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-lg transition-all group">
                 <div className="flex items-start justify-between mb-3">
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#1e90ff] to-[#0066cc] flex items-center justify-center">
                         <FileText className="w-6 h-6 text-white" />
@@ -90,9 +90,9 @@ export default function DocumentCard({ document, currentFolderId }) {
                     </DropdownMenu>
                 </div>
 
-                <h3 className="font-semibold text-white mb-1 truncate">{document.name}</h3>
+                <h3 className="font-semibold text-slate-900 mb-1 truncate">{document.name}</h3>
                 {document.description && (
-                    <p className="text-sm text-blue-300 line-clamp-2 mb-3">{document.description}</p>
+                    <p className="text-sm text-slate-600 line-clamp-2 mb-3">{document.description}</p>
                 )}
 
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -103,7 +103,7 @@ export default function DocumentCard({ document, currentFolderId }) {
                     ))}
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-blue-400/70 pt-3 border-t border-blue-900/20">
+                <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
                     <span>{formatFileSize(document.file_size)}</span>
                     <span>v{document.version}</span>
                     <span>{format(new Date(document.created_date), 'MMM d')}</span>

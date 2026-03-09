@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ export default function DocumentPermissionsEditor({ currentPermissions = {}, onP
 
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
-        queryFn: () => httpClient.entities.User.list(),
+        queryFn: () => base44.entities.User.list(),
         enabled: open
     });
 
@@ -76,10 +76,10 @@ export default function DocumentPermissionsEditor({ currentPermissions = {}, onP
 
                 <div className="space-y-6 py-4">
                     {/* Public Access */}
-                    <div className="flex items-center justify-between p-4 bg-blue-950/40 rounded-lg border border-blue-900/30">
+                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
                         <div>
                             <Label className="text-base">Public Access</Label>
-                            <p className="text-sm text-blue-300">Allow anyone with the link to view this document</p>
+                            <p className="text-sm text-slate-600">Allow anyone with the link to view this document</p>
                         </div>
                         <Switch
                             checked={permissions.is_public || false}
@@ -125,7 +125,7 @@ export default function DocumentPermissionsEditor({ currentPermissions = {}, onP
                         </div>
                         <div className="space-y-2">
                             {(permissions.can_view || []).map(email => (
-                                <div key={email} className="flex items-center justify-between p-3 bg-[#0f1419] rounded-lg border border-blue-900/30">
+                                <div key={email} className="flex items-center justify-between p-3 bg-white rounded-lg border border-slate-200">
                                     <span className="text-sm">{getUserName(email)}</span>
                                     <div className="flex items-center gap-2">
                                         <Button
@@ -169,7 +169,7 @@ export default function DocumentPermissionsEditor({ currentPermissions = {}, onP
                                 </div>
                             ))}
                             {(permissions.can_view || []).length === 0 && (
-                                <p className="text-sm text-blue-400/70 text-center py-4">No users added yet</p>
+                                <p className="text-sm text-slate-500 text-center py-4">No users added yet</p>
                             )}
                         </div>
                     </div>

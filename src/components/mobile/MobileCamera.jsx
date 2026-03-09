@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Camera, X, RotateCw, Check, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -123,7 +123,7 @@ export default function MobileCamera({ onCapture, trigger }) {
                             {/* Camera Controls */}
                             <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
                                 <div className="flex items-center justify-between max-w-md mx-auto">
-                                    <label className="w-14 h-14 rounded-full bg-blue-950/40 backdrop-blur flex items-center justify-center cursor-pointer hover:bg-blue-900/40 transition-colors">
+                                    <label className="w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
                                         <ImageIcon className="w-6 h-6 text-white" />
                                         <input
                                             type="file"
@@ -135,12 +135,12 @@ export default function MobileCamera({ onCapture, trigger }) {
                                     
                                     <button
                                         onClick={capturePhoto}
-                                        className="w-20 h-20 rounded-full bg-[#0f1419] border-4 border-blue-300/40 hover:scale-105 transition-transform"
+                                        className="w-20 h-20 rounded-full bg-white border-4 border-white/50 hover:scale-105 transition-transform"
                                     />
                                     
                                     <button
                                         onClick={switchCamera}
-                                        className="w-14 h-14 rounded-full bg-blue-950/40 backdrop-blur flex items-center justify-center hover:bg-blue-900/40 transition-colors"
+                                        className="w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center hover:bg-white/30 transition-colors"
                                     >
                                         <RotateCw className="w-6 h-6 text-white" />
                                     </button>
@@ -171,7 +171,7 @@ export default function MobileCamera({ onCapture, trigger }) {
                                         onClick={handleRetake}
                                         variant="outline"
                                         size="lg"
-                                        className="flex-1 bg-blue-950/40 backdrop-blur border-blue-800/40 text-white hover:bg-blue-950/40"
+                                        className="flex-1 bg-white/10 backdrop-blur border-white/20 text-white hover:bg-white/20"
                                     >
                                         <X className="w-5 h-5 mr-2" />
                                         Retake

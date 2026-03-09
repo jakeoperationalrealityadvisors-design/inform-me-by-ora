@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -26,14 +26,14 @@ export default function NotificationPreferences() {
 
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => httpClient.auth.me()
+        queryFn: () => base44.auth.me()
     });
 
     const { data: existingSettings, isLoading } = useQuery({
         queryKey: ['notification-settings', user?.email],
         queryFn: async () => {
             if (!user?.email) return null;
-            const result = await httpClient.entities.NotificationSettings.filter({ 
+            const result = await base44.entities.NotificationSettings.filter({ 
                 created_by: user.email 
             });
             return result[0] || null;
@@ -49,9 +49,9 @@ export default function NotificationPreferences() {
     const saveMutation = useMutation({
         mutationFn: async (newSettings) => {
             if (existingSettings?.id) {
-                return httpClient.entities.NotificationSettings.update(existingSettings.id, newSettings);
+                return base44.entities.NotificationSettings.update(existingSettings.id, newSettings);
             } else {
-                return httpClient.entities.NotificationSettings.create(newSettings);
+                return base44.entities.NotificationSettings.create(newSettings);
             }
         },
         onSuccess: () => {

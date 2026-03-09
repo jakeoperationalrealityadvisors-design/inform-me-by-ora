@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Bell, Wifi, WifiOff, Trash2, Zap, Activity, Shield, Building2, Book, TrendingUp, Sparkles } from 'lucide-react';
+import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity, Shield, Building2, Book, TrendingUp, Sparkles } from 'lucide-react';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -39,7 +39,7 @@ export default function Settings() {
     const hasUnsavedChanges = technicalLevel !== user?.technical_level;
     
     const applyChanges = async () => {
-        await httpClient.auth.updateMe({ 
+        await base44.auth.updateMe({ 
             technical_level: technicalLevel,
             preferred_tutorial_style: technicalLevel === 'expert' ? 'none' : 'tooltips'
         });
@@ -54,9 +54,9 @@ export default function Settings() {
         
         if (newState) {
             // Cache data for offline use
-            const forms = await httpClient.entities.FormTemplate.filter({ status: 'active' });
-            const checklists = await httpClient.entities.ChecklistTemplate.filter({ status: 'active' });
-            const categories = await httpClient.entities.Category.list();
+            const forms = await base44.entities.FormTemplate.filter({ status: 'active' });
+            const checklists = await base44.entities.ChecklistTemplate.filter({ status: 'active' });
+            const categories = await base44.entities.Category.list();
             
             localStorage.setItem('offline_forms', JSON.stringify(forms));
             localStorage.setItem('offline_checklists', JSON.stringify(checklists));

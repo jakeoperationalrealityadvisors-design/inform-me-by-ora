@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,7 @@ export default function AssignmentPanel({ submission, onUpdate, submissionType =
     
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
-        queryFn: () => httpClient.entities.User.list()
+        queryFn: () => base44.entities.User.list()
     });
     
     const handleSave = async () => {
@@ -41,7 +41,7 @@ export default function AssignmentPanel({ submission, onUpdate, submissionType =
                 const linkParams = `?id=${submission.id}`;
                 
                 // Create in-app notification
-                await httpClient.entities.Notification.create({
+                await base44.entities.Notification.create({
                     user_email: assignee,
                     title: 'New Task Assigned',
                     message: `You've been assigned: ${taskTitle}`,
@@ -52,7 +52,7 @@ export default function AssignmentPanel({ submission, onUpdate, submissionType =
                 });
                 
                 // Send email notification
-                await httpClient.integrations.Core.SendEmail({
+                await base44.integrations.Core.SendEmail({
                     to: assignee,
                     subject: `New Task Assigned: ${taskTitle}`,
                     body: `

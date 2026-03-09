@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ export default function NewConversationDialog({ open, onOpenChange, currentUser,
     
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
-        queryFn: () => httpClient.entities.User.list(),
+        queryFn: () => base44.entities.User.list(),
         enabled: open
     });
     
@@ -27,7 +27,7 @@ export default function NewConversationDialog({ open, onOpenChange, currentUser,
             const conversationId = `${conversationType}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
             
             // Create initial message to establish conversation
-            const firstMessage = await httpClient.entities.Message.create({
+            const firstMessage = await base44.entities.Message.create({
                 content: conversationType === 'group' 
                     ? `${currentUser.full_name} created the group`
                     : 'Conversation started',

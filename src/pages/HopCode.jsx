@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Building2, ArrowRight } from 'lucide-react';
+import { Building2, LogIn, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,10 +16,10 @@ export default function HopCode() {
 
     const hopMutation = useMutation({
         mutationFn: async (code) => {
-            const user = await httpClient.auth.me();
+            const user = await base44.auth.me();
             
             // Find organization with this hopcode
-            const orgs = await httpClient.entities.Organization.filter({ 
+            const orgs = await base44.entities.Organization.filter({ 
                 hopcode: code.toUpperCase(),
                 'settings.allow_hopcode_access': true 
             });
@@ -36,7 +36,7 @@ export default function HopCode() {
             }
             
             // Create temporary access record
-            await httpClient.entities.TemporaryAccess.create({
+            await base44.entities.TemporaryAccess.create({
                 user_email: user.email,
                 organization_id: org.id,
                 hopcode: code.toUpperCase(),

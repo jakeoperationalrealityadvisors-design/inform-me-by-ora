@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,7 @@ export default function ShareAutomationDialog({ open, onOpenChange, automation }
                 usage_count: 0
             };
             
-            return await httpClient.entities.AutomationTemplate.create(templateData);
+            return await base44.entities.AutomationTemplate.create(templateData);
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['automation-templates']);
@@ -75,7 +75,7 @@ export default function ShareAutomationDialog({ open, onOpenChange, automation }
                     <div className="flex items-center justify-between">
                         <div>
                             <Label>Save as Public Template</Label>
-                            <p className="text-xs text-blue-400/70 mt-1">
+                            <p className="text-xs text-gray-500 mt-1">
                                 Allow others to use this automation as a template
                             </p>
                         </div>

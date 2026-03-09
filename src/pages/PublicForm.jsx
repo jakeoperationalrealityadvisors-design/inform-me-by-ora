@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,7 @@ export default function PublicForm() {
     const { data: form, isLoading } = useQuery({
         queryKey: ['public-form', formId],
         queryFn: async () => {
-            const forms = await httpClient.entities.FormTemplate.filter({ id: formId });
+            const forms = await base44.entities.FormTemplate.filter({ id: formId });
             return forms[0];
         },
         enabled: !!formId
@@ -27,7 +27,7 @@ export default function PublicForm() {
     
     const submitMutation = useMutation({
         mutationFn: async (data) => {
-            return await httpClient.entities.FormSubmission.create(data);
+            return await base44.entities.FormSubmission.create(data);
         },
         onSuccess: () => {
             setSubmitted(true);
@@ -71,7 +71,7 @@ export default function PublicForm() {
                         onChange={(e) => setResponses({ ...responses, [field.id]: e.target.value })}
                         placeholder={field.placeholder}
                         required={field.required}
-                        className="bg-[#0f1419] border-blue-900/40"
+                        className="bg-white border-slate-300"
                     />
                 );
             case 'textarea':
@@ -81,7 +81,7 @@ export default function PublicForm() {
                         onChange={(e) => setResponses({ ...responses, [field.id]: e.target.value })}
                         placeholder={field.placeholder}
                         required={field.required}
-                        className="bg-[#0f1419] border-blue-900/40"
+                        className="bg-white border-slate-300"
                         rows={4}
                     />
                 );
@@ -92,7 +92,7 @@ export default function PublicForm() {
                         value={responses[field.id] || ''}
                         onChange={(e) => setResponses({ ...responses, [field.id]: e.target.value })}
                         required={field.required}
-                        className="bg-[#0f1419] border-blue-900/40"
+                        className="bg-white border-slate-300"
                     />
                 );
             case 'select':
@@ -101,7 +101,7 @@ export default function PublicForm() {
                         value={responses[field.id]}
                         onValueChange={(value) => setResponses({ ...responses, [field.id]: value })}
                     >
-                        <SelectTrigger className="bg-[#0f1419] border-blue-900/40">
+                        <SelectTrigger className="bg-white border-slate-300">
                             <SelectValue placeholder={field.placeholder || 'Select an option'} />
                         </SelectTrigger>
                         <SelectContent>
@@ -132,7 +132,7 @@ export default function PublicForm() {
                             const file = e.target.files[0];
                             if (file) {
                                 try {
-                                    const { file_url } = await httpClient.integrations.Core.UploadFile({ file });
+                                    const { file_url } = await base44.integrations.Core.UploadFile({ file });
                                     setResponses({ ...responses, [field.id]: file_url });
                                     toast.success('Photo uploaded');
                                 } catch (error) {
@@ -140,7 +140,7 @@ export default function PublicForm() {
                                 }
                             }
                         }}
-                        className="bg-[#0f1419] border-blue-900/40"
+                        className="bg-white border-slate-300"
                     />
                 );
             default:
@@ -150,18 +150,18 @@ export default function PublicForm() {
     
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
             </div>
         );
     }
     
     if (!form) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] flex items-center justify-center p-4">
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
                 <Card className="max-w-md w-full">
                     <CardContent className="pt-6 text-center">
-                        <p className="text-blue-300">Form not found</p>
+                        <p className="text-slate-600">Form not found</p>
                     </CardContent>
                 </Card>
             </div>
@@ -170,12 +170,12 @@ export default function PublicForm() {
     
     if (submitted) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] flex items-center justify-center p-4">
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
                 <Card className="max-w-md w-full">
                     <CardContent className="pt-12 pb-12 text-center">
                         <CheckCircle2 className="w-16 h-16 text-green-600 mx-auto mb-4" />
-                        <h2 className="text-2xl font-bold text-white mb-2">Thank You!</h2>
-                        <p className="text-blue-300 mb-6">Your response has been submitted successfully.</p>
+                        <h2 className="text-2xl font-bold text-slate-900 mb-2">Thank You!</h2>
+                        <p className="text-slate-600 mb-6">Your response has been submitted successfully.</p>
                         <Button onClick={() => window.location.reload()} className="bg-blue-600 hover:bg-blue-700">
                             Submit Another Response
                         </Button>
@@ -186,7 +186,7 @@ export default function PublicForm() {
     }
     
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] via-[#0b1220] to-[#0f1419] py-12 px-4">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4">
             <Card className="max-w-2xl mx-auto">
                 <CardHeader className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white">
                     <CardTitle className="text-2xl">{form.title}</CardTitle>
@@ -196,20 +196,20 @@ export default function PublicForm() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Submitter Name */}
                         <div>
-                            <Label className="text-blue-200">Your Name *</Label>
+                            <Label className="text-slate-700">Your Name *</Label>
                             <Input
                                 value={responses._submitter_name || ''}
                                 onChange={(e) => setResponses({ ...responses, _submitter_name: e.target.value })}
                                 placeholder="Enter your name"
                                 required
-                                className="bg-[#0f1419] border-blue-900/40"
+                                className="bg-white border-slate-300"
                             />
                         </div>
                         
                         {/* Form Fields */}
                         {form.fields?.map((field) => (
                             <div key={field.id}>
-                                <Label className="text-blue-200">
+                                <Label className="text-slate-700">
                                     {field.label}
                                     {field.required && <span className="text-red-600 ml-1">*</span>}
                                 </Label>

@@ -17,9 +17,9 @@ export default function MetricCard({ title, value, icon: Icon, trend, trendValue
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
         >
-            <Card className="bg-[#0f1419] dark:bg-[#0a0e17] border-blue-900/30 dark:border-blue-900/30 transition-colors">
+            <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30 transition-colors">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-blue-300 dark:text-[#FF8C00]/70">
+                    <CardTitle className="text-sm font-medium text-slate-600 dark:text-[#FF8C00]/70">
                         {title}
                     </CardTitle>
                     <div className={`p-2 rounded-lg ${colorClasses[color]}`}>
@@ -27,7 +27,7 @@ export default function MetricCard({ title, value, icon: Icon, trend, trendValue
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold text-white dark:text-[#FF8C00]">{value}</div>
+                    <div className="text-2xl font-bold text-slate-900 dark:text-[#FF8C00]">{value}</div>
                     {trend && (
                         <div className="flex items-center gap-1 mt-2 text-xs">
                             {trend === 'up' ? (
@@ -38,7 +38,7 @@ export default function MetricCard({ title, value, icon: Icon, trend, trendValue
                             <span className={trend === 'up' ? 'text-green-500' : 'text-red-500'}>
                                 {trendValue}%
                             </span>
-                            <span className="text-blue-400/70 dark:text-blue-400/60">vs last period</span>
+                            <span className="text-slate-500 dark:text-slate-400">vs last period</span>
                         </div>
                     )}
                 </CardContent>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ export default function AIAssistantTest() {
         // Test 1: Workflow Generation
         try {
             addResult('Testing Workflow Generation...', 'pending');
-            const workflowResponse = await httpClient.integrations.Core.InvokeLLM({
+            const workflowResponse = await base44.integrations.Core.InvokeLLM({
                 prompt: `Create a workflow: When a dairy inspection form is submitted, send email to farm manager and create a follow-up task.`,
                 response_json_schema: {
                     type: "object",
@@ -43,7 +43,7 @@ export default function AIAssistantTest() {
         // Test 2: Document Summarization (simulated)
         try {
             addResult('Testing Document Summarization...', 'pending');
-            const summaryResponse = await httpClient.integrations.Core.InvokeLLM({
+            const summaryResponse = await base44.integrations.Core.InvokeLLM({
                 prompt: `Summarize this content: "Farm inspection report shows all equipment in good condition. Milk production increased by 15% this quarter. Recommend maintenance check in 3 months."`
             });
             
@@ -59,10 +59,10 @@ export default function AIAssistantTest() {
         // Test 3: Smart Suggestions
         try {
             addResult('Testing Smart Suggestions...', 'pending');
-            const forms = await httpClient.entities.FormTemplate.filter({ status: 'active' });
-            const checklists = await httpClient.entities.ChecklistTemplate.filter({ status: 'active' });
+            const forms = await base44.entities.FormTemplate.filter({ status: 'active' });
+            const checklists = await base44.entities.ChecklistTemplate.filter({ status: 'active' });
             
-            const suggestionResponse = await httpClient.integrations.Core.InvokeLLM({
+            const suggestionResponse = await base44.integrations.Core.InvokeLLM({
                 prompt: `Context: "Dairy farm inspection". Available: Forms: ${forms.slice(0, 5).map(f => f.title).join(', ')}. Checklists: ${checklists.slice(0, 5).map(c => c.title).join(', ')}. Suggest top 3.`,
                 response_json_schema: {
                     type: "object",
@@ -147,7 +147,7 @@ export default function AIAssistantTest() {
                                                 {JSON.stringify(result.data, null, 2)}
                                             </pre>
                                         )}
-                                        <p className="text-xs text-blue-400/70 mt-1">{new Date(result.timestamp).toLocaleTimeString()}</p>
+                                        <p className="text-xs text-slate-500 mt-1">{new Date(result.timestamp).toLocaleTimeString()}</p>
                                     </div>
                                     
                                     <Badge className={

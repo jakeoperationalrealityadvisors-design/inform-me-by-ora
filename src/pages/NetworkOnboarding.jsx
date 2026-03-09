@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Building2, Users, Key, ArrowRight, CheckCircle2, Zap, Shield, TrendingUp, User } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -110,9 +111,9 @@ export default function NetworkOnboarding() {
     
     const joinMutation = useMutation({
         mutationFn: async (code) => {
-            const user = await httpClient.auth.me();
+            const user = await base44.auth.me();
             
-            const orgs = await httpClient.entities.Organization.filter({ invite_code: code });
+            const orgs = await base44.entities.Organization.filter({ invite_code: code });
             if (orgs.length === 0) {
                 throw new Error('Invalid invite code');
             }
@@ -123,12 +124,12 @@ export default function NetworkOnboarding() {
                 throw new Error('This organization is not active');
             }
             
-            const orgUsers = await httpClient.entities.User.filter({ organization_id: org.id });
+            const orgUsers = await base44.entities.User.filter({ organization_id: org.id });
             if (orgUsers.length >= org.max_users) {
                 throw new Error('Organization has reached maximum users');
             }
             
-            await httpClient.auth.updateMe({
+            await base44.auth.updateMe({
                 organization_id: org.id,
                 team_role: 'member',
                 account_type: accountType,
@@ -152,14 +153,14 @@ export default function NetworkOnboarding() {
     
     const createMutation = useMutation({
         mutationFn: async ({ name, email }) => {
-            const user = await httpClient.auth.me();
+            const user = await base44.auth.me();
             
             const code = Math.random().toString(36).substring(2, 10).toUpperCase();
             
             const trialEnd = new Date();
             trialEnd.setDate(trialEnd.getDate() + 30);
             
-            const org = await httpClient.entities.Organization.create({
+            const org = await base44.entities.Organization.create({
                 name,
                 invite_code: code,
                 owner_email: email || user.email,
@@ -173,7 +174,7 @@ export default function NetworkOnboarding() {
                 }
             });
             
-            await httpClient.auth.updateMe({
+            await base44.auth.updateMe({
                 organization_id: org.id,
                 team_role: 'owner',
                 account_type: accountType,
@@ -198,16 +199,16 @@ export default function NetworkOnboarding() {
     if (step === 'account-type') {
         return (
             <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] to-[#1a1f2e] flex items-center justify-center p-4">
-                <Card className="max-w-2xl w-full bg-[#0f1419]/95 backdrop-blur">
+                <Card className="max-w-2xl w-full bg-white/95 backdrop-blur">
                     {/* Progress Indicator */}
                     <div className="flex items-center justify-center gap-2 pt-6">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">1</div>
-                        <div className="w-16 h-1 bg-blue-900/40"></div>
-                        <div className="w-8 h-8 rounded-full bg-blue-900/40 text-blue-400/60 flex items-center justify-center font-bold">2</div>
-                        <div className="w-16 h-1 bg-blue-900/40"></div>
-                        <div className="w-8 h-8 rounded-full bg-blue-900/40 text-blue-400/60 flex items-center justify-center font-bold">3</div>
-                        <div className="w-16 h-1 bg-blue-900/40"></div>
-                        <div className="w-8 h-8 rounded-full bg-blue-900/40 text-blue-400/60 flex items-center justify-center font-bold">4</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">2</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">3</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">4</div>
                     </div>
                     
                     <CardHeader className="text-center pb-6">
@@ -226,8 +227,8 @@ export default function NetworkOnboarding() {
                                 onClick={() => setAccountType('organization')}
                                 className={`w-full p-6 rounded-xl border-2 transition-all text-left ${
                                     accountType === 'organization'
-                                        ? 'border-[#FF8C00] bg-gradient-to-br from-orange-500/20 to-blue-500/20 shadow-lg'
-                                        : 'border-blue-900/30 hover:border-blue-900/40 bg-[#0f1419] hover:shadow-md'
+                                        ? 'border-[#FF8C00] bg-gradient-to-br from-orange-50 to-blue-50 shadow-lg'
+                                        : 'border-slate-200 hover:border-slate-300 bg-white hover:shadow-md'
                                 }`}
                             >
                                 <div className="flex items-center gap-4">
@@ -235,8 +236,8 @@ export default function NetworkOnboarding() {
                                         <Building2 className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
-                                        <div className="font-bold text-lg text-white">I Run an Organization</div>
-                                        <div className="text-sm text-blue-300">Manage teams, projects, and workflows</div>
+                                        <div className="font-bold text-lg text-slate-900">I Run an Organization</div>
+                                        <div className="text-sm text-slate-600">Manage teams, projects, and workflows</div>
                                     </div>
                                 </div>
                             </button>
@@ -245,8 +246,8 @@ export default function NetworkOnboarding() {
                                 onClick={() => setAccountType('self_employed')}
                                 className={`w-full p-6 rounded-xl border-2 transition-all text-left ${
                                     accountType === 'self_employed'
-                                        ? 'border-[#FF8C00] bg-gradient-to-br from-orange-500/20 to-blue-500/20 shadow-lg'
-                                        : 'border-blue-900/30 hover:border-blue-900/40 bg-[#0f1419] hover:shadow-md'
+                                        ? 'border-[#FF8C00] bg-gradient-to-br from-orange-50 to-blue-50 shadow-lg'
+                                        : 'border-slate-200 hover:border-slate-300 bg-white hover:shadow-md'
                                 }`}
                             >
                                 <div className="flex items-center gap-4">
@@ -254,8 +255,8 @@ export default function NetworkOnboarding() {
                                         <User className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
-                                        <div className="font-bold text-lg text-white">I'm Self-Employed</div>
-                                        <div className="text-sm text-blue-300">Independent contractor or freelancer</div>
+                                        <div className="font-bold text-lg text-slate-900">I'm Self-Employed</div>
+                                        <div className="text-sm text-slate-600">Independent contractor or freelancer</div>
                                     </div>
                                 </div>
                             </button>
@@ -264,8 +265,8 @@ export default function NetworkOnboarding() {
                                 onClick={() => setAccountType('employee')}
                                 className={`w-full p-6 rounded-xl border-2 transition-all text-left ${
                                     accountType === 'employee'
-                                        ? 'border-[#1E40AF] bg-gradient-to-br from-blue-500/20 to-cyan-500/20 shadow-lg'
-                                        : 'border-blue-900/30 hover:border-blue-900/40 bg-[#0f1419] hover:shadow-md'
+                                        ? 'border-[#1E40AF] bg-gradient-to-br from-blue-50 to-cyan-50 shadow-lg'
+                                        : 'border-slate-200 hover:border-slate-300 bg-white hover:shadow-md'
                                 }`}
                             >
                                 <div className="flex items-center gap-4">
@@ -273,8 +274,8 @@ export default function NetworkOnboarding() {
                                         <Users className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
-                                        <div className="font-bold text-lg text-white">I'm an Employee</div>
-                                        <div className="text-sm text-blue-300">Working for an organization</div>
+                                        <div className="font-bold text-lg text-slate-900">I'm an Employee</div>
+                                        <div className="text-sm text-slate-600">Working for an organization</div>
                                     </div>
                                 </div>
                             </button>
@@ -297,16 +298,16 @@ export default function NetworkOnboarding() {
     if (step === 'welcome') {
         return (
             <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] to-[#1a1f2e] flex items-center justify-center p-4">
-                <Card className="max-w-4xl w-full bg-[#0f1419]/95 backdrop-blur">
+                <Card className="max-w-4xl w-full bg-white/95 backdrop-blur">
                     {/* Progress Indicator */}
                     <div className="flex items-center justify-center gap-2 pt-6">
                         <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">✓</div>
                         <div className="w-16 h-1 bg-green-500"></div>
                         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">2</div>
-                        <div className="w-16 h-1 bg-blue-900/40"></div>
-                        <div className="w-8 h-8 rounded-full bg-blue-900/40 text-blue-400/60 flex items-center justify-center font-bold">3</div>
-                        <div className="w-16 h-1 bg-blue-900/40"></div>
-                        <div className="w-8 h-8 rounded-full bg-blue-900/40 text-blue-400/60 flex items-center justify-center font-bold">4</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">3</div>
+                        <div className="w-16 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">4</div>
                     </div>
                     
                     <CardHeader className="text-center pb-6">
@@ -329,19 +330,19 @@ export default function NetworkOnboarding() {
                                         onClick={() => setSelectedPath(path.id)}
                                         className={`group relative p-6 rounded-xl border-2 transition-all text-left ${
                                             selectedPath === path.id
-                                                ? 'border-[#FF8C00] bg-gradient-to-br from-orange-500/20 to-blue-500/20 shadow-lg scale-[1.02]'
-                                                : 'border-blue-900/30 hover:border-blue-900/40 bg-[#0f1419] hover:shadow-md'
+                                                ? 'border-[#FF8C00] bg-gradient-to-br from-orange-50 to-blue-50 shadow-lg scale-[1.02]'
+                                                : 'border-slate-200 hover:border-slate-300 bg-white hover:shadow-md'
                                         }`}
                                     >
                                         <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${path.color} flex items-center justify-center mb-3`}>
                                             <Icon className="w-6 h-6 text-white" />
                                         </div>
-                                        <h3 className="text-lg font-bold text-white mb-1">{path.title}</h3>
-                                        <p className="text-sm text-blue-300 mb-3">{path.description}</p>
+                                        <h3 className="text-lg font-bold text-slate-900 mb-1">{path.title}</h3>
+                                        <p className="text-sm text-slate-600 mb-3">{path.description}</p>
                                         <div className="space-y-1">
                                             {path.features.map((feature, idx) => (
-                                                <div key={idx} className="flex items-center gap-2 text-xs text-blue-400/70">
-                                                    <div className="w-1 h-1 rounded-full bg-blue-700/60" />
+                                                <div key={idx} className="flex items-center gap-2 text-xs text-slate-500">
+                                                    <div className="w-1 h-1 rounded-full bg-slate-400" />
                                                     {feature}
                                                 </div>
                                             ))}
@@ -350,7 +351,7 @@ export default function NetworkOnboarding() {
                                             <div className={`text-xs px-2 py-1 rounded-full ${
                                                 selectedPath === path.id
                                                     ? 'bg-[#FF8C00] text-white'
-                                                    : 'bg-blue-950/50 text-blue-300'
+                                                    : 'bg-slate-100 text-slate-600'
                                             }`}>
                                                 {path.level}
                                             </div>
@@ -377,7 +378,7 @@ export default function NetworkOnboarding() {
                             </Button>
                         </div>
                         
-                        <div className="text-center text-sm text-blue-400/70 bg-blue-950/40 rounded-lg p-3 border border-blue-900/40">
+                        <div className="text-center text-sm text-slate-500 bg-blue-50 rounded-lg p-3 border border-blue-200">
                             💡 <strong>Don't worry!</strong> You'll have access to all features no matter what you pick
                         </div>
                     </CardContent>
@@ -389,7 +390,7 @@ export default function NetworkOnboarding() {
     if (step === 'technical') {
         return (
             <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] to-[#1a1f2e] flex items-center justify-center p-4">
-                <Card className="max-w-2xl w-full bg-[#0f1419]/95 backdrop-blur">
+                <Card className="max-w-2xl w-full bg-white/95 backdrop-blur">
                     {/* Progress Indicator */}
                     <div className="flex items-center justify-center gap-2 pt-6">
                         <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-xs">✓</div>
@@ -397,8 +398,8 @@ export default function NetworkOnboarding() {
                         <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-xs">✓</div>
                         <div className="w-12 h-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"></div>
                         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white flex items-center justify-center font-bold">3</div>
-                        <div className="w-12 h-1 bg-blue-900/40"></div>
-                        <div className="w-8 h-8 rounded-full bg-blue-900/40 text-blue-400/60 flex items-center justify-center font-bold">4</div>
+                        <div className="w-12 h-1 bg-slate-200"></div>
+                        <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-bold">4</div>
                     </div>
                     
                     <CardHeader className="text-center pb-6">
@@ -433,7 +434,7 @@ export default function NetworkOnboarding() {
                             </div>
                             
                             {age && (
-                                <div className="bg-gradient-to-r from-orange-500/20 to-blue-500/20 border-2 border-orange-500/30 rounded-xl p-6 animate-in fade-in slide-in-from-bottom-4">
+                                <div className="bg-gradient-to-r from-orange-50 to-blue-50 border-2 border-orange-300 rounded-xl p-6 animate-in fade-in slide-in-from-bottom-4">
                                     <div className="text-center">
                                         <div className="text-5xl mb-3">
                                             {technicalLevel === 'senior' && '👴'}
@@ -442,14 +443,14 @@ export default function NetworkOnboarding() {
                                             {technicalLevel === 'intermediate' && '💡'}
                                             {technicalLevel === 'expert' && '⚡'}
                                         </div>
-                                        <p className="font-bold text-xl text-white mb-2">
+                                        <p className="font-bold text-xl text-slate-900 mb-2">
                                             {technicalLevel === 'senior' && 'Extra Large & Simple Mode'}
                                             {technicalLevel === 'simple' && 'Simple & Easy Mode'}
                                             {technicalLevel === 'beginner' && 'Guided Mode'}
                                             {technicalLevel === 'intermediate' && 'Standard Mode'}
                                             {technicalLevel === 'expert' && 'Advanced Mode'}
                                         </p>
-                                        <p className="text-blue-200">
+                                        <p className="text-slate-700">
                                             {technicalLevel === 'senior' && 'Very large buttons, plain language, one step at a time'}
                                             {technicalLevel === 'simple' && 'Large buttons, simple words, step-by-step help'}
                                             {technicalLevel === 'beginner' && 'Clear instructions and helpful tips'}
@@ -485,7 +486,7 @@ export default function NetworkOnboarding() {
     
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0a0e17] to-[#1a1f2e] flex items-center justify-center p-4">
-            <Card className="max-w-2xl w-full bg-[#0f1419]/95 backdrop-blur">
+            <Card className="max-w-2xl w-full bg-white/95 backdrop-blur">
                 {/* Progress Indicator */}
                 <div className="flex items-center justify-center gap-2 pt-6">
                     <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-xs">✓</div>
@@ -513,35 +514,35 @@ export default function NetworkOnboarding() {
                             onClick={() => setStep('join')}
                             className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
                                 step === 'join' 
-                                    ? 'border-[#FF8C00] bg-gradient-to-br from-orange-500/20 to-blue-500/20' 
-                                    : 'border-blue-900/30 hover:border-[#FF8C00] bg-[#0f1419]'
+                                    ? 'border-[#FF8C00] bg-gradient-to-br from-orange-50 to-blue-50' 
+                                    : 'border-slate-200 hover:border-[#FF8C00] bg-white'
                             }`}
                         >
                             <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-[#FF8C00] to-orange-600 rounded-xl flex items-center justify-center">
                                 <Key className="w-7 h-7 text-white" />
                             </div>
                             <div className="font-bold text-lg mb-1">I Have a Code</div>
-                            <div className="text-sm text-blue-300">Join my team's network</div>
+                            <div className="text-sm text-slate-600">Join my team's network</div>
                         </button>
                         <button
                             onClick={() => setStep('create')}
                             className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
                                 step === 'create' 
-                                    ? 'border-[#1E40AF] bg-gradient-to-br from-blue-500/20 to-cyan-500/20' 
-                                    : 'border-blue-900/30 hover:border-[#1E40AF] bg-[#0f1419]'
+                                    ? 'border-[#1E40AF] bg-gradient-to-br from-blue-50 to-cyan-50' 
+                                    : 'border-slate-200 hover:border-[#1E40AF] bg-white'
                             }`}
                         >
                             <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-[#1E40AF] to-blue-600 rounded-xl flex items-center justify-center">
                                 <Users className="w-7 h-7 text-white" />
                             </div>
                             <div className="font-bold text-lg mb-1">Start Fresh</div>
-                            <div className="text-sm text-blue-300">Create my own network</div>
+                            <div className="text-sm text-slate-600">Create my own network</div>
                         </button>
                     </div>
                     
                     {step === 'join' && (
                         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
-                            <div className="bg-blue-950/40 border-2 border-blue-300 rounded-xl p-5 text-blue-200">
+                            <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-5 text-blue-800">
                                 <div className="flex items-start gap-3">
                                     <div className="text-2xl">📧</div>
                                     <div>
@@ -575,7 +576,7 @@ export default function NetworkOnboarding() {
                     
                     {step === 'create' && (
                         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
-                            <div className="bg-gradient-to-r from-orange-500/20 to-blue-500/20 border-2 border-orange-500/30 rounded-xl p-5 text-orange-200">
+                            <div className="bg-gradient-to-r from-orange-50 to-blue-50 border-2 border-orange-300 rounded-xl p-5 text-orange-900">
                                 <div className="flex items-start gap-3">
                                     <div className="text-2xl">🎁</div>
                                     <div>

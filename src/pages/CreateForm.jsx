@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,14 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Plus, Trash2, Upload, Camera, FileText, Loader2, Sparkles, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Upload, Camera, FileText, Loader2, X, Sparkles, ChevronDown } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
 import { useLanguage } from '@/components/language/LanguageContext';
 import RoleGuard from '@/components/auth/RoleGuard';
 import { logActivity } from '@/components/activity/ActivityLogger';
-import { SuggestFieldsButton } from '@/components/ai/AIFormHelper';
+import AIFormBuilder from '@/components/ai/AIFormBuilder';
 
 function CreateFormContent() {
     const navigate = useNavigate();
@@ -38,11 +38,11 @@ function CreateFormContent() {
 
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => httpClient.entities.Category.list()
+        queryFn: () => base44.entities.Category.list()
     });
 
     const createMutation = useMutation({
-        mutationFn: (data) => httpClient.entities.FormTemplate.create(data),
+        mutationFn: (data) => base44.entities.FormTemplate.create(data),
         onSuccess: async (newForm) => {
             await logActivity({
                 action_type: 'form_created',
@@ -89,12 +89,12 @@ function CreateFormContent() {
         setIsUploading(true);
         try {
             // Upload file first
-            const { file_url } = await httpClient.integrations.Core.UploadFile({ file });
+            const { file_url } = await base44.integrations.Core.UploadFile({ file });
             
             setIsExtracting(true);
             
             // Use AI to extract form structure
-            const response = await httpClient.integrations.Core.InvokeLLM({
+            const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `Analyze this document and extract a form structure. Identify all fields that would make sense for a form template. For each field, provide:
 - label (the field name)
 - type (text, textarea, number, date, select, checkbox)
@@ -185,23 +185,23 @@ Return JSON with: { title, description, fields: [...] }`,
     };
 
     return (
-        <div className="min-h-screen bg-blue-950/50 dark:bg-[#0a0e17] pb-20 md:pb-6 overflow-y-auto">
-            <div className="bg-[#0f1419] dark:bg-[#0a0e17] border-b border-blue-900/30 dark:border-blue-900/30 sticky top-0 z-20 shadow-sm">
+        <div className="min-h-screen bg-slate-100 dark:bg-[#0a0e17] pb-20 md:pb-6 overflow-y-auto">
+            <div className="bg-white dark:bg-[#0a0e17] border-b border-slate-200 dark:border-blue-900/30 sticky top-0 z-20 shadow-sm">
                 <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3">
                     <div className="flex items-center gap-2 sm:gap-3">
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => navigate(createPageUrl('Home'))}
-                            className="text-blue-200 dark:text-[#FF8C00] shrink-0"
+                            className="text-slate-700 dark:text-[#FF8C00] shrink-0"
                         >
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                         <div className="min-w-0">
-                            <h1 className="text-lg sm:text-xl font-bold text-white dark:text-[#FF8C00] truncate">
+                            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-[#FF8C00] truncate">
                                 Create Form
                             </h1>
-                            <p className="text-xs sm:text-sm text-blue-300 dark:text-[#FF8C00]/70 hidden sm:block">
+                            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#FF8C00]/70 hidden sm:block">
                                 Build from scratch or upload
                             </p>
                         </div>
@@ -212,21 +212,21 @@ Return JSON with: { title, description, fields: [...] }`,
             <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4">
                 {/* AI Form Builder - Collapsible */}
                 <Collapsible>
-                    <Card className="bg-[#0f1419] dark:bg-[#0a0e17] border-blue-900/30 dark:border-blue-900/30">
+                    <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30">
                         <CollapsibleTrigger className="w-full">
-                            <CardHeader className="cursor-pointer hover:bg-blue-950/40 dark:hover:bg-[#0f1419] transition-colors">
+                            <CardHeader className="cursor-pointer hover:bg-slate-50 dark:hover:bg-[#0f1419] transition-colors">
                                 <div className="flex items-center justify-between">
-                                    <CardTitle className="text-sm sm:text-base text-white dark:text-[#FF8C00] flex items-center gap-2">
+                                    <CardTitle className="text-sm sm:text-base text-slate-900 dark:text-[#FF8C00] flex items-center gap-2">
                                         <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
                                         AI Upload
                                     </CardTitle>
-                                    <ChevronDown className="w-4 h-4 text-blue-400/70" />
+                                    <ChevronDown className="w-4 h-4 text-slate-500" />
                                 </div>
                             </CardHeader>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                             <CardContent className="space-y-3 pt-0">
-                                <p className="text-xs sm:text-sm text-blue-300 dark:text-[#FF8C00]/70">
+                                <p className="text-xs sm:text-sm text-slate-600 dark:text-[#FF8C00]/70">
                                     Upload or scan to auto-extract form structure
                                 </p>
                                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
@@ -279,37 +279,37 @@ Return JSON with: { title, description, fields: [...] }`,
 
                 {/* Form Builder */}
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <Card className="bg-[#0f1419] dark:bg-[#0a0e17] border-blue-900/30 dark:border-blue-900/30">
+                    <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30">
                         <CardHeader>
-                            <CardTitle className="text-white dark:text-[#FF8C00]">Form Details</CardTitle>
+                            <CardTitle className="text-slate-900 dark:text-[#FF8C00]">Form Details</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div>
-                                <Label className="text-blue-200 dark:text-[#FF8C00]">Title *</Label>
+                                <Label className="text-slate-700 dark:text-[#FF8C00]">Title *</Label>
                                 <Input
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     placeholder="Enter form title"
                                     required
-                                    className="border-blue-900/40 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
+                                    className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
                                 />
                             </div>
                             <div>
-                                <Label className="text-blue-200 dark:text-[#FF8C00]">Description</Label>
+                                <Label className="text-slate-700 dark:text-[#FF8C00]">Description</Label>
                                 <Textarea
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Enter form description"
-                                    className="border-blue-900/40 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
+                                    className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
                                 />
                             </div>
                             <div>
-                                <Label className="text-blue-200 dark:text-[#FF8C00]">Category</Label>
+                                <Label className="text-slate-700 dark:text-[#FF8C00]">Category</Label>
                                 <Select
                                     value={formData.category_id}
                                     onValueChange={(value) => setFormData({ ...formData, category_id: value })}
                                 >
-                                    <SelectTrigger className="border-blue-900/40 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
+                                    <SelectTrigger className="border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
                                         <SelectValue placeholder="Select category" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -325,40 +325,34 @@ Return JSON with: { title, description, fields: [...] }`,
                     </Card>
 
                     {/* Fields */}
-                    <Card className="bg-[#0f1419] dark:bg-[#0a0e17] border-blue-900/30 dark:border-blue-900/30">
+                    <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                            <CardTitle className="text-sm sm:text-base text-white dark:text-[#FF8C00]">Fields ({fields.length})</CardTitle>
-                            <div className="flex gap-2">
-                                <SuggestFieldsButton 
-                                    formTitle={formData.title} 
-                                    onFieldsSuggested={(suggestedFields) => setFields([...fields, ...suggestedFields])} 
-                                />
-                                <Button
-                                    type="button"
-                                    onClick={addField}
-                                    size="sm"
-                                    className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] hover:opacity-90 text-black h-8 sm:h-9 text-xs sm:text-sm"
-                                >
-                                    <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                                    Add
-                                </Button>
-                            </div>
+                            <CardTitle className="text-sm sm:text-base text-slate-900 dark:text-[#FF8C00]">Fields ({fields.length})</CardTitle>
+                            <Button
+                                type="button"
+                                onClick={addField}
+                                size="sm"
+                                className="bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] hover:opacity-90 text-black h-8 sm:h-9 text-xs sm:text-sm"
+                            >
+                                <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                                Add
+                            </Button>
                         </CardHeader>
                         <CardContent className="space-y-2 max-h-[60vh] overflow-y-auto">
                             {fields.length === 0 ? (
-                                <div className="text-center py-8 text-blue-400/70 dark:text-[#FF8C00]/50">
+                                <div className="text-center py-8 text-slate-500 dark:text-[#FF8C00]/50">
                                     <FileText className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 opacity-50" />
                                     <p className="text-xs sm:text-sm">No fields yet</p>
                                 </div>
                             ) : (
                                 fields.map((field, index) => (
                                     <Collapsible key={field.id} defaultOpen={index === fields.length - 1}>
-                                        <div className="border border-blue-900/30 dark:border-blue-900/30 rounded-lg">
-                                            <CollapsibleTrigger className="w-full p-3 hover:bg-blue-950/40 dark:hover:bg-[#0f1419] transition-colors">
+                                        <div className="border border-slate-200 dark:border-blue-900/30 rounded-lg">
+                                            <CollapsibleTrigger className="w-full p-3 hover:bg-slate-50 dark:hover:bg-[#0f1419] transition-colors">
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2 flex-1 text-left">
-                                                        <ChevronDown className="w-4 h-4 text-blue-400/70" />
-                                                        <span className="text-sm font-medium text-white dark:text-[#FF8C00] truncate">
+                                                        <ChevronDown className="w-4 h-4 text-slate-500" />
+                                                        <span className="text-sm font-medium text-slate-900 dark:text-[#FF8C00] truncate">
                                                             {field.label || 'New Field'}
                                                         </span>
                                                         <Badge variant="outline" className="text-xs">{field.type}</Badge>
@@ -378,24 +372,24 @@ Return JSON with: { title, description, fields: [...] }`,
                                                 </div>
                                             </CollapsibleTrigger>
                                             <CollapsibleContent>
-                                                <div className="p-3 border-t border-blue-900/30 dark:border-blue-900/30 space-y-3">
+                                                <div className="p-3 border-t border-slate-200 dark:border-blue-900/30 space-y-3">
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                                                         <div>
-                                                            <Label className="text-xs text-blue-200 dark:text-[#FF8C00]">Label</Label>
+                                                            <Label className="text-xs text-slate-700 dark:text-[#FF8C00]">Label</Label>
                                                             <Input
                                                                 value={field.label}
                                                                 onChange={(e) => updateField(index, 'label', e.target.value)}
                                                                 placeholder="Field label"
-                                                                className="mt-1 h-9 text-sm border-blue-900/40 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
+                                                                className="mt-1 h-9 text-sm border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]"
                                                             />
                                                         </div>
                                                         <div>
-                                                            <Label className="text-xs text-blue-200 dark:text-[#FF8C00]">Type</Label>
+                                                            <Label className="text-xs text-slate-700 dark:text-[#FF8C00]">Type</Label>
                                                             <Select
                                                                 value={field.type}
                                                                 onValueChange={(value) => updateField(index, 'type', value)}
                                                             >
-                                                                <SelectTrigger className="mt-1 h-9 text-sm border-blue-900/40 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
+                                                                <SelectTrigger className="mt-1 h-9 text-sm border-slate-300 dark:border-blue-900/30 dark:bg-[#0a0e17] dark:text-[#FF8C00]">
                                                                     <SelectValue />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -418,7 +412,7 @@ Return JSON with: { title, description, fields: [...] }`,
                                                             onChange={(e) => updateField(index, 'required', e.target.checked)}
                                                             className="rounded h-4 w-4"
                                                         />
-                                                        <Label className="text-xs sm:text-sm text-blue-200 dark:text-[#FF8C00]">Required</Label>
+                                                        <Label className="text-xs sm:text-sm text-slate-700 dark:text-[#FF8C00]">Required</Label>
                                                     </div>
                                                 </div>
                                             </CollapsibleContent>

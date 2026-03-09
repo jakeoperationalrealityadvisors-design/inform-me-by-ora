@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Search, FileText, CheckSquare, FolderOpen, ListTodo, Loader2 } from 'lucide-react';
@@ -30,11 +30,11 @@ export default function GlobalSearch({ open, onOpenChange }) {
             const query = debouncedQuery.toLowerCase();
             
             const [forms, checklists, documents, formTasks, checklistTasks] = await Promise.all([
-                httpClient.entities.FormTemplate.filter({ status: 'active' }),
-                httpClient.entities.ChecklistTemplate.filter({ status: 'active' }),
-                httpClient.entities.Document.filter({ status: 'active' }),
-                httpClient.entities.FormSubmission.list('-created_date', 50),
-                httpClient.entities.ChecklistSubmission.list('-created_date', 50),
+                base44.entities.FormTemplate.filter({ status: 'active' }),
+                base44.entities.ChecklistTemplate.filter({ status: 'active' }),
+                base44.entities.Document.filter({ status: 'active' }),
+                base44.entities.FormSubmission.list('-created_date', 50),
+                base44.entities.ChecklistSubmission.list('-created_date', 50),
             ]);
             
             const matchedForms = forms.filter(f => 
@@ -88,19 +88,19 @@ export default function GlobalSearch({ open, onOpenChange }) {
     return (
         <Dialog open={open} onOpenChange={handleClose}>
             <DialogContent className="max-w-3xl max-h-[80vh] p-0">
-                <div className="sticky top-0 bg-[#0f1419] z-10 p-4 border-b">
+                <div className="sticky top-0 bg-white z-10 p-4 border-b">
                     <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400/60 w-5 h-5" />
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
                         <Input
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search forms, checklists, documents, tasks..."
-                            className="pl-10 pr-4 h-12 text-lg border-blue-900/40 focus:border-blue-500"
+                            className="pl-10 pr-4 h-12 text-lg border-slate-300 focus:border-blue-500"
                             autoFocus
                         />
                     </div>
                     {debouncedQuery && (
-                        <p className="text-sm text-blue-300 mt-2">
+                        <p className="text-sm text-slate-600 mt-2">
                             {isLoading ? 'Searching...' : `Found ${totalResults} results`}
                         </p>
                     )}
@@ -108,7 +108,7 @@ export default function GlobalSearch({ open, onOpenChange }) {
                 
                 <div className="overflow-y-auto p-4 space-y-6">
                     {!debouncedQuery || debouncedQuery.length < 2 ? (
-                        <div className="text-center py-12 text-blue-400/70">
+                        <div className="text-center py-12 text-slate-500">
                             <Search className="w-12 h-12 mx-auto mb-3 text-slate-300" />
                             <p>Type at least 2 characters to search</p>
                         </div>
@@ -117,14 +117,14 @@ export default function GlobalSearch({ open, onOpenChange }) {
                             <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600" />
                         </div>
                     ) : !results || totalResults === 0 ? (
-                        <div className="text-center py-12 text-blue-400/70">
+                        <div className="text-center py-12 text-slate-500">
                             <p>No results found for "{debouncedQuery}"</p>
                         </div>
                     ) : (
                         <>
                             {results.forms.length > 0 && (
                                 <div>
-                                    <h3 className="text-sm font-semibold text-blue-200 mb-2 flex items-center gap-2">
+                                    <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                                         <FileText className="w-4 h-4" />
                                         {t('common.forms')} ({results.forms.length})
                                     </h3>
@@ -134,11 +134,11 @@ export default function GlobalSearch({ open, onOpenChange }) {
                                                 key={form.id}
                                                 to={createPageUrl(`FillForm?id=${form.id}`)}
                                                 onClick={handleClose}
-                                                className="block p-3 rounded-lg border border-blue-900/30 hover:border-blue-400 hover:bg-blue-950/40 transition-all"
+                                                className="block p-3 rounded-lg border border-slate-200 hover:border-blue-400 hover:bg-blue-50 transition-all"
                                             >
-                                                <p className="font-medium text-white">{form.title}</p>
+                                                <p className="font-medium text-slate-900">{form.title}</p>
                                                 {form.description && (
-                                                    <p className="text-sm text-blue-300 line-clamp-1 mt-1">{form.description}</p>
+                                                    <p className="text-sm text-slate-600 line-clamp-1 mt-1">{form.description}</p>
                                                 )}
                                             </Link>
                                         ))}
@@ -148,7 +148,7 @@ export default function GlobalSearch({ open, onOpenChange }) {
                             
                             {results.checklists.length > 0 && (
                                 <div>
-                                    <h3 className="text-sm font-semibold text-blue-200 mb-2 flex items-center gap-2">
+                                    <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                                         <CheckSquare className="w-4 h-4" />
                                         {t('common.checklists')} ({results.checklists.length})
                                     </h3>
@@ -158,11 +158,11 @@ export default function GlobalSearch({ open, onOpenChange }) {
                                                 key={checklist.id}
                                                 to={createPageUrl(`FillChecklist?id=${checklist.id}`)}
                                                 onClick={handleClose}
-                                                className="block p-3 rounded-lg border border-blue-900/30 hover:border-blue-400 hover:bg-blue-950/40 transition-all"
+                                                className="block p-3 rounded-lg border border-slate-200 hover:border-blue-400 hover:bg-blue-50 transition-all"
                                             >
-                                                <p className="font-medium text-white">{checklist.title}</p>
+                                                <p className="font-medium text-slate-900">{checklist.title}</p>
                                                 {checklist.description && (
-                                                    <p className="text-sm text-blue-300 line-clamp-1 mt-1">{checklist.description}</p>
+                                                    <p className="text-sm text-slate-600 line-clamp-1 mt-1">{checklist.description}</p>
                                                 )}
                                             </Link>
                                         ))}
@@ -172,7 +172,7 @@ export default function GlobalSearch({ open, onOpenChange }) {
                             
                             {results.documents.length > 0 && (
                                 <div>
-                                    <h3 className="text-sm font-semibold text-blue-200 mb-2 flex items-center gap-2">
+                                    <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                                         <FolderOpen className="w-4 h-4" />
                                         {t('common.documents')} ({results.documents.length})
                                     </h3>
@@ -182,11 +182,11 @@ export default function GlobalSearch({ open, onOpenChange }) {
                                                 key={doc.id}
                                                 to={createPageUrl(`ViewDocument?id=${doc.id}`)}
                                                 onClick={handleClose}
-                                                className="block p-3 rounded-lg border border-blue-900/30 hover:border-blue-400 hover:bg-blue-950/40 transition-all"
+                                                className="block p-3 rounded-lg border border-slate-200 hover:border-blue-400 hover:bg-blue-50 transition-all"
                                             >
-                                                <p className="font-medium text-white">{doc.title}</p>
+                                                <p className="font-medium text-slate-900">{doc.title}</p>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <p className="text-xs text-blue-400/70">{doc.file_name}</p>
+                                                    <p className="text-xs text-slate-500">{doc.file_name}</p>
                                                     {doc.tags && doc.tags.length > 0 && (
                                                         <div className="flex gap-1">
                                                             {doc.tags.slice(0, 2).map(tag => (
@@ -205,7 +205,7 @@ export default function GlobalSearch({ open, onOpenChange }) {
                             
                             {results.tasks.length > 0 && (
                                 <div>
-                                    <h3 className="text-sm font-semibold text-blue-200 mb-2 flex items-center gap-2">
+                                    <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                                         <ListTodo className="w-4 h-4" />
                                         {t('common.tasks')} ({results.tasks.length})
                                     </h3>
@@ -222,10 +222,10 @@ export default function GlobalSearch({ open, onOpenChange }) {
                                                     key={task.id}
                                                     to={createPageUrl(url)}
                                                     onClick={handleClose}
-                                                    className="block p-3 rounded-lg border border-blue-900/30 hover:border-blue-400 hover:bg-blue-950/40 transition-all"
+                                                    className="block p-3 rounded-lg border border-slate-200 hover:border-blue-400 hover:bg-blue-50 transition-all"
                                                 >
-                                                    <p className="font-medium text-white">{title}</p>
-                                                    <div className="flex items-center gap-2 mt-1 text-xs text-blue-400/70">
+                                                    <p className="font-medium text-slate-900">{title}</p>
+                                                    <div className="flex items-center gap-2 mt-1 text-xs text-slate-500">
                                                         {task.assigned_to_email && (
                                                             <span>{task.assigned_to_email}</span>
                                                         )}

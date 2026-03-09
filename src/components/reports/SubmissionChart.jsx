@@ -82,9 +82,9 @@ export default function SubmissionChart({ data, type = 'line', title, dataKey = 
     };
 
     return (
-        <Card className="bg-[#0f1419] dark:bg-[#0a0e17] border-blue-900/30 dark:border-blue-900/30 transition-colors">
+        <Card className="bg-white dark:bg-[#0a0e17] border-slate-200 dark:border-blue-900/30 transition-colors">
             <CardHeader>
-                <CardTitle className="text-white dark:text-[#FF8C00]">{title}</CardTitle>
+                <CardTitle className="text-slate-900 dark:text-[#FF8C00]">{title}</CardTitle>
             </CardHeader>
             <CardContent>
                 {renderChart()}

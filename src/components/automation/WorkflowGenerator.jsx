@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { Loader2, Sparkles, Zap, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -46,7 +47,7 @@ export default function WorkflowGenerator({ onGenerate }) {
     
     const generateMutation = useMutation({
         mutationFn: async (prompt) => {
-            const response = await httpClient.integrations.Core.InvokeLLM({
+            const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `You are an automation expert. Generate a complete automation rule configuration based on this request: "${prompt}"
 
 Return a JSON object with this exact structure:
@@ -127,7 +128,7 @@ Make the automation practical and complete. Include specific values and realisti
                     <Sparkles className="w-5 h-5 text-purple-600" />
                     AI Workflow Generator
                 </CardTitle>
-                <p className="text-sm text-blue-300">
+                <p className="text-sm text-slate-600">
                     Describe what you want to automate, or choose a template to get started
                 </p>
             </CardHeader>
@@ -147,14 +148,14 @@ Make the automation practical and complete. Include specific values and realisti
                                 className={`text-left p-3 rounded-lg border-2 transition-all ${
                                     selectedTemplate?.name === template.name
                                         ? 'border-purple-500 bg-purple-50'
-                                        : 'border-blue-900/30 hover:border-purple-300 bg-[#0f1419]'
+                                        : 'border-slate-200 hover:border-purple-300 bg-white'
                                 }`}
                             >
                                 <div className="flex items-start gap-2">
                                     <Zap className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
                                     <div className="min-w-0">
                                         <p className="font-medium text-sm">{template.name}</p>
-                                        <p className="text-xs text-blue-300 line-clamp-2">{template.description}</p>
+                                        <p className="text-xs text-slate-600 line-clamp-2">{template.description}</p>
                                     </div>
                                 </div>
                             </button>

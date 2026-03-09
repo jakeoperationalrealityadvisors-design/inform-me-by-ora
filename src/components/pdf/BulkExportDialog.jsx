@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import PDFExporter, { PDFTemplates } from './PDFExporter';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 
 export default function BulkExportDialog({ submissions, type = 'form' }) {
     const [open, setOpen] = useState(false);
@@ -19,13 +19,13 @@ export default function BulkExportDialog({ submissions, type = 'form' }) {
     // Fetch templates for forms/checklists
     const { data: formTemplates = [] } = useQuery({
         queryKey: ['form-templates'],
-        queryFn: () => httpClient.entities.FormTemplate.list(),
+        queryFn: () => base44.entities.FormTemplate.list(),
         enabled: type === 'form' && open
     });
 
     const { data: checklistTemplates = [] } = useQuery({
         queryKey: ['checklist-templates'],
-        queryFn: () => httpClient.entities.ChecklistTemplate.list(),
+        queryFn: () => base44.entities.ChecklistTemplate.list(),
         enabled: type === 'checklist' && open
     });
 

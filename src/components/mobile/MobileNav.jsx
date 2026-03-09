@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, ClipboardList, FolderOpen, Building2 } from 'lucide-react';
+import { Home, ClipboardList, CheckSquare, ListTodo, FolderOpen, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import OrgSwitcher from '@/components/navigation/OrgSwitcher';
 
@@ -23,7 +23,7 @@ export default function MobileNav() {
     };
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-[#0f1419] dark:bg-[#0a0e17] border-t border-blue-900/30 dark:border-blue-900/20 z-50 pb-safe">
+        <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#0a0e17] border-t border-slate-200 dark:border-blue-900/20 z-50 pb-safe">
             <div className="flex items-center justify-around h-16">
                 {navItems.map((item) => {
                     const Icon = item.icon;
@@ -45,7 +45,7 @@ export default function MobileNav() {
                             className="flex-1 flex flex-col items-center justify-center relative"
                         >
                             <div className={`flex flex-col items-center transition-all ${
-                                active ? 'text-[#FF8C00]' : 'text-blue-400/60 dark:text-blue-400/70'
+                                active ? 'text-[#FF8C00]' : 'text-slate-400 dark:text-slate-500'
                             }`}>
                                 <Icon className="w-6 h-6 mb-1" />
                                 <span className="text-xs font-medium">{item.name}</span>

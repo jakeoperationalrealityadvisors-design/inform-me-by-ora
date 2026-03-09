@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
@@ -13,19 +13,19 @@ export default function CommentSection({ submissionId, submissionType }) {
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => httpClient.auth.me()
+        queryFn: () => base44.auth.me()
     });
     
     const { data: comments = [] } = useQuery({
         queryKey: ['comments', submissionId],
-        queryFn: () => httpClient.entities.Comment.filter({ 
+        queryFn: () => base44.entities.Comment.filter({ 
             submission_id: submissionId,
             submission_type: submissionType
         }, '-created_date')
     });
     
     const addCommentMutation = useMutation({
-        mutationFn: (data) => httpClient.entities.Comment.create(data),
+        mutationFn: (data) => base44.entities.Comment.create(data),
         onSuccess: () => {
             queryClient.invalidateQueries(['comments', submissionId]);
             setNewComment('');

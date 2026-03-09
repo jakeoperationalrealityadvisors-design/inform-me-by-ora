@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Sparkles, Loader2, Wand2, CheckCircle2, Edit, LayoutGrid, LayoutList } from 'lucide-react';
@@ -31,7 +31,7 @@ function AIWorkflowBuilderContent() {
     
     const generateMutation = useMutation({
         mutationFn: async (userPrompt) => {
-            const response = await httpClient.integrations.Core.InvokeLLM({
+            const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `You are an automation workflow expert. Convert this natural language request into a structured automation rule:
 
 "${userPrompt}"
@@ -117,7 +117,7 @@ For actions, use types like 'assign_task', 'send_notification', 'send_email', 'c
     
     const createAutomationMutation = useMutation({
         mutationFn: async () => {
-            const automation = await httpClient.entities.AutomationRule.create({
+            const automation = await base44.entities.AutomationRule.create({
                 name: generatedWorkflow.name,
                 description: generatedWorkflow.description,
                 trigger_type: generatedWorkflow.trigger_type,
@@ -128,7 +128,7 @@ For actions, use types like 'assign_task', 'send_notification', 'send_email', 'c
             });
             
             // Create initial version
-            await httpClient.entities.AutomationRuleVersion.create({
+            await base44.entities.AutomationRuleVersion.create({
                 rule_id: automation.id,
                 version_number: 1,
                 name: automation.name,

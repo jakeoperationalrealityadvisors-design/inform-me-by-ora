@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
-import { ArrowLeft, Plus, Zap, Trash2, Edit, Power, PowerOff } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { ArrowLeft, Plus, FileText, Zap, Trash2, Edit, Power, PowerOff } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ function DocumentWorkflowsContent() {
     const { data: workflows = [], isLoading } = useQuery({
         queryKey: ['document-workflows'],
         queryFn: async () => {
-            const rules = await httpClient.entities.AutomationRule.list();
+            const rules = await base44.entities.AutomationRule.list();
             return rules.filter(r => 
                 r.trigger_type?.includes('document') || 
                 r.trigger_config?.entity_type === 'document'
@@ -28,7 +28,7 @@ function DocumentWorkflowsContent() {
 
     const toggleMutation = useMutation({
         mutationFn: ({ id, enabled }) => 
-            httpClient.entities.AutomationRule.update(id, { enabled: !enabled }),
+            base44.entities.AutomationRule.update(id, { enabled: !enabled }),
         onSuccess: () => {
             queryClient.invalidateQueries(['document-workflows']);
             toast.success('Workflow updated');
@@ -36,7 +36,7 @@ function DocumentWorkflowsContent() {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id) => httpClient.entities.AutomationRule.delete(id),
+        mutationFn: (id) => base44.entities.AutomationRule.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries(['document-workflows']);
             toast.success('Workflow deleted');
@@ -135,7 +135,7 @@ function DocumentWorkflowsContent() {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                onClick={() => navigate(createPageUrl('EditAutomation') + `?id=${workflow.id}`)}
+                                                onClick={() => navigate(createPageUrl('EditDocumentWorkflow') + `?id=${workflow.id}`)}
                                             >
                                                 <Edit className="w-4 h-4 text-blue-400" />
                                             </Button>

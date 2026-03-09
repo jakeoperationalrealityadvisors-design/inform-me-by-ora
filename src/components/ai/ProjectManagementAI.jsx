@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,7 @@ export default function ProjectManagementAI({ tasks, users, formSubmissions, che
                 ? (tasks.filter(t => t.status === 'completed').length / tasks.length) * 100
                 : 0;
             
-            const response = await httpClient.integrations.Core.InvokeLLM({
+            const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `You are a project management AI expert. Analyze this project data and provide actionable insights:
 
 **Task Overview:**

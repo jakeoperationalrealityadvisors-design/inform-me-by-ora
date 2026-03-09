@@ -72,7 +72,7 @@ export default function PullToRefresh({ onRefresh, children }) {
                         className="absolute top-0 left-0 right-0 flex justify-center"
                         style={{ transform: `translateY(${pulling ? pullDistance - 40 : 0}px)` }}
                     >
-                        <div className="bg-[#0f1419] dark:bg-slate-800 rounded-full p-3 shadow-lg">
+                        <div className="bg-white dark:bg-slate-800 rounded-full p-3 shadow-lg">
                             <RefreshCw
                                 className={`w-6 h-6 text-blue-600 ${refreshing ? 'animate-spin' : ''}`}
                                 style={{

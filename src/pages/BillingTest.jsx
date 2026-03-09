@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, CreditCard, CheckCircle2, XCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -17,9 +17,9 @@ function BillingTestContent() {
     const { data: org } = useQuery({
         queryKey: ['current-org'],
         queryFn: async () => {
-            const user = await httpClient.auth.me();
+            const user = await base44.auth.me();
             if (user.organization_id) {
-                const orgs = await httpClient.entities.Organization.filter({ id: user.organization_id });
+                const orgs = await base44.entities.Organization.filter({ id: user.organization_id });
                 return orgs[0];
             }
             return null;
@@ -28,7 +28,7 @@ function BillingTestContent() {
 
     const { data: billingHistory = [] } = useQuery({
         queryKey: ['billing-history'],
-        queryFn: () => httpClient.entities.BillingHistory.filter({ organization_id: org?.id }),
+        queryFn: () => base44.entities.BillingHistory.filter({ organization_id: org?.id }),
         enabled: !!org
     });
 
@@ -39,7 +39,7 @@ function BillingTestContent() {
     const testCheckout = useMutation({
         mutationFn: async () => {
             addTestResult('Checkout', 'running', 'Creating test checkout session...');
-            const response = await httpClient.functions.invoke('createCheckoutSession', {
+            const response = await base44.functions.invoke('createCheckoutSession', {
                 plan: 'professional',
                 isTest: true
             });
@@ -58,7 +58,7 @@ function BillingTestContent() {
     const testWebhook = useMutation({
         mutationFn: async () => {
             addTestResult('Webhook', 'running', 'Testing webhook handler...');
-            const response = await httpClient.functions.invoke('testStripeWebhook', {
+            const response = await base44.functions.invoke('testStripeWebhook', {
                 eventType: 'checkout.session.completed'
             });
             return response.data;
@@ -77,7 +77,7 @@ function BillingTestContent() {
     const testUpgrade = useMutation({
         mutationFn: async () => {
             addTestResult('Upgrade', 'running', 'Testing plan upgrade...');
-            await httpClient.entities.Organization.update(org.id, {
+            await base44.entities.Organization.update(org.id, {
                 plan_type: 'enterprise',
                 max_users: 100
             });
@@ -96,7 +96,7 @@ function BillingTestContent() {
     const testCancellation = useMutation({
         mutationFn: async () => {
             addTestResult('Cancellation', 'running', 'Testing subscription cancellation...');
-            const response = await httpClient.functions.invoke('cancelSubscription', {
+            const response = await base44.functions.invoke('cancelSubscription', {
                 organizationId: org.id,
                 isTest: true
             });

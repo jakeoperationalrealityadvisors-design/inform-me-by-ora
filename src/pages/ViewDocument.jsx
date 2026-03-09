@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Download, Upload, History, Trash2, Folder, Clock, User } from 'lucide-react';
@@ -46,29 +46,29 @@ export default function ViewDocument() {
     
     const { data: document, isLoading } = useQuery({
         queryKey: ['document', documentId],
-        queryFn: () => httpClient.entities.Document.filter({ id: documentId }).then(docs => docs[0]),
+        queryFn: () => base44.entities.Document.filter({ id: documentId }).then(docs => docs[0]),
         enabled: !!documentId
     });
     
     const { data: folder } = useQuery({
         queryKey: ['folder', document?.folder_id],
-        queryFn: () => httpClient.entities.DocumentFolder.filter({ id: document.folder_id }).then(f => f[0]),
+        queryFn: () => base44.entities.DocumentFolder.filter({ id: document.folder_id }).then(f => f[0]),
         enabled: !!document?.folder_id
     });
     
     const { data: versions = [] } = useQuery({
         queryKey: ['document-versions', documentId],
-        queryFn: () => httpClient.entities.DocumentVersion.filter({ document_id: documentId }, '-version_number'),
+        queryFn: () => base44.entities.DocumentVersion.filter({ document_id: documentId }, '-version_number'),
         enabled: !!documentId
     });
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => httpClient.auth.me()
+        queryFn: () => base44.auth.me()
     });
     
     const updateLinksMutation = useMutation({
-        mutationFn: (links) => httpClient.entities.Document.update(documentId, { linked_to: links }),
+        mutationFn: (links) => base44.entities.Document.update(documentId, { linked_to: links }),
         onSuccess: () => {
             queryClient.invalidateQueries(['document', documentId]);
             toast.success('Links updated');
@@ -76,7 +76,7 @@ export default function ViewDocument() {
     });
     
     const updatePermissionsMutation = useMutation({
-        mutationFn: (perms) => httpClient.entities.Document.update(documentId, { permissions: perms }),
+        mutationFn: (perms) => base44.entities.Document.update(documentId, { permissions: perms }),
         onSuccess: () => {
             queryClient.invalidateQueries(['document', documentId]);
             toast.success('Permissions updated');
@@ -84,7 +84,7 @@ export default function ViewDocument() {
     });
     
     const deleteMutation = useMutation({
-        mutationFn: () => httpClient.entities.Document.update(documentId, { status: 'archived' }),
+        mutationFn: () => base44.entities.Document.update(documentId, { status: 'archived' }),
         onSuccess: () => {
             queryClient.invalidateQueries(['documents']);
             toast.success('Document deleted');
@@ -109,12 +109,12 @@ export default function ViewDocument() {
         
         try {
             // Upload new file
-            const uploadResult = await httpClient.integrations.Core.UploadFile({ file: newVersionFile });
+            const uploadResult = await base44.integrations.Core.UploadFile({ file: newVersionFile });
             
             const newVersion = (document.version || 1) + 1;
             
             // Create version record
-            await httpClient.entities.DocumentVersion.create({
+            await base44.entities.DocumentVersion.create({
                 document_id: documentId,
                 version_number: newVersion,
                 file_url: uploadResult.file_url,
@@ -125,7 +125,7 @@ export default function ViewDocument() {
             });
             
             // Update document with new version
-            await httpClient.entities.Document.update(documentId, {
+            await base44.entities.Document.update(documentId, {
                 file_url: uploadResult.file_url,
                 file_name: newVersionFile.name,
                 file_size: newVersionFile.size,
@@ -148,17 +148,17 @@ export default function ViewDocument() {
     
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-blue-950/50 flex items-center justify-center">
-                <div className="text-blue-300">Loading...</div>
+            <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+                <div className="text-slate-600">Loading...</div>
             </div>
         );
     }
     
     if (!document) {
         return (
-            <div className="min-h-screen bg-blue-950/50 flex items-center justify-center">
+            <div className="min-h-screen bg-slate-100 flex items-center justify-center">
                 <div className="text-center">
-                    <h2 className="text-2xl font-bold text-white mb-2">Document not found</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Document not found</h2>
                     <Button onClick={() => navigate(createPageUrl('Documents'))}>
                         Go Back
                     </Button>
@@ -168,9 +168,9 @@ export default function ViewDocument() {
     }
     
     return (
-        <div className="min-h-screen bg-blue-950/50">
+        <div className="min-h-screen bg-slate-100">
             {/* Header */}
-            <div className="bg-[#0f1419] border-b border-blue-900/30">
+            <div className="bg-white border-b border-slate-200">
                 <div className="max-w-5xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -183,8 +183,8 @@ export default function ViewDocument() {
                                 <ArrowLeft className="w-5 h-5" />
                             </Button>
                             <div>
-                                <h1 className="text-xl font-bold text-white">{document.title}</h1>
-                                <p className="text-sm text-blue-300">Version {document.version || 1}</p>
+                                <h1 className="text-xl font-bold text-slate-900">{document.title}</h1>
+                                <p className="text-sm text-slate-600">Version {document.version || 1}</p>
                             </div>
                         </div>
                         <div className="flex gap-2">
@@ -211,7 +211,7 @@ export default function ViewDocument() {
                                             <input
                                                 type="file"
                                                 onChange={(e) => setNewVersionFile(e.target.files[0])}
-                                                className="mt-2 w-full text-sm text-blue-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                className="mt-2 w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                             />
                                         </div>
                                         <div>
@@ -253,41 +253,41 @@ export default function ViewDocument() {
                         {/* AI Document Analysis */}
                         <AIDocumentAnalysis document={document} />
                         {/* Document Info */}
-                        <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-6 shadow-sm">
-                            <h2 className="text-lg font-semibold text-white mb-4">Document Information</h2>
+                        <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
+                            <h2 className="text-lg font-semibold text-slate-900 mb-4">Document Information</h2>
                             
                             {document.description && (
                                 <div className="mb-4">
-                                    <p className="text-blue-300">{document.description}</p>
+                                    <p className="text-slate-600">{document.description}</p>
                                 </div>
                             )}
                             
                             <div className="grid grid-cols-2 gap-4 text-sm">
                                 <div>
-                                    <span className="text-blue-400/70">File Name:</span>
-                                    <p className="font-medium text-white">{document.file_name}</p>
+                                    <span className="text-slate-500">File Name:</span>
+                                    <p className="font-medium text-slate-900">{document.file_name}</p>
                                 </div>
                                 <div>
-                                    <span className="text-blue-400/70">File Size:</span>
-                                    <p className="font-medium text-white">{formatFileSize(document.file_size)}</p>
+                                    <span className="text-slate-500">File Size:</span>
+                                    <p className="font-medium text-slate-900">{formatFileSize(document.file_size)}</p>
                                 </div>
                                 <div>
-                                    <span className="text-blue-400/70">File Type:</span>
-                                    <p className="font-medium text-white">{document.file_type || 'Unknown'}</p>
+                                    <span className="text-slate-500">File Type:</span>
+                                    <p className="font-medium text-slate-900">{document.file_type || 'Unknown'}</p>
                                 </div>
                                 <div>
-                                    <span className="text-blue-400/70">Uploaded By:</span>
-                                    <p className="font-medium text-white">{document.uploaded_by_name || document.created_by}</p>
+                                    <span className="text-slate-500">Uploaded By:</span>
+                                    <p className="font-medium text-slate-900">{document.uploaded_by_name || document.created_by}</p>
                                 </div>
                                 <div>
-                                    <span className="text-blue-400/70">Created:</span>
-                                    <p className="font-medium text-white">
+                                    <span className="text-slate-500">Created:</span>
+                                    <p className="font-medium text-slate-900">
                                         {format(new Date(document.created_date), 'MMM d, yyyy h:mm a')}
                                     </p>
                                 </div>
                                 <div>
-                                    <span className="text-blue-400/70">Last Modified:</span>
-                                    <p className="font-medium text-white">
+                                    <span className="text-slate-500">Last Modified:</span>
+                                    <p className="font-medium text-slate-900">
                                         {format(new Date(document.updated_date), 'MMM d, yyyy h:mm a')}
                                     </p>
                                 </div>
@@ -295,7 +295,7 @@ export default function ViewDocument() {
                             
                             {document.tags && document.tags.length > 0 && (
                                 <div className="mt-4">
-                                    <span className="text-blue-400/70 text-sm">Tags:</span>
+                                    <span className="text-slate-500 text-sm">Tags:</span>
                                     <div className="flex flex-wrap gap-2 mt-2">
                                         {document.tags.map(tag => (
                                             <Badge key={tag} className="bg-blue-100 text-blue-700">
@@ -308,11 +308,11 @@ export default function ViewDocument() {
                         </div>
                         
                         {/* Version History */}
-                        <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-6 shadow-sm">
+                        <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-2">
-                                    <History className="w-5 h-5 text-blue-300" />
-                                    <h2 className="text-lg font-semibold text-white">Version History</h2>
+                                    <History className="w-5 h-5 text-slate-600" />
+                                    <h2 className="text-lg font-semibold text-slate-900">Version History</h2>
                                 </div>
                                 <Badge className="bg-blue-100 text-blue-700">
                                     {versions.length + 1} version{versions.length !== 0 ? 's' : ''}
@@ -325,13 +325,13 @@ export default function ViewDocument() {
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <p className="font-semibold text-white">
+                                                <p className="font-semibold text-slate-900">
                                                     Version {document.version || 1}
                                                 </p>
                                                 <Badge className="bg-green-600 text-white text-xs">Current</Badge>
                                             </div>
-                                            <p className="text-sm text-blue-300">{document.file_name}</p>
-                                            <div className="flex items-center gap-3 text-xs text-blue-400/70 mt-2">
+                                            <p className="text-sm text-slate-600">{document.file_name}</p>
+                                            <div className="flex items-center gap-3 text-xs text-slate-500 mt-2">
                                                 <span className="flex items-center gap-1">
                                                     <User className="w-3 h-3" />
                                                     {document.uploaded_by_name || document.created_by}
@@ -340,7 +340,7 @@ export default function ViewDocument() {
                                                     <Clock className="w-3 h-3" />
                                                     {format(new Date(document.updated_date), 'MMM d, yyyy h:mm a')}
                                                 </span>
-                                                <span className="text-blue-400/60">
+                                                <span className="text-slate-400">
                                                     {formatFileSize(document.file_size)}
                                                 </span>
                                             </div>
@@ -356,19 +356,19 @@ export default function ViewDocument() {
                                 {/* Previous Versions */}
                                 {versions.length > 0 ? (
                                     versions.map((version, idx) => (
-                                        <div key={version.id} className="border-l-4 border-blue-900/40 pl-4 py-3 hover:bg-blue-950/40 rounded-r transition-colors">
+                                        <div key={version.id} className="border-l-4 border-slate-300 pl-4 py-3 hover:bg-slate-50 rounded-r transition-colors">
                                             <div className="flex items-start justify-between">
                                                 <div className="flex-1">
                                                     <div className="flex items-center gap-2 mb-1">
-                                                        <p className="font-medium text-white">
+                                                        <p className="font-medium text-slate-900">
                                                             Version {version.version_number}
                                                         </p>
                                                     </div>
-                                                    <p className="text-sm text-blue-300">{version.file_name}</p>
+                                                    <p className="text-sm text-slate-600">{version.file_name}</p>
                                                     {version.change_notes && (
-                                                        <p className="text-sm text-blue-400/70 mt-1 italic">"{version.change_notes}"</p>
+                                                        <p className="text-sm text-slate-500 mt-1 italic">"{version.change_notes}"</p>
                                                     )}
-                                                    <div className="flex items-center gap-3 text-xs text-blue-400/70 mt-2">
+                                                    <div className="flex items-center gap-3 text-xs text-slate-500 mt-2">
                                                         <span className="flex items-center gap-1">
                                                             <User className="w-3 h-3" />
                                                             {version.uploaded_by_name}
@@ -377,13 +377,13 @@ export default function ViewDocument() {
                                                             <Clock className="w-3 h-3" />
                                                             {format(new Date(version.created_date), 'MMM d, yyyy h:mm a')}
                                                         </span>
-                                                        <span className="text-blue-400/60">
+                                                        <span className="text-slate-400">
                                                             {formatFileSize(version.file_size)}
                                                         </span>
                                                     </div>
                                                 </div>
                                                 <a href={version.file_url} download target="_blank" rel="noopener noreferrer">
-                                                    <Button variant="ghost" size="sm" className="text-blue-300 hover:text-white">
+                                                    <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-900">
                                                         <Download className="w-4 h-4" />
                                                     </Button>
                                                 </a>
@@ -391,7 +391,7 @@ export default function ViewDocument() {
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-blue-400/70 text-sm text-center py-4">No previous versions</p>
+                                    <p className="text-slate-500 text-sm text-center py-4">No previous versions</p>
                                 )}
                             </div>
                         </div>
@@ -400,22 +400,22 @@ export default function ViewDocument() {
                     {/* Sidebar */}
                     <div className="lg:col-span-1 space-y-6">
                         {folder && (
-                            <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-6 shadow-sm">
+                            <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
                                 <div className="flex items-center gap-2 mb-2">
                                     <Folder className="w-5 h-5" style={{ color: folder.color }} />
-                                    <h3 className="font-semibold text-white">Folder</h3>
+                                    <h3 className="font-semibold text-slate-900">Folder</h3>
                                 </div>
-                                <p className="text-blue-300">{folder.name}</p>
+                                <p className="text-slate-600">{folder.name}</p>
                                 {folder.description && (
-                                    <p className="text-sm text-blue-400/70 mt-2">{folder.description}</p>
+                                    <p className="text-sm text-slate-500 mt-2">{folder.description}</p>
                                 )}
                             </div>
                         )}
                         
                         {/* Linked Items */}
-                        <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-6 shadow-sm">
+                        <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-semibold text-white">Linked Items</h3>
+                                <h3 className="font-semibold text-slate-900">Linked Items</h3>
                                 <DocumentLinkSelector
                                     currentLinks={document?.linked_to || {}}
                                     onLinksUpdate={(links) => updateLinksMutation.mutate(links)}
@@ -478,14 +478,14 @@ export default function ViewDocument() {
                             {!document?.linked_to?.form_submission_id && 
                              !document?.linked_to?.checklist_submission_id && 
                              !document?.linked_to?.task_id && (
-                                <p className="text-sm text-blue-400/70 text-center py-4">No linked items</p>
+                                <p className="text-sm text-slate-500 text-center py-4">No linked items</p>
                             )}
                         </div>
                         
                         {/* Permissions */}
-                        <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-6 shadow-sm">
+                        <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-semibold text-white">Access</h3>
+                                <h3 className="font-semibold text-slate-900">Access</h3>
                                 <DocumentPermissionsEditor
                                     currentPermissions={document?.permissions || {}}
                                     onPermissionsUpdate={(perms) => updatePermissionsMutation.mutate(perms)}
@@ -505,10 +505,10 @@ export default function ViewDocument() {
                                 <div className="space-y-2">
                                     {document?.permissions?.can_view?.length > 0 ? (
                                         <>
-                                            <p className="text-xs text-blue-400/70">Shared with {document.permissions.can_view.length} user{document.permissions.can_view.length !== 1 ? 's' : ''}</p>
+                                            <p className="text-xs text-slate-500">Shared with {document.permissions.can_view.length} user{document.permissions.can_view.length !== 1 ? 's' : ''}</p>
                                         </>
                                     ) : (
-                                        <p className="text-sm text-blue-400/70 text-center py-2">Private</p>
+                                        <p className="text-sm text-slate-500 text-center py-2">Private</p>
                                     )}
                                 </div>
                             )}

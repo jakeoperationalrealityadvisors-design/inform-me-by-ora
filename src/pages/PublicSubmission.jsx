@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, Loader2 } from 'lucide-react';
@@ -21,9 +21,9 @@ export default function PublicSubmission() {
         queryKey: ['public-template', type, id],
         queryFn: async () => {
             if (type === 'form') {
-                return await httpClient.asServiceRole.entities.FormTemplate.filter({ id }).then(r => r[0]);
+                return await base44.asServiceRole.entities.FormTemplate.filter({ id }).then(r => r[0]);
             } else {
-                return await httpClient.asServiceRole.entities.ChecklistTemplate.filter({ id }).then(r => r[0]);
+                return await base44.asServiceRole.entities.ChecklistTemplate.filter({ id }).then(r => r[0]);
             }
         },
         enabled: !!id && !!type
@@ -32,7 +32,7 @@ export default function PublicSubmission() {
     const submitMutation = useMutation({
         mutationFn: async (data) => {
             if (type === 'form') {
-                const submission = await httpClient.asServiceRole.entities.FormSubmission.create({
+                const submission = await base44.asServiceRole.entities.FormSubmission.create({
                     form_template_id: id,
                     form_title: template.title,
                     responses: data.responses,
@@ -41,7 +41,7 @@ export default function PublicSubmission() {
                 });
                 
                 // Trigger automations
-                await httpClient.asServiceRole.functions.invoke('executeAutomations', {
+                await base44.asServiceRole.functions.invoke('executeAutomations', {
                     trigger_type: 'form_submitted',
                     trigger_config: { template_id: id },
                     data: submission
@@ -49,7 +49,7 @@ export default function PublicSubmission() {
                 
                 return submission;
             } else {
-                const submission = await httpClient.asServiceRole.entities.ChecklistSubmission.create({
+                const submission = await base44.asServiceRole.entities.ChecklistSubmission.create({
                     checklist_template_id: id,
                     checklist_title: template.title,
                     completed_items: data.completedItems,
@@ -59,7 +59,7 @@ export default function PublicSubmission() {
                 });
                 
                 // Trigger automations
-                await httpClient.asServiceRole.functions.invoke('executeAutomations', {
+                await base44.asServiceRole.functions.invoke('executeAutomations', {
                     trigger_type: 'checklist_completed',
                     trigger_config: { template_id: id },
                     data: submission
@@ -143,7 +143,7 @@ export default function PublicSubmission() {
                     <CardHeader>
                         <div className="text-center mb-2">
                             <img 
-                                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/inform-me-by-ora-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png"
+                                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6954526c42ec916a050b905d/d38d72306_file_00000000ab1471f5a410df212e51129f1.png"
                                 alt="InForm Me"
                                 className="h-12 mx-auto mb-4"
                             />

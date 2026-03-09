@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, FileText, CheckSquare, TrendingUp, BarChart3, Users } from 'lucide-react';
+import { ArrowLeft, FileText, CheckSquare, ListTodo, TrendingUp, BarChart3, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RoleGuard from '@/components/auth/RoleGuard';
@@ -26,27 +26,27 @@ function ReportsContent() {
     // Fetch data
     const { data: forms = [] } = useQuery({
         queryKey: ['form-submissions'],
-        queryFn: () => httpClient.entities.FormSubmission.list('-created_date')
+        queryFn: () => base44.entities.FormSubmission.list('-created_date')
     });
 
     const { data: checklists = [] } = useQuery({
         queryKey: ['checklist-submissions'],
-        queryFn: () => httpClient.entities.ChecklistSubmission.list('-created_date')
+        queryFn: () => base44.entities.ChecklistSubmission.list('-created_date')
     });
 
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => httpClient.entities.Category.list()
+        queryFn: () => base44.entities.Category.list()
     });
 
     const { data: formTemplates = [] } = useQuery({
         queryKey: ['form-templates'],
-        queryFn: () => httpClient.entities.FormTemplate.list()
+        queryFn: () => base44.entities.FormTemplate.list()
     });
 
     const { data: checklistTemplates = [] } = useQuery({
         queryKey: ['checklist-templates'],
-        queryFn: () => httpClient.entities.ChecklistTemplate.list()
+        queryFn: () => base44.entities.ChecklistTemplate.list()
     });
 
     // Filter data
@@ -184,22 +184,22 @@ function ReportsContent() {
     };
 
     return (
-        <div className="min-h-screen bg-blue-950/50 dark:bg-[#0a0e17] transition-colors pb-20 md:pb-6">
+        <div className="min-h-screen bg-slate-100 dark:bg-[#0a0e17] transition-colors pb-20 md:pb-6">
             {/* Header */}
-            <div className="bg-[#0f1419] dark:bg-[#0a0e17] border-b border-blue-900/30 dark:border-blue-900/30 sticky top-0 z-10 shadow-sm transition-colors">
+            <div className="bg-white dark:bg-[#0a0e17] border-b border-slate-200 dark:border-blue-900/30 sticky top-0 z-10 shadow-sm transition-colors">
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center gap-4">
                         <Link to={createPageUrl('Home')}>
-                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-blue-950/50 dark:hover:bg-slate-800">
+                            <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
                                 <ArrowLeft className="w-5 h-5" />
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-xl font-bold text-white dark:text-[#FF8C00] flex items-center gap-2">
+                            <h1 className="text-xl font-bold text-slate-900 dark:text-[#FF8C00] flex items-center gap-2">
                                 <BarChart3 className="w-6 h-6 text-orange-500 dark:text-[#FF8C00]" />
                                 Reports & Analytics
                             </h1>
-                            <p className="text-sm text-blue-300 dark:text-[#FF8C00]/70">
+                            <p className="text-sm text-slate-600 dark:text-[#FF8C00]/70">
                                 Insights and metrics from your data
                             </p>
                         </div>
@@ -282,7 +282,7 @@ function ReportsContent() {
 
                         {/* Charts */}
                         <Tabs defaultValue="timeline" className="space-y-4">
-                            <TabsList className="bg-[#0f1419] dark:bg-[#0f1419] border border-blue-900/30 dark:border-slate-800">
+                            <TabsList className="bg-white dark:bg-[#0f1419] border border-slate-200 dark:border-slate-800">
                                 <TabsTrigger value="timeline">Timeline</TabsTrigger>
                                 <TabsTrigger value="status">Status</TabsTrigger>
                                 <TabsTrigger value="categories">Categories</TabsTrigger>

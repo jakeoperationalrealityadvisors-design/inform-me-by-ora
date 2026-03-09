@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Activity, AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
@@ -8,12 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import RoleGuard from '@/components/auth/RoleGuard';
+import { errorLogger } from '@/components/error/ErrorLogger';
 
 function SystemHealthContent() {
     const { data: recentErrors = [] } = useQuery({
         queryKey: ['error-logs'],
         queryFn: async () => {
-            const errors = await httpClient.entities.ErrorLog.list('-created_date', 50);
+            const errors = await base44.entities.ErrorLog.list('-created_date', 50);
             return errors;
         },
         refetchInterval: 30000
@@ -21,7 +22,7 @@ function SystemHealthContent() {
 
     const { data: supportTickets = [] } = useQuery({
         queryKey: ['support-tickets-admin'],
-        queryFn: () => httpClient.entities.SupportTicket.list('-created_date', 20)
+        queryFn: () => base44.entities.SupportTicket.list('-created_date', 20)
     });
 
     const openTickets = supportTickets.filter(t => t.status === 'open').length;

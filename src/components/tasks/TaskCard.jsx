@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, User, ChevronDown, ChevronRight, MoreVertical } from 'lucide-react';
 import { format } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -21,39 +21,14 @@ export default function TaskCard({ task }) {
     };
 
     const statusColors = {
-        todo: 'bg-blue-900/30 text-blue-400/60',
+        todo: 'bg-slate-500/20 text-slate-400',
         in_progress: 'bg-blue-500/20 text-blue-400',
         completed: 'bg-green-500/20 text-green-400',
         cancelled: 'bg-red-500/20 text-red-400'
     };
 
     const updateMutation = useMutation({
-        mutationFn: async (updates) => {
-            const updatedTask = await httpClient.entities.Task.update(task.id, updates);
-            
-            // Trigger automations based on status change
-            if (updates.status) {
-                let triggerType = 'task_completed';
-                if (updates.status === 'in_progress') {
-                    triggerType = 'task_started'; // or similar
-                } else if (updates.status === 'completed') {
-                    triggerType = 'task_completed';
-                } else if (updates.status === 'cancelled') {
-                    triggerType = 'task_cancelled';
-                }
-                
-                try {
-                    await httpClient.functions.invoke('executeAutomations', {
-                        trigger_type: triggerType,
-                        trigger_data: { ...updatedTask, category_id: updatedTask.category_id }
-                    });
-                } catch (error) {
-                    console.error('Failed to trigger automations:', error);
-                }
-            }
-            
-            return updatedTask;
-        },
+        mutationFn: (updates) => base44.entities.Task.update(task.id, updates),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             toast.success('Task updated');
@@ -61,7 +36,7 @@ export default function TaskCard({ task }) {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: () => httpClient.entities.Task.delete(task.id),
+        mutationFn: () => base44.entities.Task.delete(task.id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             toast.success('Task deleted');

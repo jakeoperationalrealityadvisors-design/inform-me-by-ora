@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,7 +24,7 @@ export default function VerifyEmail() {
             }
 
             try {
-                const response = await httpClient.functions.invoke('verifyEmail', {
+                const response = await base44.functions.invoke('verifyEmail', {
                     token,
                     email
                 });

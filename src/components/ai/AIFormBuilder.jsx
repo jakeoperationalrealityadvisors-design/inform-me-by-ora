@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,7 +26,7 @@ export default function AIFormBuilder() {
     
     const generateMutation = useMutation({
         mutationFn: async (userPrompt) => {
-            const response = await httpClient.integrations.Core.InvokeLLM({
+            const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `You are a form builder expert. Generate a complete form structure based on this request:
 
 "${userPrompt}"
@@ -85,7 +85,7 @@ Return a complete form configuration.`,
     
     const createFormMutation = useMutation({
         mutationFn: async () => {
-            const form = await httpClient.entities.FormTemplate.create({
+            const form = await base44.entities.FormTemplate.create({
                 title: generatedForm.title,
                 description: generatedForm.description,
                 fields: generatedForm.fields,

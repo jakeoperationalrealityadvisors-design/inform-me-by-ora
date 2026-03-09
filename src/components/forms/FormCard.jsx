@@ -5,6 +5,7 @@ import { FileText, ChevronDown, ChevronRight, Share2 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import ShareFormDialog from './ShareFormDialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useSimpleMode } from '@/components/tutorial/SimpleModeWrapper';
 
 export default function FormCard({ form, category, viewMode = 'list' }) {
     const [shareOpen, setShareOpen] = useState(false);

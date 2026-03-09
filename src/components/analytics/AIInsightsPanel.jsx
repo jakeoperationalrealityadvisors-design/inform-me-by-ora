@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +38,7 @@ export default function AIInsightsPanel({ dateRange, category, formSubmissions, 
                 return acc;
             }, {});
             
-            const response = await httpClient.integrations.Core.InvokeLLM({
+            const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `You are a business intelligence analyst. Analyze this data and provide actionable insights:
 
 **Overview:**

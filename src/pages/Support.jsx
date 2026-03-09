@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Send, MessageCircle, CheckCircle2 } from 'lucide-react';
@@ -26,7 +26,7 @@ export default function Support() {
     const submitMutation = useMutation({
         mutationFn: async (data) => {
             // Create support ticket
-            await httpClient.entities.SupportTicket.create({
+            await base44.entities.SupportTicket.create({
                 user_email: user.email,
                 user_name: user.full_name,
                 organization_id: user.organization_id,
@@ -39,7 +39,7 @@ export default function Support() {
             });
 
             // Send email notification to support
-            await httpClient.integrations.Core.SendEmail({
+            await base44.integrations.Core.SendEmail({
                 to: 'support@informme.app',
                 subject: `[Support] ${data.subject}`,
                 body: `

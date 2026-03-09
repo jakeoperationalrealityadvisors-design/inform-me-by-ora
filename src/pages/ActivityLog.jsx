@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Shield, RefreshCw } from 'lucide-react';
@@ -22,13 +22,13 @@ function ActivityLogContent() {
 
     const { data: logs = [], isLoading, refetch } = useQuery({
         queryKey: ['activity-logs'],
-        queryFn: () => httpClient.entities.ActivityLog.list('-created_date', 5000),
+        queryFn: () => base44.entities.ActivityLog.list('-created_date', 5000),
         staleTime: 30000
     });
 
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
-        queryFn: () => httpClient.entities.User.list()
+        queryFn: () => base44.entities.User.list()
     });
 
     const filteredLogs = logs.filter(log => {

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, FileText, Folder, Search, Filter, Upload, X, Sparkles } from 'lucide-react';
+import { ArrowLeft, Plus, FileText, Folder, Search, Filter, Download, Trash2, Upload, X, Sparkles } from 'lucide-react';
 import AIAssistant from '@/components/ai/AIAssistant';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,13 +29,13 @@ export default function Documents() {
     
     const { data: documents = [], isLoading: docsLoading } = useQuery({
         queryKey: ['documents'],
-        queryFn: () => httpClient.entities.Document.filter({ status: 'active' }, '-created_date'),
+        queryFn: () => base44.entities.Document.filter({ status: 'active' }, '-created_date'),
         staleTime: 30000
     });
     
     const { data: folders = [] } = useQuery({
         queryKey: ['document-folders'],
-        queryFn: () => httpClient.entities.DocumentFolder.list(),
+        queryFn: () => base44.entities.DocumentFolder.list(),
         staleTime: 60000
     });
     
@@ -87,9 +87,9 @@ export default function Documents() {
     };
     
     return (
-        <div className="min-h-screen bg-blue-950/50">
+        <div className="min-h-screen bg-slate-100">
             {/* Header */}
-            <div className="bg-[#0f1419] border-b border-blue-900/30 sticky top-0 z-10 shadow-sm">
+            <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
                 <div className="max-w-6xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-4">
@@ -99,8 +99,8 @@ export default function Documents() {
                                 </Button>
                             </Link>
                             <div>
-                                <h1 className="text-xl font-bold text-white">Document Management</h1>
-                                <p className="text-sm text-blue-300">{documents.length} documents</p>
+                                <h1 className="text-xl font-bold text-slate-900">Document Management</h1>
+                                <p className="text-sm text-slate-600">{documents.length} documents</p>
                             </div>
                         </div>
                         <div className="flex gap-2">
@@ -130,7 +130,7 @@ export default function Documents() {
                     {/* Search */}
                     <div className="space-y-3">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400/60" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <Input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -155,11 +155,11 @@ export default function Documents() {
                         
                         {/* Advanced Filters Panel */}
                         {showAdvancedFilters && (
-                            <div className="bg-blue-950/40 rounded-lg p-4 space-y-4 border border-blue-900/30">
+                            <div className="bg-slate-50 rounded-lg p-4 space-y-4 border border-slate-200">
                                 {/* Date Range */}
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                        <Label className="text-xs text-blue-300">From Date</Label>
+                                        <Label className="text-xs text-slate-600">From Date</Label>
                                         <Input
                                             type="date"
                                             value={dateFrom}
@@ -168,7 +168,7 @@ export default function Documents() {
                                         />
                                     </div>
                                     <div>
-                                        <Label className="text-xs text-blue-300">To Date</Label>
+                                        <Label className="text-xs text-slate-600">To Date</Label>
                                         <Input
                                             type="date"
                                             value={dateTo}
@@ -180,7 +180,7 @@ export default function Documents() {
                                 
                                 {/* File Size */}
                                 <div>
-                                    <Label className="text-xs text-blue-300">File Size</Label>
+                                    <Label className="text-xs text-slate-600">File Size</Label>
                                     <Select value={sizeFilter} onValueChange={setSizeFilter}>
                                         <SelectTrigger className="mt-1">
                                             <SelectValue />
@@ -196,7 +196,7 @@ export default function Documents() {
                                 
                                 {/* Uploader */}
                                 <div>
-                                    <Label className="text-xs text-blue-300">Uploaded By</Label>
+                                    <Label className="text-xs text-slate-600">Uploaded By</Label>
                                     <Select value={uploaderFilter} onValueChange={setUploaderFilter}>
                                         <SelectTrigger className="mt-1">
                                             <SelectValue placeholder="All uploaders" />
@@ -244,15 +244,15 @@ export default function Documents() {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* Sidebar */}
                     <div className="lg:col-span-1">
-                        <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-4 shadow-sm">
-                            <h3 className="font-semibold text-white mb-3">Folders</h3>
+                        <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-sm">
+                            <h3 className="font-semibold text-slate-900 mb-3">Folders</h3>
                             <div className="space-y-1">
                                 <button
                                     onClick={() => setSelectedFolder(null)}
                                     className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                                         selectedFolder === null
                                             ? 'bg-blue-50 text-blue-700 font-medium'
-                                            : 'text-blue-300 hover:bg-blue-950/40'
+                                            : 'text-slate-600 hover:bg-slate-50'
                                     }`}
                                 >
                                     All Documents
@@ -264,7 +264,7 @@ export default function Documents() {
                                         className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
                                             selectedFolder === folder.id
                                                 ? 'bg-blue-50 text-blue-700 font-medium'
-                                                : 'text-blue-300 hover:bg-blue-950/40'
+                                                : 'text-slate-600 hover:bg-slate-50'
                                         }`}
                                     >
                                         <Folder className="w-4 h-4" style={{ color: folder.color }} />
@@ -275,7 +275,7 @@ export default function Documents() {
                             
                             {allTags.length > 0 && (
                                 <>
-                                    <h3 className="font-semibold text-white mb-3 mt-6">Tags</h3>
+                                    <h3 className="font-semibold text-slate-900 mb-3 mt-6">Tags</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {allTags.map(tag => (
                                             <Badge
@@ -290,7 +290,7 @@ export default function Documents() {
                                                 className={`cursor-pointer ${
                                                     selectedTags.includes(tag)
                                                         ? 'bg-blue-600 text-white'
-                                                        : 'bg-blue-950/50 text-blue-300 hover:bg-slate-200'
+                                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                                 }`}
                                             >
                                                 {tag}
@@ -307,9 +307,9 @@ export default function Documents() {
                         {docsLoading ? (
                             <div className="grid gap-4">
                                 {[1, 2, 3].map(i => (
-                                    <div key={i} className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-5 animate-pulse">
+                                    <div key={i} className="bg-white rounded-lg border border-slate-200 p-5 animate-pulse">
                                         <div className="h-5 w-3/4 bg-slate-200 rounded mb-2" />
-                                        <div className="h-4 w-1/2 bg-blue-950/50 rounded" />
+                                        <div className="h-4 w-1/2 bg-slate-100 rounded" />
                                     </div>
                                 ))}
                             </div>
@@ -322,22 +322,22 @@ export default function Documents() {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: idx * 0.05 }}
                                     >
-                                        <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-5 hover:border-blue-400 hover:shadow-lg transition-all group">
+                                        <div className="bg-white rounded-lg border border-slate-200 p-5 hover:border-blue-400 hover:shadow-lg transition-all group">
                                             <div className="flex items-start justify-between gap-3">
                                                 <div className="flex items-start gap-4 flex-1">
                                                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#1e90ff] to-[#0066cc] flex items-center justify-center flex-shrink-0">
                                                         <FileText className="w-6 h-6 text-white" />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <h3 className="font-semibold text-white mb-1 group-hover:text-blue-600 transition-colors">
+                                                        <h3 className="font-semibold text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">
                                                             {doc.title}
                                                         </h3>
                                                         {doc.description && (
-                                                            <p className="text-sm text-blue-300 mb-2 line-clamp-1">
+                                                            <p className="text-sm text-slate-600 mb-2 line-clamp-1">
                                                                 {doc.description}
                                                             </p>
                                                         )}
-                                                        <div className="flex flex-wrap items-center gap-3 text-xs text-blue-400/70">
+                                                        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
                                                             <span>{doc.file_name}</span>
                                                             <span>•</span>
                                                             <span>{formatFileSize(doc.file_size)}</span>
@@ -356,7 +356,7 @@ export default function Documents() {
                                                         {doc.tags && doc.tags.length > 0 && (
                                                             <div className="flex flex-wrap gap-2 mt-2">
                                                                 {doc.tags.map(tag => (
-                                                                    <Badge key={tag} className="bg-blue-950/50 text-blue-300 text-xs">
+                                                                    <Badge key={tag} className="bg-slate-100 text-slate-600 text-xs">
                                                                         {tag}
                                                                     </Badge>
                                                                 ))}
@@ -365,7 +365,7 @@ export default function Documents() {
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-col gap-2 items-end shrink-0">
-                                                    <div className="text-xs text-blue-400/60">
+                                                    <div className="text-xs text-slate-400">
                                                         {format(new Date(doc.created_date), 'MMM d, yyyy')}
                                                     </div>
                                                     <div className="flex gap-2">
@@ -395,10 +395,10 @@ export default function Documents() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-12 text-center">
+                            <div className="bg-white rounded-lg border border-slate-200 p-12 text-center">
                                 <FileText className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                                <h3 className="text-lg font-medium text-white mb-2">No documents found</h3>
-                                <p className="text-blue-300 mb-4">
+                                <h3 className="text-lg font-medium text-slate-900 mb-2">No documents found</h3>
+                                <p className="text-slate-600 mb-4">
                                     {search || selectedFolder || selectedTags.length > 0
                                         ? 'Try adjusting your filters'
                                         : 'Upload your first document to get started'}

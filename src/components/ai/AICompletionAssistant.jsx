@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,7 @@ export default function AICompletionAssistant({ entity, data }) {
     
     const analyzeMutation = useMutation({
         mutationFn: async () => {
-            const response = await httpClient.integrations.Core.InvokeLLM({
+            const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `Analyze this ${entity} submission for completion and quality:
 
 ${JSON.stringify(data, null, 2)}

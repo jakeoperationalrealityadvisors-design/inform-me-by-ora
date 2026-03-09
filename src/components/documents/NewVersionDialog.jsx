@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,7 +17,7 @@ export default function NewVersionDialog({ open, onOpenChange, document }) {
 
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => httpClient.auth.me()
+        queryFn: () => base44.auth.me()
     });
 
     const uploadMutation = useMutation({
@@ -25,12 +25,12 @@ export default function NewVersionDialog({ open, onOpenChange, document }) {
             setUploading(true);
             
             // Upload new file
-            const { file_url } = await httpClient.integrations.Core.UploadFile({ file: newFile });
+            const { file_url } = await base44.integrations.Core.UploadFile({ file: newFile });
             
             const newVersion = (document.version || 1) + 1;
             
             // Create version record for old file
-            await httpClient.entities.DocumentVersion.create({
+            await base44.entities.DocumentVersion.create({
                 document_id: document.id,
                 version_number: document.version || 1,
                 file_url: document.file_url,
@@ -41,7 +41,7 @@ export default function NewVersionDialog({ open, onOpenChange, document }) {
             });
             
             // Update document with new version
-            return httpClient.entities.Document.update(document.id, {
+            return base44.entities.Document.update(document.id, {
                 file_url,
                 file_name: newFile.name,
                 file_size: newFile.size,
@@ -112,25 +112,25 @@ export default function NewVersionDialog({ open, onOpenChange, document }) {
                     <div>
                         <Label>Select File *</Label>
                         <div className="mt-2">
-                            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-blue-900/40 rounded-lg cursor-pointer hover:border-[#1e90ff] hover:bg-blue-950/40/50 transition-all">
+                            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-[#1e90ff] hover:bg-blue-50/50 transition-all">
                                 <div className="text-center p-4">
                                     {file ? (
                                         <>
                                             <FileUp className="w-8 h-8 mx-auto text-green-600 mb-2" />
-                                            <p className="text-sm font-medium text-white">
+                                            <p className="text-sm font-medium text-slate-900">
                                                 {file.name}
                                             </p>
-                                            <p className="text-xs text-blue-400/70 mt-1">
+                                            <p className="text-xs text-slate-500 mt-1">
                                                 {formatFileSize(file.size)}
                                             </p>
                                         </>
                                     ) : (
                                         <>
-                                            <Upload className="w-8 h-8 mx-auto text-blue-400/60 mb-2" />
-                                            <p className="text-sm text-blue-300">
+                                            <Upload className="w-8 h-8 mx-auto text-slate-400 mb-2" />
+                                            <p className="text-sm text-slate-600">
                                                 Click to select file
                                             </p>
-                                            <p className="text-xs text-blue-400/70 mt-1">
+                                            <p className="text-xs text-slate-500 mt-1">
                                                 Any file type accepted
                                             </p>
                                         </>

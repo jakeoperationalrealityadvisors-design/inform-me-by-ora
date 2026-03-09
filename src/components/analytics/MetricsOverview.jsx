@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, CheckSquare, ListTodo, FolderOpen, Zap, TrendingUp, TrendingDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 

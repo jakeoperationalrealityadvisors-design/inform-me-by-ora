@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { offlineStorage } from './OfflineStorage';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
@@ -33,11 +33,11 @@ export function useBackgroundSync() {
                     
                     // Execute the queued action
                     if (item.action === 'create') {
-                        result = await httpClient.entities[item.entity].create(item.data);
+                        result = await base44.entities[item.entity].create(item.data);
                     } else if (item.action === 'update') {
                         // Check for conflicts before updating
                         try {
-                            const existing = await httpClient.entities[item.entity].filter({ id: item.data.id });
+                            const existing = await base44.entities[item.entity].filter({ id: item.data.id });
                             if (existing.length > 0) {
                                 const serverVersion = existing[0];
                                 const serverModified = new Date(serverVersion.updated_date).getTime();
@@ -61,9 +61,9 @@ export function useBackgroundSync() {
                             console.warn('Could not check for conflicts:', checkError);
                         }
                         
-                        result = await httpClient.entities[item.entity].update(item.data.id, item.data);
+                        result = await base44.entities[item.entity].update(item.data.id, item.data);
                     } else if (item.action === 'delete') {
-                        result = await httpClient.entities[item.entity].delete(item.data.id);
+                        result = await base44.entities[item.entity].delete(item.data.id);
                     }
                     
                     // Mark as synced and remove from queue

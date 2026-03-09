@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Download, Calendar, Filter, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Download, Calendar, Filter, TrendingUp, FileDown } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PDFReportGenerator from '@/components/reports/PDFReportGenerator';
 import CustomDashboardBuilder, { useDashboardConfig } from '@/components/reports/CustomDashboardBuilder';
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatePickerWithRange } from "@/components/ui/date-picker";
 import RoleGuard from '@/components/auth/RoleGuard';
@@ -31,42 +32,42 @@ function AnalyticsDashboardContent() {
 
     const { data: formSubmissions = [] } = useQuery({
         queryKey: ['analytics-forms', dateRange],
-        queryFn: () => httpClient.entities.FormSubmission.list('-created_date')
+        queryFn: () => base44.entities.FormSubmission.list('-created_date')
     });
 
     const { data: checklistSubmissions = [] } = useQuery({
         queryKey: ['analytics-checklists', dateRange],
-        queryFn: () => httpClient.entities.ChecklistSubmission.list('-created_date')
+        queryFn: () => base44.entities.ChecklistSubmission.list('-created_date')
     });
 
     const { data: tasks = [] } = useQuery({
         queryKey: ['analytics-tasks', dateRange],
-        queryFn: () => httpClient.entities.Task.list('-created_date')
+        queryFn: () => base44.entities.Task.list('-created_date')
     });
 
     const { data: documents = [] } = useQuery({
         queryKey: ['analytics-documents', dateRange],
-        queryFn: () => httpClient.entities.Document.list('-created_date')
+        queryFn: () => base44.entities.Document.list('-created_date')
     });
 
     const { data: automations = [] } = useQuery({
         queryKey: ['analytics-automations'],
-        queryFn: () => httpClient.entities.AutomationRule.list()
+        queryFn: () => base44.entities.AutomationRule.list()
     });
 
     const { data: activityLogs = [] } = useQuery({
         queryKey: ['analytics-activity', dateRange],
-        queryFn: () => httpClient.entities.ActivityLog.list('-created_date', 1000)
+        queryFn: () => base44.entities.ActivityLog.list('-created_date', 1000)
     });
 
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => httpClient.entities.Category.list()
+        queryFn: () => base44.entities.Category.list()
     });
 
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
-        queryFn: () => httpClient.entities.User.list()
+        queryFn: () => base44.entities.User.list()
     });
 
     // Filter data by date range, category, and user

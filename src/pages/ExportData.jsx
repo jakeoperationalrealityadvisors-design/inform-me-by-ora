@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Download, Database, FileText, CheckSquare, ClipboardList, FolderOpen, ListTodo } from 'lucide-react';
@@ -29,28 +29,28 @@ export default function ExportData() {
             const exportData = {};
 
             if (selectedData.forms) {
-                exportData.forms = await httpClient.entities.FormTemplate.list();
+                exportData.forms = await base44.entities.FormTemplate.list();
             }
             if (selectedData.checklists) {
-                exportData.checklists = await httpClient.entities.ChecklistTemplate.list();
+                exportData.checklists = await base44.entities.ChecklistTemplate.list();
             }
             if (selectedData.formSubmissions) {
-                exportData.formSubmissions = await httpClient.entities.FormSubmission.list();
+                exportData.formSubmissions = await base44.entities.FormSubmission.list();
             }
             if (selectedData.checklistSubmissions) {
-                exportData.checklistSubmissions = await httpClient.entities.ChecklistSubmission.list();
+                exportData.checklistSubmissions = await base44.entities.ChecklistSubmission.list();
             }
             if (selectedData.documents) {
-                exportData.documents = await httpClient.entities.Document.list();
+                exportData.documents = await base44.entities.Document.list();
             }
             if (selectedData.tasks) {
-                exportData.tasks = await httpClient.entities.Task.filter({ assigned_to_email: user.email });
+                exportData.tasks = await base44.entities.Task.filter({ assigned_to_email: user.email });
             }
             if (selectedData.categories) {
-                exportData.categories = await httpClient.entities.Category.list();
+                exportData.categories = await base44.entities.Category.list();
             }
             if (selectedData.automations && isAdmin) {
-                exportData.automations = await httpClient.entities.AutomationRule.list();
+                exportData.automations = await base44.entities.AutomationRule.list();
             }
 
             // Add metadata

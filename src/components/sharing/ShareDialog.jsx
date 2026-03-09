@@ -65,7 +65,7 @@ export default function ShareDialog({ open, onOpenChange, item, type }) {
                     <TabsContent value="link" className="space-y-4">
                         <div>
                             <Label>Public Link</Label>
-                            <p className="text-sm text-blue-300 mb-2">
+                            <p className="text-sm text-slate-600 mb-2">
                                 Anyone with this link can fill out the {type}
                             </p>
                             <div className="flex gap-2">
@@ -97,11 +97,11 @@ export default function ShareDialog({ open, onOpenChange, item, type }) {
                     <TabsContent value="qr" className="space-y-4">
                         <div className="text-center">
                             <Label>QR Code</Label>
-                            <p className="text-sm text-blue-300 mb-4">
+                            <p className="text-sm text-slate-600 mb-4">
                                 Scan with a mobile device to access the {type}
                             </p>
                             {qrCode && (
-                                <div className="inline-block bg-[#0f1419] p-4 rounded-lg border-2 border-blue-900/30">
+                                <div className="inline-block bg-white p-4 rounded-lg border-2 border-slate-200">
                                     <img src={qrCode} alt="QR Code" className="w-64 h-64" />
                                 </div>
                             )}
@@ -124,7 +124,7 @@ export default function ShareDialog({ open, onOpenChange, item, type }) {
                     <TabsContent value="embed" className="space-y-4">
                         <div>
                             <Label>Embed Code</Label>
-                            <p className="text-sm text-blue-300 mb-2">
+                            <p className="text-sm text-slate-600 mb-2">
                                 Add this code to your website to embed the {type}
                             </p>
                             <div className="flex gap-2">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, User, MapPin, Clock, CheckCircle, Circle, MessageSquare, Loader2 } from 'lucide-react';
@@ -23,7 +23,7 @@ export default function ViewChecklistSubmission() {
     const { data: submission, isLoading: subLoading } = useQuery({
         queryKey: ['checklist-submission', submissionId],
         queryFn: async () => {
-            const subs = await httpClient.entities.ChecklistSubmission.filter({ id: submissionId });
+            const subs = await base44.entities.ChecklistSubmission.filter({ id: submissionId });
             return subs[0];
         },
         enabled: !!submissionId
@@ -32,19 +32,19 @@ export default function ViewChecklistSubmission() {
     const { data: checklistTemplate } = useQuery({
         queryKey: ['checklist-template', submission?.checklist_template_id],
         queryFn: async () => {
-            const checklists = await httpClient.entities.ChecklistTemplate.filter({ id: submission.checklist_template_id });
+            const checklists = await base44.entities.ChecklistTemplate.filter({ id: submission.checklist_template_id });
             return checklists[0];
         },
         enabled: !!submission?.checklist_template_id
     });
     
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }) => httpClient.entities.ChecklistSubmission.update(id, data),
+        mutationFn: ({ id, data }) => base44.entities.ChecklistSubmission.update(id, data),
         onSuccess: () => queryClient.invalidateQueries(['checklist-submission', submissionId])
     });
     
     const updateAssignmentMutation = useMutation({
-        mutationFn: (updates) => httpClient.entities.ChecklistSubmission.update(submissionId, updates),
+        mutationFn: (updates) => base44.entities.ChecklistSubmission.update(submissionId, updates),
         onSuccess: () => {
             queryClient.invalidateQueries(['checklist-submission', submissionId]);
         }

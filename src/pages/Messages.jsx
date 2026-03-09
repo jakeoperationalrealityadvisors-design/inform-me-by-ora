@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, MessageCircle, Search, Plus } from 'lucide-react';
+import { ArrowLeft, MessageCircle, Users, Search, Plus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,12 +19,12 @@ export default function Messages() {
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => httpClient.auth.me()
+        queryFn: () => base44.auth.me()
     });
     
     const { data: messages = [] } = useQuery({
         queryKey: ['messages', user?.email],
-        queryFn: () => httpClient.entities.Message.filter({ 
+        queryFn: () => base44.entities.Message.filter({ 
             participants: { $in: [user.email] }
         }, '-created_date', 500),
         enabled: !!user,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Plus, Zap, Trash2, Edit, Power, Sparkles } from 'lucide-react';
@@ -28,12 +28,12 @@ function ManageAutomationsContent() {
 
     const { data: rules = [], isLoading } = useQuery({
         queryKey: ['automation-rules'],
-        queryFn: () => httpClient.entities.AutomationRule.list('-created_date')
+        queryFn: () => base44.entities.AutomationRule.list('-created_date')
     });
 
     const toggleMutation = useMutation({
         mutationFn: ({ id, enabled }) => 
-            httpClient.entities.AutomationRule.update(id, { enabled }),
+            base44.entities.AutomationRule.update(id, { enabled }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['automation-rules'] });
             toast.success('Automation rule updated');
@@ -41,7 +41,7 @@ function ManageAutomationsContent() {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id) => httpClient.entities.AutomationRule.delete(id),
+        mutationFn: (id) => base44.entities.AutomationRule.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['automation-rules'] });
             toast.success('Automation rule deleted');
@@ -75,9 +75,9 @@ function ManageAutomationsContent() {
     };
 
     return (
-        <div className="min-h-screen bg-blue-950/50">
+        <div className="min-h-screen bg-slate-100">
             {/* Header */}
-            <div className="bg-[#0f1419] border-b border-blue-900/30 sticky top-0 z-10 shadow-sm">
+            <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
                 <div className="max-w-6xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -87,11 +87,11 @@ function ManageAutomationsContent() {
                                 </Button>
                             </Link>
                             <div>
-                                <h1 className="text-xl font-bold text-white flex items-center gap-2">
+                                <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                                     <Zap className="w-6 h-6 text-blue-600" />
                                     Automation Rules
                                 </h1>
-                                <p className="text-sm text-blue-300">Configure automated workflows</p>
+                                <p className="text-sm text-slate-600">Configure automated workflows</p>
                             </div>
                         </div>
                         {canCreateAutomations && (
@@ -127,7 +127,7 @@ function ManageAutomationsContent() {
                             <Card key={i} className="animate-pulse">
                                 <CardHeader>
                                     <div className="h-5 w-1/3 bg-slate-200 rounded" />
-                                    <div className="h-4 w-1/2 bg-blue-950/50 rounded" />
+                                    <div className="h-4 w-1/2 bg-slate-100 rounded" />
                                 </CardHeader>
                             </Card>
                         ))}
@@ -136,8 +136,8 @@ function ManageAutomationsContent() {
                     <Card>
                         <CardContent className="pt-12 pb-12 text-center">
                             <Zap className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-white mb-2">No automation rules yet</h3>
-                            <p className="text-blue-300 mb-4">Create your first automation to streamline workflows</p>
+                            <h3 className="text-lg font-medium text-slate-900 mb-2">No automation rules yet</h3>
+                            <p className="text-slate-600 mb-4">Create your first automation to streamline workflows</p>
                             <Link to={createPageUrl('EditAutomation')}>
                                 <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
                                     <Sparkles className="w-4 h-4 mr-2" />
@@ -195,21 +195,21 @@ function ManageAutomationsContent() {
                                 <CardContent>
                                     <div className="space-y-3">
                                         <div>
-                                            <p className="text-xs text-blue-400/70 mb-1">TRIGGER</p>
+                                            <p className="text-xs text-slate-500 mb-1">TRIGGER</p>
                                             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                                                 {triggerLabels[rule.trigger_type] || rule.trigger_type}
                                             </Badge>
                                         </div>
                                         {rule.conditions && rule.conditions.length > 0 && (
                                             <div>
-                                                <p className="text-xs text-blue-400/70 mb-1">CONDITIONS</p>
+                                                <p className="text-xs text-slate-500 mb-1">CONDITIONS</p>
                                                 <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
                                                     {rule.conditions.length} condition{rule.conditions.length > 1 ? 's' : ''}
                                                 </Badge>
                                             </div>
                                         )}
                                         <div>
-                                            <p className="text-xs text-blue-400/70 mb-1">ACTIONS</p>
+                                            <p className="text-xs text-slate-500 mb-1">ACTIONS</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {rule.actions?.map((action, idx) => (
                                                     <Badge key={idx} variant="outline" className="bg-green-50 text-green-700 border-green-200">
@@ -222,7 +222,7 @@ function ManageAutomationsContent() {
                                             </div>
                                         </div>
                                         {rule.execution_count > 0 && (
-                                            <div className="text-xs text-blue-400/70">
+                                            <div className="text-xs text-slate-500">
                                                 Executed {rule.execution_count} time{rule.execution_count > 1 ? 's' : ''}
                                             </div>
                                         )}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, CheckCircle2, Circle, Plus, Settings, Calendar } from 'lucide-react';
@@ -18,12 +18,12 @@ export default function DailyTasks() {
     
     const { data: dailyTasks = [] } = useQuery({
         queryKey: ['daily-tasks'],
-        queryFn: () => httpClient.entities.DailyTask.filter({ active: true }, 'order')
+        queryFn: () => base44.entities.DailyTask.filter({ active: true }, 'order')
     });
     
     const { data: completions = [] } = useQuery({
         queryKey: ['daily-completions', selectedDate],
-        queryFn: () => httpClient.entities.DailyTaskCompletion.filter({ completed_date: selectedDate })
+        queryFn: () => base44.entities.DailyTaskCompletion.filter({ completed_date: selectedDate })
     });
     
     const toggleMutation = useMutation({
@@ -31,10 +31,10 @@ export default function DailyTasks() {
             if (isCompleted) {
                 const completion = completions.find(c => c.daily_task_id === taskId);
                 if (completion) {
-                    await httpClient.entities.DailyTaskCompletion.delete(completion.id);
+                    await base44.entities.DailyTaskCompletion.delete(completion.id);
                 }
             } else {
-                await httpClient.entities.DailyTaskCompletion.create({
+                await base44.entities.DailyTaskCompletion.create({
                     daily_task_id: taskId,
                     completed_date: selectedDate,
                     completed_by: user?.email

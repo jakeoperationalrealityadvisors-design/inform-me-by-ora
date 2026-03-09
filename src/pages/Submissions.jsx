@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, FileText, CheckSquare, User, Clock, ChevronDown, ChevronRight } from 'lucide-react';
@@ -23,7 +23,7 @@ export default function Submissions() {
     const { data: formSubmissions = [], isLoading: formsLoading } = useQuery({
         queryKey: ['form-submissions', canViewAll, user?.email],
         queryFn: async () => {
-            const all = await httpClient.entities.FormSubmission.list('-created_date');
+            const all = await base44.entities.FormSubmission.list('-created_date');
             if (!canViewAll) return all.filter(f => f.created_by === user?.email);
             return all;
         }
@@ -32,7 +32,7 @@ export default function Submissions() {
     const { data: checklistSubmissions = [], isLoading: checklistsLoading } = useQuery({
         queryKey: ['checklist-submissions', canViewAll, user?.email],
         queryFn: async () => {
-            const all = await httpClient.entities.ChecklistSubmission.list('-created_date');
+            const all = await base44.entities.ChecklistSubmission.list('-created_date');
             if (!canViewAll) return all.filter(c => c.created_by === user?.email);
             return all;
         }

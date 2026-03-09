@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, Phone } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 export default function SendFax() {
@@ -36,7 +36,7 @@ export default function SendFax() {
         try {
             // In a real implementation, this would integrate with a fax service like Twilio Fax
             // For now, we'll log the fax and save it as a record
-            await httpClient.entities.Document.create({
+            await base44.entities.Document.create({
                 title: `Fax to ${faxNumber}`,
                 description: `Fax sent to ${recipientName || faxNumber}`,
                 file_url: imageUrl,

@@ -86,7 +86,7 @@ export default function SwipeActions({ children, onDelete, onEdit, onComplete, d
                 onDragEnd={handleDragEnd}
                 animate={{ x: swipeX }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="relative z-10 bg-[#0f1419] dark:bg-slate-900"
+                className="relative z-10 bg-white dark:bg-slate-900"
             >
                 {children}
             </motion.div>

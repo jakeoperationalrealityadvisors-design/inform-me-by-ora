@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
 import { Sparkles, Wand2, Loader2, Tag } from 'lucide-react';
 import { toast } from 'sonner';
@@ -15,7 +15,7 @@ export function SuggestFieldsButton({ formTitle, onFieldsSuggested }) {
         
         setLoading(true);
         try {
-            const result = await httpClient.integrations.Core.InvokeLLM({
+            const result = await base44.integrations.Core.InvokeLLM({
                 prompt: `Based on the form title "${formTitle}", suggest 5-8 relevant form fields that would be commonly needed. For each field, provide: label, type (text, textarea, number, date, select, checkbox), a helpful placeholder, and whether it should be required. Return as JSON array.`,
                 response_json_schema: {
                     type: "object",
@@ -85,7 +85,7 @@ export function AutoCategorizeButton({ formTitle, formDescription, categories, o
         setLoading(true);
         try {
             const categoryNames = categories.map(c => c.name).join(', ');
-            const result = await httpClient.integrations.Core.InvokeLLM({
+            const result = await base44.integrations.Core.InvokeLLM({
                 prompt: `Based on the form titled "${formTitle}" ${formDescription ? `with description: "${formDescription}"` : ''}, which of these categories is most appropriate: ${categoryNames}. Return only the exact category name that best fits.`,
                 response_json_schema: {
                     type: "object",
@@ -145,7 +145,7 @@ export function GenerateExamplesButton({ form, onExamplesGenerated }) {
                 `${f.label} (${f.type}${f.required ? ', required' : ''})${f.options?.length ? ` - options: ${f.options.join(', ')}` : ''}`
             ).join('\n');
             
-            const result = await httpClient.integrations.Core.InvokeLLM({
+            const result = await base44.integrations.Core.InvokeLLM({
                 prompt: `Generate 3 realistic example submissions for a form titled "${form.title}". The form has these fields:\n${fieldDescriptions}\n\nFor each submission, provide realistic values that match the field types and requirements. For select fields, use only the provided options. For checkboxes, use true/false.`,
                 response_json_schema: {
                     type: "object",

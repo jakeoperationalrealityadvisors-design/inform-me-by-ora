@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Save, Plus, Trash2, GripVertical, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, GripVertical, Loader2, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -59,7 +59,7 @@ function EditFormContent() {
     const { data: existingForm, isLoading } = useQuery({
         queryKey: ['edit-form', formId],
         queryFn: async () => {
-            const forms = await httpClient.entities.FormTemplate.filter({ id: formId });
+            const forms = await base44.entities.FormTemplate.filter({ id: formId });
             return forms[0];
         },
         enabled: !!formId
@@ -67,7 +67,7 @@ function EditFormContent() {
     
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => httpClient.entities.Category.list()
+        queryFn: () => base44.entities.Category.list()
     });
     
     useEffect(() => {
@@ -87,7 +87,7 @@ function EditFormContent() {
         mutationFn: async (data) => {
             if (formId) {
                 // Check for conflicts before saving
-                const currentData = await httpClient.entities.FormTemplate.filter({ id: formId }).then(r => r[0]);
+                const currentData = await base44.entities.FormTemplate.filter({ id: formId }).then(r => r[0]);
                 
                 if (existingForm && currentData.updated_date !== existingForm.updated_date) {
                     setConflictData({ local: data, server: currentData });
@@ -95,9 +95,9 @@ function EditFormContent() {
                     throw new Error('Conflict detected');
                 }
                 
-                return httpClient.entities.FormTemplate.update(formId, data);
+                return base44.entities.FormTemplate.update(formId, data);
             }
-            return httpClient.entities.FormTemplate.create(data);
+            return base44.entities.FormTemplate.create(data);
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['forms', 'all-forms', 'edit-form']);
@@ -180,16 +180,16 @@ function EditFormContent() {
     
     if (formId && isLoading) {
         return (
-            <div className="min-h-screen bg-blue-950/40 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-400/60" />
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
             </div>
         );
     }
     
     return (
-        <div className="min-h-screen bg-blue-950/40">
+        <div className="min-h-screen bg-slate-50">
             {/* Header */}
-            <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-10">
+            <div className="bg-white border-b border-slate-100 sticky top-0 z-10">
                 <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link to={createPageUrl('Admin')}>
@@ -198,7 +198,7 @@ function EditFormContent() {
                             </Button>
                         </Link>
                         <div>
-                            <h1 className="text-lg font-semibold text-white">
+                            <h1 className="text-lg font-semibold text-slate-900">
                                 {formId ? 'Edit Form' : 'New Form'}
                             </h1>
                             {hasUnsavedChanges && <span className="text-xs text-orange-600">Unsaved changes</span>}
@@ -224,8 +224,8 @@ function EditFormContent() {
                 <CollaborationBanner otherUsers={otherUsers} hasUnsavedChanges={hasUnsavedChanges} />
                 
                 {/* Basic Info */}
-                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/30 p-6 space-y-4">
-                    <h2 className="text-lg font-semibold text-white">Basic Information</h2>
+                <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-slate-900">Basic Information</h2>
                     
                     <div>
                         <div className="flex items-center justify-between mb-2">
@@ -304,9 +304,9 @@ function EditFormContent() {
                 </div>
                 
                 {/* Fields */}
-                <div className="bg-[#0f1419] rounded-2xl border border-blue-900/30 p-6">
+                <div className="bg-white rounded-2xl border border-slate-200 p-6">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-semibold text-white">Form Fields</h2>
+                        <h2 className="text-lg font-semibold text-slate-900">Form Fields</h2>
                         <Button onClick={addField} variant="outline" size="sm">
                             <Plus className="w-4 h-4 mr-2" />
                             Add Field
@@ -327,7 +327,7 @@ function EditFormContent() {
                                                         initial={{ opacity: 0, y: 10 }}
                                                         animate={{ opacity: 1, y: 0 }}
                                                         exit={{ opacity: 0, y: -10 }}
-                                                        className={`border border-blue-900/30 rounded-xl p-4 bg-[#0f1419] ${snapshot.isDragging ? 'shadow-lg' : ''}`}
+                                                        className={`border border-slate-200 rounded-xl p-4 bg-white ${snapshot.isDragging ? 'shadow-lg' : ''}`}
                                                     >
                                                         <div className="flex items-start gap-3">
                                                             <div {...provided.dragHandleProps} className="mt-2 cursor-grab">
@@ -401,7 +401,7 @@ function EditFormContent() {
                     </DragDropContext>
                     
                     {form.fields.length === 0 && (
-                        <div className="text-center py-8 text-blue-400/70">
+                        <div className="text-center py-8 text-slate-500">
                             No fields added yet. Click "Add Field" to start building your form.
                         </div>
                     )}

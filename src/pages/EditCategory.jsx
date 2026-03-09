@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
@@ -24,7 +24,7 @@ export default function EditCategory() {
     const { data: existingCategory, isLoading } = useQuery({
         queryKey: ['edit-category', categoryId],
         queryFn: async () => {
-            const categories = await httpClient.entities.Category.filter({ id: categoryId });
+            const categories = await base44.entities.Category.filter({ id: categoryId });
             return categories[0];
         },
         enabled: !!categoryId
@@ -39,9 +39,9 @@ export default function EditCategory() {
     const saveMutation = useMutation({
         mutationFn: (data) => {
             if (categoryId) {
-                return httpClient.entities.Category.update(categoryId, data);
+                return base44.entities.Category.update(categoryId, data);
             }
-            return httpClient.entities.Category.create(data);
+            return base44.entities.Category.create(data);
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['categories']);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Sparkles, X, TrendingUp, Clock, CheckCircle } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,10 +16,10 @@ export default function SmartSuggestions({ forms = [], checklists = [], userEmai
     const { data: recentSubmissions } = useQuery({
         queryKey: ['recent-submissions', userEmail],
         queryFn: async () => {
-            const formSubs = await httpClient.entities.FormSubmission.filter({ 
+            const formSubs = await base44.entities.FormSubmission.filter({ 
                 created_by: userEmail 
             }, '-created_date', 10);
-            const checkSubs = await httpClient.entities.ChecklistSubmission.filter({ 
+            const checkSubs = await base44.entities.ChecklistSubmission.filter({ 
                 created_by: userEmail 
             }, '-created_date', 10);
             return { forms: formSubs, checklists: checkSubs };
@@ -30,7 +30,7 @@ export default function SmartSuggestions({ forms = [], checklists = [], userEmai
 
     const { data: userTasks } = useQuery({
         queryKey: ['user-tasks', userEmail],
-        queryFn: () => httpClient.entities.Task.filter({ 
+        queryFn: () => base44.entities.Task.filter({ 
             assigned_to_email: userEmail,
             status: { $ne: 'completed' }
         }),

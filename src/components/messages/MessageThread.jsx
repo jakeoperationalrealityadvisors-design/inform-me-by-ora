@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, Paperclip } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -25,7 +25,7 @@ export default function MessageThread({ conversation, currentUser, onBack }) {
         );
         
         unreadMessages.forEach(msg => {
-            httpClient.entities.Message.update(msg.id, {
+            base44.entities.Message.update(msg.id, {
                 read_by: [...(msg.read_by || []), currentUser.email]
             });
         });
@@ -33,7 +33,7 @@ export default function MessageThread({ conversation, currentUser, onBack }) {
     
     const sendMessageMutation = useMutation({
         mutationFn: async (content) => {
-            return await httpClient.entities.Message.create({
+            return await base44.entities.Message.create({
                 content,
                 sender_email: currentUser.email,
                 sender_name: currentUser.full_name || currentUser.email,

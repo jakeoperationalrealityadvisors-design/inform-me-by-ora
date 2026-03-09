@@ -14,7 +14,7 @@ export default function LanguageSwitcher() {
             onClick={toggleLanguage}
             variant="ghost" 
             size="sm"
-            className="rounded-full hover:bg-blue-950/50 text-blue-300 h-9 px-3 sm:h-10 sm:px-4 font-medium"
+            className="rounded-full hover:bg-slate-100 text-slate-600 h-9 px-3 sm:h-10 sm:px-4 font-medium"
         >
             {language === 'en' ? '🇺🇸 EN' : '🇫🇷 FR'}
         </Button>

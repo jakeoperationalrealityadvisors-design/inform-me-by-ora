@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,17 +12,17 @@ export default function AITaskEnhancer({ taskTitle, taskDescription, onApplySugg
     
     const { data: categories = [] } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => httpClient.entities.Category.list()
+        queryFn: () => base44.entities.Category.list()
     });
     
     const { data: users = [] } = useQuery({
         queryKey: ['users'],
-        queryFn: () => httpClient.entities.User.list()
+        queryFn: () => base44.entities.User.list()
     });
     
     const { data: existingTasks = [] } = useQuery({
         queryKey: ['all-tasks'],
-        queryFn: () => httpClient.entities.Task.list('-created_date', 50)
+        queryFn: () => base44.entities.Task.list('-created_date', 50)
     });
     
     const analyzeMutation = useMutation({
@@ -39,7 +39,7 @@ export default function AITaskEnhancer({ taskTitle, taskDescription, onApplySugg
                 assigned: t.assigned_to_email
             }));
             
-            const response = await httpClient.integrations.Core.InvokeLLM({
+            const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `You are an AI project management assistant. Analyze this task and provide intelligent recommendations:
 
 **Task Title:** ${taskTitle}

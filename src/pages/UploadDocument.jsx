@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { httpClient } from '@/api/httpClient';
+import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Upload, FileText, Loader2, X } from 'lucide-react';
@@ -34,16 +34,16 @@ export default function UploadDocument() {
     
     const { data: user } = useQuery({
         queryKey: ['current-user'],
-        queryFn: () => httpClient.auth.me()
+        queryFn: () => base44.auth.me()
     });
     
     const { data: folders = [] } = useQuery({
         queryKey: ['document-folders'],
-        queryFn: () => httpClient.entities.DocumentFolder.list()
+        queryFn: () => base44.entities.DocumentFolder.list()
     });
     
     const createDocMutation = useMutation({
-        mutationFn: (docData) => httpClient.entities.Document.create(docData),
+        mutationFn: (docData) => base44.entities.Document.create(docData),
         onSuccess: () => {
             queryClient.invalidateQueries(['documents']);
             toast.success('Document uploaded successfully');
@@ -95,7 +95,7 @@ export default function UploadDocument() {
         
         try {
             // Upload file
-            const uploadResult = await httpClient.integrations.Core.UploadFile({ file });
+            const uploadResult = await base44.integrations.Core.UploadFile({ file });
             
             // Create document record
             const newDoc = await createDocMutation.mutateAsync({
@@ -121,16 +121,6 @@ export default function UploadDocument() {
                 description: `Uploaded document: ${formData.title}`,
                 metadata: { file_name: file.name, file_size: file.size }
             });
-            
-            // Trigger automations
-            try {
-                await httpClient.functions.invoke('executeAutomations', {
-                    trigger_type: 'document_uploaded',
-                    trigger_data: { ...newDoc, category_id: newDoc.folder_id }
-                });
-            } catch (error) {
-                console.error('Failed to trigger automations:', error);
-            }
         } catch (error) {
             toast.error('Failed to upload document');
             setUploading(false);
@@ -138,8 +128,8 @@ export default function UploadDocument() {
     };
     
     return (
-        <div className="min-h-screen bg-blue-950/50">
-            <div className="bg-[#0f1419] border-b border-blue-900/30">
+        <div className="min-h-screen bg-slate-100">
+            <div className="bg-white border-b border-slate-200">
                 <div className="max-w-3xl mx-auto px-4 py-4 flex items-center gap-4">
                     <Button 
                         variant="ghost" 
@@ -150,14 +140,14 @@ export default function UploadDocument() {
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
                     <div>
-                        <h1 className="text-xl font-bold text-white">Upload Document</h1>
-                        <p className="text-sm text-blue-300">Add a new document to your library</p>
+                        <h1 className="text-xl font-bold text-slate-900">Upload Document</h1>
+                        <p className="text-sm text-slate-600">Add a new document to your library</p>
                     </div>
                 </div>
             </div>
             
             <div className="max-w-3xl mx-auto px-4 py-6">
-                <form onSubmit={handleSubmit} className="bg-[#0f1419] rounded-lg border border-blue-900/30 p-6 shadow-sm space-y-6">
+                <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm space-y-6">
                     {/* File Upload */}
                     <div>
                         <Label>File</Label>
@@ -180,23 +170,23 @@ export default function UploadDocument() {
                                 />
                             </div>
                             
-                            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-blue-900/40 rounded-lg cursor-pointer hover:border-blue-400 transition-colors">
+                            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-blue-400 transition-colors">
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     {file ? (
                                         <>
                                             <FileText className="w-10 h-10 text-blue-600 mb-3" />
-                                            <p className="text-sm text-blue-200 font-medium">{file.name}</p>
-                                            <p className="text-xs text-blue-400/70">
+                                            <p className="text-sm text-slate-700 font-medium">{file.name}</p>
+                                            <p className="text-xs text-slate-500">
                                                 {(file.size / 1024 / 1024).toFixed(2)} MB
                                             </p>
                                         </>
                                     ) : (
                                         <>
-                                            <Upload className="w-10 h-10 text-blue-400/60 mb-3" />
-                                            <p className="text-sm text-blue-300">
+                                            <Upload className="w-10 h-10 text-slate-400 mb-3" />
+                                            <p className="text-sm text-slate-600">
                                                 <span className="font-semibold text-blue-600">Click to upload</span> or drag and drop
                                             </p>
-                                            <p className="text-xs text-blue-400/70">Any file type supported</p>
+                                            <p className="text-xs text-slate-500">Any file type supported</p>
                                         </>
                                     )}
                                 </div>
