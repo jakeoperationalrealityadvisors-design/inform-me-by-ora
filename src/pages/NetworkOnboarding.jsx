@@ -186,8 +186,8 @@ export default function NetworkOnboarding() {
             
             return org;
         },
-        onSuccess: (org) => {
-            queryClient.invalidateQueries(['current-user']);
+        onSuccess: async (org) => {
+            await queryClient.refetchQueries({ queryKey: ['current-user'] });
             toast.success('Network created! Share your invite code with your team.');
             navigate(createPageUrl('Home'));
         },
