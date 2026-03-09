@@ -141,8 +141,11 @@ export default function NetworkOnboarding() {
             
             return org;
         },
-        onSuccess: async () => {
+        onSuccess: async (org) => {
             await queryClient.refetchQueries({ queryKey: ['current-user'] });
+            base44.analytics.track({ eventName: 'onboarding_joined_network', properties: { account_type: accountType, technical_level: technicalLevel } });
+            // Send welcome email
+            base44.functions.invoke('sendWelcomeEmail', { userId: (await base44.auth.me()).id }).catch(() => {});
             toast.success('Successfully joined network!');
             navigate(createPageUrl('Home'));
         },
@@ -188,6 +191,9 @@ export default function NetworkOnboarding() {
         },
         onSuccess: async (org) => {
             await queryClient.refetchQueries({ queryKey: ['current-user'] });
+            base44.analytics.track({ eventName: 'onboarding_created_network', properties: { account_type: accountType, technical_level: technicalLevel } });
+            // Send welcome email
+            base44.functions.invoke('sendWelcomeEmail', { userId: (await base44.auth.me()).id }).catch(() => {});
             toast.success('Network created! Share your invite code with your team.');
             navigate(createPageUrl('Home'));
         },
