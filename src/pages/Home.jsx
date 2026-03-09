@@ -19,7 +19,6 @@ import CategoryFilter from '@/components/forms/CategoryFilter';
 import EmptyState from '@/components/common/EmptyState';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import NotificationBell from '@/components/notifications/NotificationBell';
-import BottomNav from '@/components/navigation/BottomNav';
 import OrgSwitcher from '@/components/navigation/OrgSwitcher';
 import { useLanguage } from '@/components/language/LanguageContext';
 import LanguageSwitcher from '@/components/language/LanguageSwitcher';
