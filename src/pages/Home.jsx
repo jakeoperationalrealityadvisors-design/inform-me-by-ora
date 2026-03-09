@@ -146,6 +146,7 @@ export default function Home() {
     
     return (
         <div className="min-h-screen bg-[#0a0e17] transition-colors overflow-y-auto">
+            <OnboardingTour />
             <EmailVerificationBanner user={user} />
             {/* Header */}
             <div className="bg-[#0a0e17] border-b border-blue-900/30 sticky top-0 z-20 shadow-sm transition-colors">

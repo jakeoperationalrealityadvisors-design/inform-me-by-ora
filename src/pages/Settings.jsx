@@ -412,6 +412,42 @@ export default function Settings() {
                     </CardContent>
                 </Card>
 
+                {/* Mobile Readiness */}
+                <Card className="bg-[#0f1419] border-[#FF8C00]/20">
+                    <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                            <Smartphone className="w-5 h-5 text-[#FF8C00]" />
+                            Publish to Android
+                        </CardTitle>
+                        <CardDescription className="text-blue-400">
+                            Step-by-step guide for Android / Google Play publishing
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Link to={createPageUrl('MobileReadiness')}>
+                            <Button className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]">
+                                Open Mobile Readiness Guide
+                            </Button>
+                        </Link>
+                    </CardContent>
+                </Card>
+
+                {/* App Tour */}
+                <Card className="bg-[#0f1419] border-blue-900/20">
+                    <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                            <Lightbulb className="w-5 h-5 text-yellow-400" />
+                            App Walkthrough
+                        </CardTitle>
+                        <CardDescription className="text-blue-400">
+                            Replay the onboarding tour to learn key features
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <TourTrigger className="w-full justify-center py-2 border border-yellow-900/30 rounded-lg hover:bg-yellow-950/20" />
+                    </CardContent>
+                </Card>
+
                 {/* Support */}
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>
