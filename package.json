@@ -86,7 +86,8 @@
     "@babel/core": "^7.26.0",
     "@babel/helper-compilation-targets": "^7.26.0",
     "autoprefixer": "^10.4.20",
-    "caniuse-lite": "^1.0.30001690"
+    "caniuse-lite": "^1.0.30001690",
+    "@floating-ui/dom": "1.6.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
