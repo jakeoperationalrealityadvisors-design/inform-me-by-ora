@@ -35,6 +35,7 @@ import { useNavigate } from 'react-router-dom';
 import SmartSuggestions from '@/components/ai/SmartSuggestions';
 import { useQueryClient } from '@tanstack/react-query';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
+import OnboardingTour from '@/components/tutorial/OnboardingTour';
 
 export default function Home() {
     const { isAdmin, canViewAll, canCreateForms, user } = useUserRole();
