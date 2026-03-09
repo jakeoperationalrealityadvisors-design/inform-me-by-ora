@@ -7,7 +7,7 @@ export function useSimpleMode() {
         queryKey: ['current-user'],
         queryFn: () => base44.auth.me()
     });
-    
+
     return {
         isSeniorMode: user?.technical_level === 'senior',
         isSimpleMode: user?.technical_level === 'simple',
@@ -19,7 +19,7 @@ export function useSimpleMode() {
 
 export function SimpleModeButton({ children, label, id, ...props }) {
     const { isSimpleMode } = useSimpleMode();
-    
+
     if (isSimpleMode) {
         return (
             <button
@@ -32,6 +32,6 @@ export function SimpleModeButton({ children, label, id, ...props }) {
             </button>
         );
     }
-    
+
     return <button id={id} {...props}>{children}</button>;
 }
