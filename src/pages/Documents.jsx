@@ -50,7 +50,7 @@ export default function Documents() {
     );
     
     // Memoize filtered documents
-    const filteredDocs = React.useMemo(() => documents.filter(doc => {
+    const filteredDocs = useMemo(() => documents.filter(doc => {
         const matchesSearch = !search || 
             doc.title.toLowerCase().includes(search.toLowerCase()) ||
             doc.description?.toLowerCase().includes(search.toLowerCase());
