@@ -364,5 +364,6 @@ export default function FillChecklist() {
         </div>
 
         {checklist && <ShareFormDialog open={shareOpen} onOpenChange={setShareOpen} formId={checklist.id} formTitle={checklist.title} type="checklist" />}
+        </>
     );
 }
