@@ -7,13 +7,49 @@ import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 
+// Map any page to its "parent" nav item for active-state syncing
+const PAGE_TO_NAV = {
+    // Home
+    Home: 'Home',
+    Dashboard: 'Home',
+    AIAssistantPage: 'Home',
+    AIAssistantTest: 'Home',
+    // Submissions / Forms
+    Submissions: 'Submissions',
+    FillForm: 'Submissions',
+    FillChecklist: 'Submissions',
+    ViewFormSubmission: 'Submissions',
+    ViewChecklistSubmission: 'Submissions',
+    PublicForm: 'Submissions',
+    PublicChecklist: 'Submissions',
+    // Tasks
+    MyTasks: 'MyTasks',
+    CreateTask: 'MyTasks',
+    // Docs
+    Documents: 'Documents',
+    UploadDocument: 'Documents',
+    ViewDocument: 'Documents',
+    DocumentEditor: 'Documents',
+    ManageFolders: 'Documents',
+    DocumentSearch: 'Documents',
+    // More group
+    Reports: 'Reports',
+    Messages: 'Messages',
+    Scanner: 'Scanner',
+    Settings: 'Settings',
+};
+
+const MORE_PAGES = new Set(['Reports', 'Messages', 'Scanner', 'Settings',
+    'ManageAutomations', 'EditAutomation', 'ActivityLog', 'RoleManagement',
+    'UserManagement', 'OrganizationSettings', 'Integrations', 'Support']);
+
 export default function MobileNav() {
     const location = useLocation();
 
-    const isActive = (path) => {
-        const current = location.pathname.split('/').pop() || 'Home';
-        return current === path;
-    };
+    const currentPage = location.pathname.split('/').pop() || 'Home';
+    const activeNav = PAGE_TO_NAV[currentPage] || currentPage;
+    const isActive = (path) => activeNav === path;
+    const isMoreActive = MORE_PAGES.has(activeNav);
 
     const navItems = [
         { name: 'Home',   icon: Home,          path: 'Home' },
