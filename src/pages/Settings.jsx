@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity, Shield, Building2, Book, TrendingUp, Sparkles, Smartphone, Lightbulb } from 'lucide-react';
+import AppPermissions from '@/components/settings/AppPermissions';
 import { TourTrigger } from '@/components/tutorial/OnboardingTour';
 import { useUserRole } from '@/components/auth/RoleGuard';
 import { Button } from "@/components/ui/button";

@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Send, Paperclip } from 'lucide-react';
+import { ArrowLeft, Send, Paperclip, ChevronDown } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
