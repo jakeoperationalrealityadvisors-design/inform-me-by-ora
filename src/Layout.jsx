@@ -169,7 +169,9 @@ export default function Layout({ children, currentPageName }) {
                         }
                     `}</style>
                         <ErrorBoundary>
-                            {children}
+                            <div className="sm:pt-12">
+                                {children}
+                            </div>
                         </ErrorBoundary>
                         <MobileNav />
                         <CookieConsent />
