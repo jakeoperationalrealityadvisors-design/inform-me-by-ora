@@ -69,6 +69,19 @@ export default function MessageThread({ conversation, currentUser, onBack }) {
         if (!message.trim()) return;
         sendMessageMutation.mutate(message);
     };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend(e);
+        }
+    };
+
+    const insertSnippet = (text) => {
+        setMessage(text);
+        setShowSnippets(false);
+        inputRef.current?.focus();
+    };
     
     const getConversationTitle = () => {
         if (conversation.name) return conversation.name;
