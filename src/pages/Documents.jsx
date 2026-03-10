@@ -78,6 +78,27 @@ export default function Documents() {
     }), [documents, search, selectedFolder, selectedTags, dateFrom, dateTo, sizeFilter, uploaderFilter]);
     
     const getFolderName = (id) => folders.find(f => f.id === id)?.name || 'Uncategorized';
+
+    const { data: categories = [] } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => base44.entities.Category.list(),
+        staleTime: 60000
+    });
+
+    // Group folders by category for sidebar
+    const folderGroups = React.useMemo(() => {
+        const groups = {};
+        const uncategorized = [];
+        folders.forEach(folder => {
+            if (folder.category_id) {
+                if (!groups[folder.category_id]) groups[folder.category_id] = [];
+                groups[folder.category_id].push(folder);
+            } else {
+                uncategorized.push(folder);
+            }
+        });
+        return { groups, uncategorized };
+    }, [folders, categories]);
     
     const formatFileSize = (bytes) => {
         if (!bytes) return 'Unknown';
