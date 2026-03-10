@@ -235,22 +235,57 @@ export default function FillForm() {
                     )}
                 </div>
                 
-                {/* Submit Button - Sticky on mobile */}
-                <div className="mt-4 sm:mt-6 sticky bottom-0 left-0 right-0 p-3 sm:p-0 bg-[#0a0e17] sm:bg-transparent -mx-3 sm:mx-0">
+                {/* Photos preview */}
+                {photos.length > 0 && (
+                    <div className="mt-4 flex gap-2 flex-wrap">
+                        {photos.map((p, i) => (
+                            <div key={i} className="relative w-16 h-16 rounded-lg overflow-hidden border border-white/10">
+                                <img src={p.url} alt={p.name} className="w-full h-full object-cover" />
+                                <button
+                                    onClick={() => setPhotos(prev => prev.filter((_, idx) => idx !== i))}
+                                    className="absolute top-0.5 right-0.5 w-4 h-4 bg-black/70 rounded-full flex items-center justify-center"
+                                >
+                                    <X className="w-2.5 h-2.5 text-white" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Sticky Action Bar */}
+            <div className="sticky bottom-0 left-0 right-0 bg-[#0d1120]/95 backdrop-blur border-t border-white/5 px-4 py-3 -mx-0">
+                <div className="max-w-2xl mx-auto flex items-center gap-2">
+                    <button
+                        onClick={handleAddPhoto}
+                        className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-[#1a2236] border border-white/8 text-white/50 hover:text-white hover:border-white/20 text-sm font-medium transition-all"
+                    >
+                        <Camera className="w-4 h-4" />
+                        <span className="hidden sm:inline">Photo</span>
+                    </button>
+                    <button
+                        onClick={() => setShareOpen(true)}
+                        className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-[#1a2236] border border-white/8 text-white/50 hover:text-emerald-400 hover:border-emerald-500/30 text-sm font-medium transition-all"
+                    >
+                        <Share2 className="w-4 h-4" />
+                        <span className="hidden sm:inline">Share</span>
+                    </button>
+                    <Link to={createPageUrl('Home')} className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-[#1a2236] border border-white/8 text-white/50 hover:text-red-400 hover:border-red-500/30 text-sm font-medium transition-all">
+                        <X className="w-4 h-4" />
+                        <span className="hidden sm:inline">Cancel</span>
+                    </Link>
                     <Button
                         onClick={handleSubmit}
                         disabled={!validateForm() || submitMutation.isPending}
-                        className="w-full h-12 sm:h-14 text-base sm:text-lg rounded-xl sm:rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 shadow-lg shadow-blue-600/30"
+                        className="flex-1 h-10 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold disabled:opacity-40 text-sm"
                     >
-                        {submitMutation.isPending ? (
-                            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin mr-2" />
-                        ) : (
-                            <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                        )}
-                        Submit
+                        {submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Send className="w-4 h-4 mr-1.5" />}
+                        Send
                     </Button>
                 </div>
             </div>
         </div>
+
+        {form && <ShareFormDialog open={shareOpen} onOpenChange={setShareOpen} formId={form.id} formTitle={form.title} type="form" />}
     );
 }
