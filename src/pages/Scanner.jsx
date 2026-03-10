@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Camera, Upload, Scan, Cloud, HardDrive, Edit3, Search } from 'lucide-react';
+import { ArrowLeft, Camera, Upload, Scan, Cloud, HardDrive, Edit3, Search, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import OCRProcessor from '@/components/scanner/OCRProcessor';
 import { useSimpleMode } from '@/components/tutorial/SimpleModeWrapper';
 
 export default function Scanner() {
