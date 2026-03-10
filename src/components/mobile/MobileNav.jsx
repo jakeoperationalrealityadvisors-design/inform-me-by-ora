@@ -88,9 +88,15 @@ export default function MobileNav() {
 
                     {/* More dropdown */}
                     <DropdownMenu>
-                        <DropdownMenuTrigger className="flex-1 flex flex-col items-center justify-center py-2">
-                            <MoreHorizontal className="w-5 h-5 mb-1 text-white/35" />
-                            <span className="text-[10px] font-medium text-white/35">More</span>
+                        <DropdownMenuTrigger className="flex-1 flex flex-col items-center justify-center relative py-2">
+                            {isMoreActive && (
+                                <motion.div
+                                    layoutId="mobileActiveTab"
+                                    className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-orange-500 rounded-full"
+                                />
+                            )}
+                            <MoreHorizontal className={`w-5 h-5 mb-1 transition-colors ${isMoreActive ? 'text-orange-500' : 'text-white/35'}`} />
+                            <span className={`text-[10px] font-medium transition-colors ${isMoreActive ? 'text-orange-500' : 'text-white/35'}`}>More</span>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" side="top" className="w-52 bg-[#131927] border-white/10 text-white mb-2">
                             <DropdownMenuItem asChild>
