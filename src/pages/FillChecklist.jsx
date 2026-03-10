@@ -166,6 +166,7 @@ export default function FillChecklist() {
     }
     
     return (
+        <>
         <div className="min-h-screen bg-[#0a0e17] overflow-y-auto">
             {/* Header */}
             <div className="bg-[#0f1419] border-b border-blue-900/20 sticky top-0 z-20 shadow-sm">
