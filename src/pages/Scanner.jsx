@@ -252,17 +252,7 @@ export default function Scanner() {
                                                         <HardDrive className="w-4 h-4 mr-1" />
                                                         Save
                                                     </Button>
-                                                    {activeMode === 'fax' && (
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            onClick={() => sendFax(image)}
-                                                            className="border-green-900/30 text-green-400"
-                                                        >
-                                                            <Send className="w-4 h-4 mr-1" />
-                                                            Fax
-                                                        </Button>
-                                                    )}
+
                                                 </div>
                                             </div>
                                         </div>
