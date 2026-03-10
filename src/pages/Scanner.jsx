@@ -103,15 +103,9 @@ export default function Scanner() {
         }
     };
 
-    const sendFax = (image) => {
-        navigate(createPageUrl('SendFax') + `?imageUrl=${encodeURIComponent(image.url)}`);
-    };
-
     const modes = [
         { id: 'scan', label: 'Scanner', icon: Scan, desc: 'Scan documents' },
-        { id: 'copy', label: 'Copier', icon: Copy, desc: 'Make copies' },
         { id: 'photo', label: 'Photo', icon: Camera, desc: 'Take photos' },
-        { id: 'fax', label: 'Fax', icon: Send, desc: 'Send fax' }
     ];
 
     return (
