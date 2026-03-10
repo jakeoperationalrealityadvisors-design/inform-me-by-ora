@@ -44,7 +44,7 @@ export default function Documents() {
         [...new Set(documents.flatMap(doc => doc.tags || []))], 
         [documents]
     );
-    const allUploaders = React.useMemo(() => 
+    const allUploaders = useMemo(() => 
         [...new Set(documents.map(doc => doc.uploaded_by_name || doc.created_by).filter(Boolean))], 
         [documents]
     );
