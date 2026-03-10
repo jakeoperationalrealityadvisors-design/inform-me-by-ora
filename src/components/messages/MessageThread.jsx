@@ -148,12 +148,36 @@ export default function MessageThread({ conversation, currentUser, onBack }) {
             </div>
             
             {/* Input */}
-            <div className="bg-[#0f1419] border-t border-blue-900/20 p-4">
+            <div className="bg-[#0f1419] border-t border-blue-900/20 p-4 space-y-2">
+                {/* Quick text snippets */}
+                {showSnippets && (
+                    <div className="flex flex-wrap gap-1.5 pb-2">
+                        {TEXT_SNIPPETS.map((s) => (
+                            <button
+                                key={s.label}
+                                onClick={() => insertSnippet(s.text)}
+                                className="px-2.5 py-1 text-xs rounded-full bg-purple-900/40 text-purple-200 border border-purple-700/40 hover:bg-purple-700/50 transition-colors"
+                            >
+                                {s.label}
+                            </button>
+                        ))}
+                    </div>
+                )}
                 <form onSubmit={handleSend} className="flex gap-2">
+                    <button
+                        type="button"
+                        onClick={() => setShowSnippets(v => !v)}
+                        className="p-2 rounded-lg bg-[#0a0e17] border border-blue-900/30 text-blue-400 hover:text-blue-200 hover:bg-blue-950/50 transition-colors shrink-0"
+                        title="Quick replies"
+                    >
+                        <ChevronDown className={`w-4 h-4 transition-transform ${showSnippets ? 'rotate-180' : ''}`} />
+                    </button>
                     <Input
+                        ref={inputRef}
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Type a message..."
+                        onKeyDown={handleKeyDown}
+                        placeholder="Type a message… (Enter to send)"
                         className="flex-1 bg-[#0a0e17] border-blue-900/30 text-white"
                         disabled={sendMessageMutation.isPending}
                     />
