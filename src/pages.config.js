@@ -84,6 +84,7 @@ import ManageAutomations from './pages/ManageAutomations';
 import ManageDailyTasks from './pages/ManageDailyTasks';
 import ManageFolders from './pages/ManageFolders';
 import Messages from './pages/Messages';
+import MobileReadiness from './pages/MobileReadiness';
 import MyTasks from './pages/MyTasks';
 import NetworkOnboarding from './pages/NetworkOnboarding';
 import OrganizationSettings from './pages/OrganizationSettings';
@@ -109,7 +110,6 @@ import VerifyEmail from './pages/VerifyEmail';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import MobileReadiness from './pages/MobileReadiness';
 import __Layout from './Layout.jsx';
 
 
@@ -151,6 +151,7 @@ export const PAGES = {
     "ManageDailyTasks": ManageDailyTasks,
     "ManageFolders": ManageFolders,
     "Messages": Messages,
+    "MobileReadiness": MobileReadiness,
     "MyTasks": MyTasks,
     "NetworkOnboarding": NetworkOnboarding,
     "OrganizationSettings": OrganizationSettings,
@@ -176,7 +177,6 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "MobileReadiness": MobileReadiness,
 }
 
 export const pagesConfig = {
