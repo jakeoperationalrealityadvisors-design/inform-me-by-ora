@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Camera, Upload, FileText, Image, Scan, Copy, Send, Cloud, HardDrive, Edit3, Search } from 'lucide-react';
+import { ArrowLeft, Camera, Upload, Scan, Cloud, HardDrive, Edit3, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
