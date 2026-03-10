@@ -96,6 +96,9 @@ export default function Settings() {
             </div>
             
             <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+                {/* App Permissions */}
+                <AppPermissions />
+
                 {/* Experience Level */}
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>

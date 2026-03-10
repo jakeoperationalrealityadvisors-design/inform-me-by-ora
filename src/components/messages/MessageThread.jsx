@@ -10,7 +10,18 @@ import { toast } from 'sonner';
 export default function MessageThread({ conversation, currentUser, onBack }) {
     const queryClient = useQueryClient();
     const [message, setMessage] = useState('');
+    const [showSnippets, setShowSnippets] = useState(false);
     const messagesEndRef = useRef(null);
+    const inputRef = useRef(null);
+
+    const TEXT_SNIPPETS = [
+        { label: 'On my way', text: 'On my way!' },
+        { label: 'Got it', text: 'Got it, thanks!' },
+        { label: 'Will do', text: 'Will do, thanks!' },
+        { label: 'Please confirm', text: 'Can you please confirm?' },
+        { label: 'Completed', text: 'Task completed ✓' },
+        { label: 'Need more info', text: 'Could you provide more details?' },
+    ];
     
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
