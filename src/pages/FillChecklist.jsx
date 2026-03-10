@@ -26,6 +26,23 @@ export default function FillChecklist() {
     const [submitterName, setSubmitterName] = useState('');
     const [location, setLocation] = useState('');
     const [submitted, setSubmitted] = useState(false);
+    const [shareOpen, setShareOpen] = useState(false);
+    const [photos, setPhotos] = useState([]);
+
+    const handleAddPhoto = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.capture = 'environment';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                setPhotos(prev => [...prev, { url, name: file.name }]);
+            }
+        };
+        input.click();
+    };
     
     const { data: checklist, isLoading } = useQuery({
         queryKey: ['checklist', checklistId],
