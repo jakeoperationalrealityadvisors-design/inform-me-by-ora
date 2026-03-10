@@ -287,5 +287,6 @@ export default function FillForm() {
         </div>
 
         {form && <ShareFormDialog open={shareOpen} onOpenChange={setShareOpen} formId={form.id} formTitle={form.title} type="form" />}
+        </>
     );
 }
