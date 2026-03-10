@@ -75,7 +75,6 @@ import EditForm from './pages/EditForm';
 import ExportData from './pages/ExportData';
 import FillChecklist from './pages/FillChecklist';
 import FillForm from './pages/FillForm';
-import Home from './pages/Home';
 import HopCode from './pages/HopCode';
 import Integrations from './pages/Integrations';
 import KnowledgeBase from './pages/KnowledgeBase';
@@ -142,7 +141,6 @@ export const PAGES = {
     "ExportData": ExportData,
     "FillChecklist": FillChecklist,
     "FillForm": FillForm,
-    "Home": Home,
     "HopCode": HopCode,
     "Integrations": Integrations,
     "KnowledgeBase": KnowledgeBase,
@@ -180,7 +178,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "Home",
+    mainPage: "AIAssistantPage",
     Pages: PAGES,
     Layout: __Layout,
 };
