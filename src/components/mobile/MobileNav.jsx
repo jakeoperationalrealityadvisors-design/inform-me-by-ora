@@ -141,7 +141,7 @@ export default function MobileNav() {
                     { label: 'Reports', path: 'Reports' },
                     { label: 'Messages', path: 'Messages' },
                 ].map(item => {
-                    const active = isActive(item.path);
+                    const active = activeNav === item.path;
                     return (
                         <Link
                             key={item.path}
