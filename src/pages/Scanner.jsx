@@ -16,6 +16,7 @@ export default function Scanner() {
     const [capturedImages, setCapturedImages] = useState([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [ocrOpenId, setOcrOpenId] = useState(null);
     const fileInputRef = useRef(null);
     const cameraInputRef = useRef(null);
 
