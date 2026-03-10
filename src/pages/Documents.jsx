@@ -278,20 +278,53 @@ export default function Documents() {
                                 >
                                     All Documents
                                 </button>
-                                {folders.map(folder => (
-                                    <button
-                                        key={folder.id}
-                                        onClick={() => setSelectedFolder(folder.id)}
-                                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
-                                            selectedFolder === folder.id
-                                                ? 'bg-blue-50 text-blue-700 font-medium'
-                                                : 'text-slate-600 hover:bg-slate-50'
-                                        }`}
-                                    >
-                                        <Folder className="w-4 h-4" style={{ color: folder.color }} />
-                                        {folder.name}
-                                    </button>
-                                ))}
+
+                                {/* Category-grouped folders */}
+                                {Object.entries(folderGroups.groups).map(([catId, catFolders]) => {
+                                    const cat = categories.find(c => c.id === catId);
+                                    return (
+                                        <div key={catId} className="pt-2">
+                                            <div className="flex items-center gap-1.5 px-3 mb-1">
+                                                <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: cat?.color || '#ccc' }} />
+                                                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide truncate">{cat?.name || 'Category'}</span>
+                                            </div>
+                                            {catFolders.map(folder => (
+                                                <button
+                                                    key={folder.id}
+                                                    onClick={() => setSelectedFolder(folder.id)}
+                                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
+                                                        selectedFolder === folder.id ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'
+                                                    }`}
+                                                >
+                                                    <Folder className="w-4 h-4 flex-shrink-0" style={{ color: folder.color || '#1e90ff' }} />
+                                                    <span className="truncate">{folder.name}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    );
+                                })}
+
+                                {/* Uncategorized folders */}
+                                {folderGroups.uncategorized.length > 0 && (
+                                    <div className="pt-2">
+                                        <div className="flex items-center gap-1.5 px-3 mb-1">
+                                            <div className="w-2 h-2 rounded-full bg-slate-300 flex-shrink-0" />
+                                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">General</span>
+                                        </div>
+                                        {folderGroups.uncategorized.map(folder => (
+                                            <button
+                                                key={folder.id}
+                                                onClick={() => setSelectedFolder(folder.id)}
+                                                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
+                                                    selectedFolder === folder.id ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'
+                                                }`}
+                                            >
+                                                <Folder className="w-4 h-4 flex-shrink-0" style={{ color: folder.color || '#1e90ff' }} />
+                                                <span className="truncate">{folder.name}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                             
                             {allTags.length > 0 && (
