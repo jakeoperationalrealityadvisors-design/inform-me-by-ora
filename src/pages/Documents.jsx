@@ -40,7 +40,7 @@ export default function Documents() {
     });
     
     // Memoize unique tags and uploaders
-    const allTags = React.useMemo(() => 
+    const allTags = useMemo(() => 
         [...new Set(documents.flatMap(doc => doc.tags || []))], 
         [documents]
     );
