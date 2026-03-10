@@ -253,8 +253,22 @@ export default function Scanner() {
                                                         <HardDrive className="w-4 h-4 mr-1" />
                                                         Save
                                                     </Button>
-
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => setOcrOpenId(ocrOpenId === image.id ? null : image.id)}
+                                                        className="border-orange-900/30 text-orange-400"
+                                                    >
+                                                        <FileText className="w-4 h-4 mr-1" />
+                                                        OCR
+                                                        {ocrOpenId === image.id ? <ChevronUp className="w-3 h-3 ml-1" /> : <ChevronDown className="w-3 h-3 ml-1" />}
+                                                    </Button>
                                                 </div>
+                                                {ocrOpenId === image.id && (
+                                                    <div className="mt-3">
+                                                        <OCRProcessor imageUrl={image.url} />
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </CardContent>
