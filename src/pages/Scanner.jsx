@@ -4,7 +4,6 @@ import { createPageUrl } from '@/utils';
 import { ArrowLeft, Camera, Upload, Scan, Cloud, HardDrive, Edit3, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useSimpleMode } from '@/components/tutorial/SimpleModeWrapper';
