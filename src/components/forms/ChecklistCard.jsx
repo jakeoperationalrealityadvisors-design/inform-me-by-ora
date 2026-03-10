@@ -1,101 +1,78 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { CheckSquare, ChevronDown, ChevronRight, Share2 } from 'lucide-react';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { CheckSquare, Share2, ChevronDown, ChevronRight, Edit } from 'lucide-react';
 import ShareFormDialog from './ShareFormDialog';
+import { useUserRole } from '@/components/auth/RoleGuard';
 
 export default function ChecklistCard({ checklist, category, viewMode = 'list' }) {
     const [shareOpen, setShareOpen] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+    const [expanded, setExpanded] = useState(false);
+    const { canCreateForms } = useUserRole();
     const itemCount = checklist.items?.length || 0;
-    
-    if (viewMode === 'grid') {
-        return (
-            <>
-                <div className="bg-[#0f1419] border border-blue-900/20 rounded-lg hover:border-blue-700/50 transition-all p-4 flex flex-col h-full">
-                    <div className="flex items-start gap-3 mb-3">
-                        <CheckSquare className="w-5 h-5 text-[#FF8C00] flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                            <h3 className="font-medium text-white truncate">{checklist.title}</h3>
+
+    return (
+        <>
+            <div className="bg-[#111827] border border-white/5 rounded-xl overflow-hidden hover:border-white/10 transition-all">
+                {/* Main row */}
+                <div className="flex items-center gap-3 px-4 py-3">
+                    <div className="w-8 h-8 rounded-lg bg-blue-500/15 flex items-center justify-center flex-shrink-0">
+                        <CheckSquare className="w-4 h-4 text-blue-400" />
+                    </div>
+                    <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setExpanded(v => !v)}>
+                        <p className="text-sm font-semibold text-white truncate">{checklist.title}</p>
+                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                             {category && (
-                                <span className="text-xs text-blue-400 bg-blue-900/30 px-2 py-0.5 rounded inline-block mt-1">
+                                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-white/5 text-white/40"
+                                    style={category.color ? { backgroundColor: category.color + '22', color: category.color } : {}}>
                                     {category.name}
                                 </span>
                             )}
+                            <span className="text-[10px] text-white/30">{itemCount} items</span>
                         </div>
                     </div>
-                    <p className="text-sm text-blue-400/70 line-clamp-2 mb-3 flex-1">
-                        {checklist.description || 'No description'}
-                    </p>
-                    <div className="flex items-center justify-between pt-3 border-t border-blue-900/20">
-                        <span className="text-xs text-blue-400">{itemCount} items</span>
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setShareOpen(true)}
-                                className="p-1.5 text-green-400 hover:bg-green-950/20 rounded transition-colors"
-                            >
-                                <Share2 className="w-4 h-4" />
-                            </button>
-                            <Link to={createPageUrl(`FillChecklist?id=${checklist.id}`)}>
-                                <button className="px-3 py-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black text-xs font-medium rounded hover:opacity-90">
-                                    Fill
+                    {/* Actions */}
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                        <button
+                            onClick={() => setShareOpen(true)}
+                            title="Share"
+                            className="p-1.5 rounded-lg text-white/30 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors"
+                        >
+                            <Share2 className="w-3.5 h-3.5" />
+                        </button>
+                        {canCreateForms && (
+                            <Link to={createPageUrl(`EditChecklist?id=${checklist.id}`)}>
+                                <button title="Edit" className="p-1.5 rounded-lg text-white/30 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+                                    <Edit className="w-3.5 h-3.5" />
                                 </button>
                             </Link>
-                        </div>
-                    </div>
-                </div>
-                
-                <ShareFormDialog 
-                    open={shareOpen}
-                    onOpenChange={setShareOpen}
-                    formId={checklist.id}
-                    formTitle={checklist.title}
-                    type="checklist"
-                />
-            </>
-        );
-    }
-    
-    return (
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-            <div className="bg-[#0f1419] border border-blue-900/20 rounded-lg hover:border-blue-700/50 transition-all">
-                <div className="flex items-center gap-3 p-3">
-                    <CollapsibleTrigger className="flex items-center gap-2 flex-1 text-left group">
-                        {isOpen ? <ChevronDown className="w-4 h-4 text-blue-400" /> : <ChevronRight className="w-4 h-4 text-blue-400" />}
-                        <CheckSquare className="w-4 h-4 text-[#FF8C00]" />
-                        <span className="font-medium text-white group-hover:text-[#FF8C00] transition-colors">{checklist.title}</span>
-                    </CollapsibleTrigger>
-                    <div className="flex items-center gap-2 text-xs text-blue-400">
-                        {category && <span className="px-2 py-0.5 bg-blue-900/30 rounded">{category.name}</span>}
-                        <span>{itemCount} items</span>
-                    </div>
-                    <button 
-                        onClick={() => setShareOpen(true)}
-                        className="p-2 text-green-400 hover:bg-green-950/20 rounded transition-colors"
-                    >
-                        <Share2 className="w-4 h-4" />
-                    </button>
-                    <Link to={createPageUrl(`FillChecklist?id=${checklist.id}`)}>
-                        <button className="px-3 py-1 bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-black text-xs font-medium rounded hover:opacity-90">
-                            Fill
+                        )}
+                        <Link to={createPageUrl(`FillChecklist?id=${checklist.id}`)}>
+                            <button className="ml-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-colors">
+                                Fill
+                            </button>
+                        </Link>
+                        <button onClick={() => setExpanded(v => !v)} className="p-1 text-white/20 hover:text-white/50 transition-colors ml-0.5">
+                            {expanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                         </button>
-                    </Link>
-                </div>
-                <CollapsibleContent>
-                    <div className="px-3 pb-3 pt-1 text-sm text-blue-400/70 border-t border-blue-900/20 mt-2">
-                        {checklist.description || 'No description'}
                     </div>
-                </CollapsibleContent>
+                </div>
+
+                {/* Expanded description */}
+                {expanded && checklist.description && (
+                    <div className="px-4 pb-3 pt-1 border-t border-white/5">
+                        <p className="text-xs text-white/40 leading-relaxed">{checklist.description}</p>
+                    </div>
+                )}
             </div>
-            
-            <ShareFormDialog 
+
+            <ShareFormDialog
                 open={shareOpen}
                 onOpenChange={setShareOpen}
                 formId={checklist.id}
                 formTitle={checklist.title}
                 type="checklist"
             />
-        </Collapsible>
+        </>
     );
 }
