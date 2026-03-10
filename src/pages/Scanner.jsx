@@ -122,7 +122,7 @@ export default function Scanner() {
                             <h1 className={`font-bold text-white ${isSeniorMode ? 'text-2xl' : 'text-xl'}`}>
                                 Document Scanner
                             </h1>
-                            <p className="text-sm text-blue-400">Scan, copy, edit & share documents</p>
+                            <p className="text-sm text-blue-400">Scan, edit & save documents</p>
                         </div>
                     </div>
                 </div>
