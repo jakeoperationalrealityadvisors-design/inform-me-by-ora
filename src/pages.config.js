@@ -75,6 +75,7 @@ import EditForm from './pages/EditForm';
 import ExportData from './pages/ExportData';
 import FillChecklist from './pages/FillChecklist';
 import FillForm from './pages/FillForm';
+import Home from './pages/Home';
 import HopCode from './pages/HopCode';
 import Integrations from './pages/Integrations';
 import KnowledgeBase from './pages/KnowledgeBase';
@@ -109,7 +110,7 @@ import VerifyEmail from './pages/VerifyEmail';
 import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
-import Home from './pages/Home';
+import OversightDashboard from './pages/OversightDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -142,6 +143,7 @@ export const PAGES = {
     "ExportData": ExportData,
     "FillChecklist": FillChecklist,
     "FillForm": FillForm,
+    "Home": Home,
     "HopCode": HopCode,
     "Integrations": Integrations,
     "KnowledgeBase": KnowledgeBase,
@@ -176,7 +178,7 @@ export const PAGES = {
     "ViewChecklistSubmission": ViewChecklistSubmission,
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
-    "Home": Home,
+    "OversightDashboard": OversightDashboard,
 }
 
 export const pagesConfig = {
