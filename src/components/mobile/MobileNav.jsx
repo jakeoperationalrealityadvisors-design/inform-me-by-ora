@@ -37,6 +37,7 @@ const PAGE_TO_NAV = {
     Messages: 'Messages',
     Scanner: 'Scanner',
     Settings: 'Settings',
+    OversightDashboard: 'OversightDashboard',
 };
 
 const MORE_PAGES = new Set(['Reports', 'Messages', 'Scanner', 'Settings',
@@ -140,6 +141,7 @@ export default function MobileNav() {
                     { label: 'Documents', path: 'Documents' },
                     { label: 'Reports', path: 'Reports' },
                     { label: 'Messages', path: 'Messages' },
+                    { label: 'Oversight', path: 'OversightDashboard' },
                 ].map(item => {
                     const active = activeNav === item.path;
                     return (

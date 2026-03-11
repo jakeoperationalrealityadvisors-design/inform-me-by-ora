@@ -342,10 +342,15 @@ export default function Settings() {
                                 System overview and management console
                             </CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <Link to={createPageUrl('AdminDashboard')}>
+                        <CardContent className="space-y-2">
+                            <Link to={createPageUrl('OversightDashboard')}>
                                 <Button className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]">
-                                    Open Dashboard
+                                    Open Oversight Dashboard
+                                </Button>
+                            </Link>
+                            <Link to={createPageUrl('AdminDashboard')}>
+                                <Button variant="outline" className="w-full border-blue-900/30 text-blue-300 hover:bg-blue-950/50">
+                                    Legacy Dashboard
                                 </Button>
                             </Link>
                         </CardContent>
