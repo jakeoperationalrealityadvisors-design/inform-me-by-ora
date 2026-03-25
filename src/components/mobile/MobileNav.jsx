@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, ClipboardList, CheckSquare, ListTodo, FolderOpen, MoreHorizontal, BarChart3, Settings, Scan, MessageSquare } from 'lucide-react';
+import { Home, ClipboardList, ListTodo, FolderOpen, MoreHorizontal, BarChart3, Settings, Scan, MessageSquare, TrendingUp, Users, Zap, Shield, ChevronRight, Eye, Sparkles, CreditCard } from 'lucide-react';
 import { motion } from 'framer-motion';
 import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator
@@ -57,6 +57,26 @@ export default function MobileNav() {
         { name: 'Forms',  icon: ClipboardList, path: 'Submissions' },
         { name: 'Tasks',  icon: ListTodo,       path: 'MyTasks' },
         { name: 'Docs',   icon: FolderOpen,     path: 'Documents' },
+    ];
+
+    const [sidebarExpanded, setSidebarExpanded] = useState(true);
+
+    const sidebarItems = [
+        { label: 'Home',        icon: Home,          path: 'Home' },
+        { label: 'Submissions', icon: ClipboardList, path: 'Submissions' },
+        { label: 'Tasks',       icon: ListTodo,      path: 'MyTasks' },
+        { label: 'Documents',   icon: FolderOpen,    path: 'Documents' },
+        { label: 'Reports',     icon: BarChart3,     path: 'Reports' },
+        { label: 'Analytics',   icon: TrendingUp,    path: 'AnalyticsDashboard' },
+        { label: 'Messages',    icon: MessageSquare, path: 'Messages' },
+        { label: 'Automations', icon: Zap,           path: 'ManageAutomations' },
+        { label: 'AI Assistant',icon: Sparkles,      path: 'AIAssistantPage' },
+    ];
+
+    const adminItems = [
+        { label: 'Oversight',   icon: Eye,           path: 'OversightDashboard' },
+        { label: 'Users',       icon: Users,         path: 'UserManagement' },
+        { label: 'Billing',     icon: CreditCard,    path: 'AdminBilling' },
     ];
 
     return (
@@ -126,42 +146,91 @@ export default function MobileNav() {
                 </div>
             </nav>
 
-            {/* ── DESKTOP TOP NAV BAR ── */}
-            <nav className="hidden sm:flex fixed top-0 left-0 right-0 z-40 bg-[#0d1120]/95 backdrop-blur border-b border-white/5 px-6 h-12 items-center gap-1">
-                <div className="flex items-center gap-1 mr-6">
-                    <div className="w-6 h-6 rounded-md bg-gradient-to-br from-orange-500 to-blue-700 flex items-center justify-center mr-1.5">
+            {/* ── DESKTOP SIDEBAR ── */}
+            <aside
+                className={`hidden sm:flex fixed top-0 left-0 bottom-0 z-40 flex-col bg-[#080c14] border-r border-white/5 transition-all duration-200 ${sidebarExpanded ? 'w-56' : 'w-16'}`}
+            >
+                {/* Logo */}
+                <div className={`flex items-center h-14 px-4 border-b border-white/5 ${sidebarExpanded ? 'gap-2.5' : 'justify-center'}`}>
+                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-500 to-blue-700 flex items-center justify-center shrink-0">
                         <span className="text-white text-xs font-bold">I</span>
                     </div>
-                    <span className="text-white font-bold text-sm">InForm Me</span>
+                    {sidebarExpanded && <span className="text-white font-bold text-sm tracking-tight">InForm Me</span>}
                 </div>
-                {[
-                    { label: 'Home', path: 'Home' },
-                    { label: 'Submissions', path: 'Submissions' },
-                    { label: 'Tasks', path: 'MyTasks' },
-                    { label: 'Documents', path: 'Documents' },
-                    { label: 'Reports', path: 'Reports' },
-                    { label: 'Messages', path: 'Messages' },
-                    { label: 'Oversight', path: 'OversightDashboard' },
-                ].map(item => {
-                    const active = activeNav === item.path;
-                    return (
-                        <Link
-                            key={item.path}
-                            to={createPageUrl(item.path)}
-                            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                                active ? 'bg-orange-500/15 text-orange-400' : 'text-white/50 hover:text-white hover:bg-white/5'
-                            }`}
-                        >
-                            {item.label}
-                        </Link>
-                    );
-                })}
-                <div className="ml-auto flex items-center gap-2">
-                    <Link to={createPageUrl('Settings')} className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors">
-                        <Settings className="w-4 h-4" />
+
+                {/* Main nav */}
+                <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
+                    {sidebarItems.map(({ label, icon: Icon, path }) => {
+                        const active = activeNav === path;
+                        return (
+                            <Link
+                                key={path}
+                                to={createPageUrl(path)}
+                                title={!sidebarExpanded ? label : undefined}
+                                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors group relative ${
+                                    active
+                                        ? 'bg-orange-500/15 text-orange-400'
+                                        : 'text-white/45 hover:text-white hover:bg-white/5'
+                                }`}
+                            >
+                                <Icon className="w-4.5 h-4.5 shrink-0" size={18} />
+                                {sidebarExpanded && <span className="truncate">{label}</span>}
+                                {active && sidebarExpanded && (
+                                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-orange-500" />
+                                )}
+                            </Link>
+                        );
+                    })}
+
+                    {/* Admin section */}
+                    <div className={`pt-3 mt-2 border-t border-white/5 space-y-0.5`}>
+                        {sidebarExpanded && (
+                            <p className="px-3 pb-1 text-[10px] uppercase tracking-widest text-white/20 font-semibold">Admin</p>
+                        )}
+                        {adminItems.map(({ label, icon: Icon, path }) => {
+                            const active = activeNav === path;
+                            return (
+                                <Link
+                                    key={path}
+                                    to={createPageUrl(path)}
+                                    title={!sidebarExpanded ? label : undefined}
+                                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                                        active
+                                            ? 'bg-orange-500/15 text-orange-400'
+                                            : 'text-white/35 hover:text-white hover:bg-white/5'
+                                    }`}
+                                >
+                                    <Icon size={18} className="shrink-0" />
+                                    {sidebarExpanded && <span className="truncate">{label}</span>}
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </nav>
+
+                {/* Bottom: settings + collapse toggle */}
+                <div className="p-2 border-t border-white/5 space-y-0.5">
+                    <Link
+                        to={createPageUrl('Settings')}
+                        title={!sidebarExpanded ? 'Settings' : undefined}
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                            activeNav === 'Settings'
+                                ? 'bg-orange-500/15 text-orange-400'
+                                : 'text-white/35 hover:text-white hover:bg-white/5'
+                        }`}
+                    >
+                        <Settings size={18} className="shrink-0" />
+                        {sidebarExpanded && <span>Settings</span>}
                     </Link>
+                    <button
+                        onClick={() => setSidebarExpanded(v => !v)}
+                        className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-white/25 hover:text-white/60 hover:bg-white/5 transition-colors"
+                    >
+                        <ChevronRight size={18} className={`shrink-0 transition-transform ${sidebarExpanded ? 'rotate-180' : ''}`} />
+                        {sidebarExpanded && <span className="text-sm">Collapse</span>}
+                    </button>
                 </div>
-            </nav>
+            </aside>
         </>
     );
 }

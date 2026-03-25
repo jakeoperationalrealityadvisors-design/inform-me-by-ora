@@ -173,7 +173,7 @@ export default function Layout({ children, currentPageName }) {
                         }
                     `}</style>
                         <ErrorBoundary>
-                            <div className="sm:pt-12">
+                            <div className="sm:pl-56">
                                 {children}
                             </div>
                         </ErrorBoundary>
