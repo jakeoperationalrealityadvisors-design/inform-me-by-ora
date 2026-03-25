@@ -6,7 +6,7 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import PushForm from './pages/PushForm';
-import BillingSuccess from './pages/BillingSuccess';
+import AdminBilling from './pages/AdminBilling';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -61,7 +61,6 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/PushForm" element={<LayoutWrapper currentPageName="PushForm"><PushForm /></LayoutWrapper>} />
-      <Route path="/BillingSuccess" element={<LayoutWrapper currentPageName="BillingSuccess"><BillingSuccess /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
