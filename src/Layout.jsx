@@ -174,14 +174,17 @@ export default function Layout({ children, currentPageName }) {
                     `}</style>
                         <ErrorBoundary>
                             <div className="sidebar-content">
+                                {children}
+                            </div>
+                        </ErrorBoundary>
                         <MobileNav />
                         <CookieConsent />
-                    </div>
-                    </WebSocketProvider>
-                    </ConnectionManager>
+                        </div>
+                        </WebSocketProvider>
+                        </ConnectionManager>
                     </UIProfileProvider>
                     </LanguageProvider>
-                    </ThemeProvider>
-                    </SecurityProvider>
+                </ThemeProvider>
+            </SecurityProvider>
     );
 }
