@@ -156,6 +156,14 @@ export default function FillForm() {
                         ? 'You\'re offline. Your form will be submitted automatically when you reconnect.'
                         : 'Your form has been submitted successfully'}
                 </p>
+                <Link to={createPageUrl('Home')}>
+                    <Button>Go Home</Button>
+                </Link>
+            </div>
+        );
+    }
+
+    return (
         <>
         <div className="min-h-screen bg-[#0a0e17] overflow-y-auto">
             {/* Header */}
