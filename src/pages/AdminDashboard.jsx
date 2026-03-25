@@ -3,12 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Users, Building2, FileText, CheckSquare, ClipboardList, AlertCircle, TrendingUp, Activity, Zap, Shield } from 'lucide-react';
+import { ArrowLeft, Users, Building2, FileText, CheckSquare, ClipboardList, AlertCircle, TrendingUp, Activity, Zap, Shield, CreditCard } from 'lucide-react';
+import AdminBillingPanel from '@/components/billing/AdminBillingPanel';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import RoleGuard from '@/components/auth/RoleGuard';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const COLORS = ['#FF8C00', '#1E40AF', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
@@ -312,6 +314,14 @@ function AdminDashboardContent() {
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Billing Panel */}
+                <div className="mb-8">
+                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <CreditCard className="w-5 h-5 text-[#FF8C00]" /> Billing Overview
+                    </h2>
+                    <AdminBillingPanel />
+                </div>
 
                 {/* Quick Actions */}
                 <Card className="bg-[#0f1419] border-blue-900/30">
