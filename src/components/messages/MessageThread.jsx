@@ -3,9 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Send, Paperclip, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Send, ChevronDown, WifiOff, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { offlineStorage } from '@/components/mobile/OfflineStorage';
 
 export default function MessageThread({ conversation, currentUser, onBack }) {
     const queryClient = useQueryClient();
@@ -42,9 +43,30 @@ export default function MessageThread({ conversation, currentUser, onBack }) {
         });
     }, [conversation.messages, currentUser.email]);
     
+    // Flush offline queued messages for this conversation when online
+    useEffect(() => {
+        const flush = async () => {
+            if (!navigator.onLine) return;
+            const queue = await offlineStorage.getSyncQueue();
+            const pending = queue.filter(item => !item.synced && item.entity === 'Message' && item.data?.conversation_id === conversation.id);
+            for (const item of pending) {
+                try {
+                    await base44.entities.Message.create(item.data);
+                    await offlineStorage.deleteData('syncQueue', item.id);
+                    queryClient.invalidateQueries(['messages']);
+                } catch (e) {
+                    console.error('Failed to flush queued message:', e);
+                }
+            }
+        };
+        window.addEventListener('online', flush);
+        flush();
+        return () => window.removeEventListener('online', flush);
+    }, [conversation.id]);
+
     const sendMessageMutation = useMutation({
         mutationFn: async (content) => {
-            return await base44.entities.Message.create({
+            const payload = {
                 content,
                 sender_email: currentUser.email,
                 sender_name: currentUser.full_name || currentUser.email,
@@ -53,10 +75,19 @@ export default function MessageThread({ conversation, currentUser, onBack }) {
                 conversation_name: conversation.name,
                 participants: conversation.participants,
                 read_by: [currentUser.email]
-            });
+            };
+
+            if (!navigator.onLine) {
+                // Queue for later
+                await offlineStorage.addToSyncQueue('create', 'Message', payload, { queued: true });
+                toast.info('No connection — message queued', { icon: '📭' });
+                return { queued: true, content };
+            }
+
+            return await base44.entities.Message.create(payload);
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['messages']);
+        onSuccess: (data) => {
+            if (!data?.queued) queryClient.invalidateQueries(['messages']);
             setMessage('');
         },
         onError: (error) => {
@@ -184,11 +215,19 @@ export default function MessageThread({ conversation, currentUser, onBack }) {
                     <Button
                         type="submit"
                         disabled={!message.trim() || sendMessageMutation.isPending}
-                        className="bg-purple-600 hover:bg-purple-700"
+                        className={`${
+                            !navigator.onLine ? 'bg-slate-600 hover:bg-slate-700' : 'bg-purple-600 hover:bg-purple-700'
+                        }`}
+                        title={!navigator.onLine ? 'Offline — will queue' : 'Send'}
                     >
-                        <Send className="w-4 h-4" />
+                        {!navigator.onLine ? <WifiOff className="w-4 h-4" /> : <Send className="w-4 h-4" />}
                     </Button>
                 </form>
+                {!navigator.onLine && (
+                    <p className="text-xs text-yellow-500/80 flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> Offline — messages will be queued and sent automatically when reconnected
+                    </p>
+                )}
             </div>
         </div>
     );

@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Send, Loader2, CheckCircle, ChevronDown, Camera, Share2, X } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, CheckCircle, ChevronDown, Camera, Share2, X, WifiOff } from 'lucide-react';
 import ShareFormDialog from '@/components/forms/ShareFormDialog';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { motion, AnimatePresence } from 'framer-motion';
 import DynamicField from '@/components/forms/DynamicField';
 import { logActivity } from '@/components/activity/ActivityLogger';
+import { offlineStorage } from '@/components/mobile/OfflineStorage';
 
 export default function FillForm() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -52,6 +53,12 @@ export default function FillForm() {
     
     const submitMutation = useMutation({
         mutationFn: async (data) => {
+            // If offline, queue it
+            if (!navigator.onLine) {
+                await offlineStorage.addToSyncQueue('create', 'FormSubmission', data, { form_title: form.title });
+                return { queued: true };
+            }
+
             const submission = await base44.entities.FormSubmission.create(data);
             
             await logActivity({
@@ -78,9 +85,9 @@ export default function FillForm() {
             
             return submission;
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries(['submissions']);
-            setSubmitted(true);
+            setSubmitted(data?.queued ? 'queued' : true);
         }
     });
     
@@ -131,35 +138,24 @@ export default function FillForm() {
     }
     
     if (submitted) {
+        const isQueued = submitted === 'queued';
         return (
             <div className="min-h-screen bg-[#0a0e17] flex flex-col items-center justify-center p-4">
                 <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="w-20 h-20 rounded-full bg-blue-950/50 flex items-center justify-center mb-6 border border-blue-600/30"
+                    className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 border ${
+                        isQueued ? 'bg-yellow-950/50 border-yellow-600/30' : 'bg-blue-950/50 border-blue-600/30'
+                    }`}
                 >
-                    <CheckCircle className="w-10 h-10 text-blue-500" />
+                    {isQueued ? <WifiOff className="w-10 h-10 text-yellow-400" /> : <CheckCircle className="w-10 h-10 text-blue-500" />}
                 </motion.div>
-                <h2 className="text-2xl font-bold text-white mb-2">Submitted!</h2>
-                <p className="text-blue-300 mb-6">Your form has been submitted successfully</p>
-                <div className="flex gap-3">
-                    <Button variant="outline" className="border-blue-800 text-blue-300 hover:bg-blue-950/50" onClick={() => {
-                        setResponses({});
-                        setSubmitterName('');
-                        setLocation('');
-                        setSubmitted(false);
-                    }}>
-                        Fill Another
-                    </Button>
-                    <Link to={createPageUrl('Home')}>
-                        <Button className="bg-blue-600 hover:bg-blue-700">Back to Home</Button>
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-    
-    return (
+                <h2 className="text-2xl font-bold text-white mb-2">{isQueued ? 'Queued for Sync' : 'Submitted!'}</h2>
+                <p className="text-blue-300 mb-6">
+                    {isQueued
+                        ? 'You\'re offline. Your form will be submitted automatically when you reconnect.'
+                        : 'Your form has been submitted successfully'}
+                </p>
         <>
         <div className="min-h-screen bg-[#0a0e17] overflow-y-auto">
             {/* Header */}
