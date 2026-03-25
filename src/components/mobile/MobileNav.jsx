@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Home, ClipboardList, ListTodo, FolderOpen, MoreHorizontal, BarChart3, Settings, Scan, MessageSquare, TrendingUp, Users, Zap, Shield, ChevronRight, Eye, Sparkles, CreditCard } from 'lucide-react';

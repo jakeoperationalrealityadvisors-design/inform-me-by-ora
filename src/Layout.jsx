@@ -173,14 +173,6 @@ export default function Layout({ children, currentPageName }) {
                         }
                     `}</style>
                         <ErrorBoundary>
-                            <div className="hidden sm:block" style={{ paddingLeft: 'var(--sidebar-w, 224px)', transition: 'padding-left 0.2s' }} />
-                            <div className="sm:hidden" />
-                            <div style={{ paddingLeft: 'var(--sidebar-w, 224px)', transition: 'padding-left 0.2s' }} className="hidden sm:block">
-                                {/* spacer handled above */}
-                            </div>
-                            <div className="sm:hidden">
-                                {/* mobile - no sidebar padding */}
-                            </div>
                             <div>
                                 {children}
                             </div>
