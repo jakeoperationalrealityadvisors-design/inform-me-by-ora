@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity, Shield, Building2, Book, TrendingUp, Sparkles, Smartphone, Lightbulb, HelpCircle, Rocket, ClipboardCheck } from 'lucide-react';
+import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity, Shield, Building2, Book, TrendingUp, Sparkles, Smartphone, Lightbulb, HelpCircle, Rocket, ClipboardCheck, Signal } from 'lucide-react';
+import ExperienceLevelPicker from '@/components/settings/ExperienceLevelPicker';
 import AppPermissions from '@/components/settings/AppPermissions';
 import { TourTrigger } from '@/components/tutorial/OnboardingTour';
 import { useUserRole } from '@/components/auth/RoleGuard';
@@ -103,36 +104,28 @@ export default function Settings() {
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>
                         <CardTitle className="text-white">Experience Level</CardTitle>
+                        <p className="text-blue-400 text-sm">Controls layout density, button size, and feature visibility across the entire app</p>
                     </CardHeader>
-                    <CardContent className="space-y-2">
-                        {[
-                            { value: 'senior', label: 'Extra Large & Simple' },
-                            { value: 'simple', label: 'Simple & Easy' },
-                            { value: 'beginner', label: 'Some Guidance' },
-                            { value: 'intermediate', label: 'I Know Apps' },
-                            { value: 'expert', label: 'Full Features' }
-                        ].map((level) => (
-                            <button
-                                key={level.value}
-                                onClick={() => setTechnicalLevel(level.value)}
-                                className={`w-full p-3 rounded-lg font-medium transition-all text-left ${
-                                    technicalLevel === level.value
-                                        ? 'bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] text-white'
-                                        : 'bg-[#0a0e17] text-blue-300 border border-blue-900/30'
-                                }`}
-                            >
-                                {level.label}
-                            </button>
-                        ))}
+                    <CardContent>
+                        <ExperienceLevelPicker />
+                    </CardContent>
+                </Card>
 
-                        {hasUnsavedChanges && (
-                            <Button
-                                onClick={applyChanges}
-                                className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF] h-12 mt-4"
-                            >
-                                Apply Changes
+                {/* Connectivity Tool */}
+                <Card className="bg-[#0f1419] border-blue-900/20">
+                    <CardHeader>
+                        <CardTitle className="text-white flex items-center gap-2">
+                            <Signal className="w-5 h-5 text-emerald-400" />
+                            Connectivity & Sync
+                        </CardTitle>
+                        <p className="text-blue-400 text-sm">Field network diagnostics, offline status, and sync controls</p>
+                    </CardHeader>
+                    <CardContent>
+                        <Link to={createPageUrl('ConnectivityTool')}>
+                            <Button variant="outline" className="w-full border-emerald-900/30 text-emerald-300 hover:bg-emerald-950/50">
+                                Open Connectivity Tool
                             </Button>
-                        )}
+                        </Link>
                     </CardContent>
                 </Card>
 

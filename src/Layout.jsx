@@ -182,6 +182,7 @@ export default function Layout({ children, currentPageName }) {
                     </div>
                     </WebSocketProvider>
                     </ConnectionManager>
+                    </UIProfileProvider>
                     </LanguageProvider>
                     </ThemeProvider>
                     </SecurityProvider>
