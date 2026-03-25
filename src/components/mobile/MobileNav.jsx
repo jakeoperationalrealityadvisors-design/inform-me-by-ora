@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Home, ClipboardList, ListTodo, FolderOpen, MoreHorizontal, BarChart3, Settings, Scan, MessageSquare, TrendingUp, Users, Zap, Shield, ChevronRight, Eye, Sparkles, CreditCard } from 'lucide-react';
@@ -73,7 +73,7 @@ export default function MobileNav() {
     };
 
     // Set CSS var on mount
-    React.useEffect(() => {
+    useEffect(() => {
         document.documentElement.style.setProperty('--sidebar-w', sidebarExpanded ? '224px' : '64px');
     }, []);
 
