@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, ClipboardList, ListTodo, FolderOpen, MoreHorizontal, BarChart3, Settings, Scan, MessageSquare, TrendingUp, Users, Zap, Shield, ChevronRight, Eye, Sparkles, CreditCard } from 'lucide-react';
+import { Home, ClipboardList, ListTodo, FolderOpen, MoreHorizontal, BarChart3, Settings, Scan, MessageSquare, TrendingUp, Users, Zap, Shield, ChevronRight, Eye, Sparkles, CreditCard, LayoutDashboard, QrCode, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
@@ -46,47 +48,24 @@ const MORE_PAGES = new Set(['Reports', 'Messages', 'Scanner', 'Settings',
 
 export default function MobileNav() {
     const location = useLocation();
+    const { data: user } = useQuery({ queryKey: ['current-user'], queryFn: () => base44.auth.me(), staleTime: 60000, retry: false });
+    const isAdmin = user?.role === 'admin';
 
     const currentPage = location.pathname.split('/').pop() || 'Home';
     const activeNav = PAGE_TO_NAV[currentPage] || currentPage;
     const isActive = (path) => activeNav === path;
     const isMoreActive = MORE_PAGES.has(activeNav);
 
-    const navItems = [
-        { name: 'Home',   icon: Home,          path: 'Home' },
-        { name: 'Forms',  icon: ClipboardList, path: 'Submissions' },
-        { name: 'Tasks',  icon: ListTodo,       path: 'MyTasks' },
-        { name: 'Docs',   icon: FolderOpen,     path: 'Documents' },
-    ];
-
-    const [sidebarExpanded, setSidebarExpanded] = useState(() => {
-        return localStorage.getItem('sidebarExpanded') !== 'false';
-    });
-
-    const toggleSidebar = () => {
-        setSidebarExpanded(v => {
-            const next = !v;
-            localStorage.setItem('sidebarExpanded', String(next));
-            document.documentElement.style.setProperty('--sidebar-w', next ? '224px' : '64px');
-            return next;
-        });
-    };
-
-    // Set CSS var on mount
-    useEffect(() => {
-        document.documentElement.style.setProperty('--sidebar-w', sidebarExpanded ? '224px' : '64px');
-    }, []);
-
-    const sidebarItems = [
-        { label: 'Home',        icon: Home,          path: 'Home' },
-        { label: 'Submissions', icon: ClipboardList, path: 'Submissions' },
-        { label: 'Tasks',       icon: ListTodo,      path: 'MyTasks' },
-        { label: 'Documents',   icon: FolderOpen,    path: 'Documents' },
-        { label: 'Reports',     icon: BarChart3,     path: 'Reports' },
-        { label: 'Analytics',   icon: TrendingUp,    path: 'AnalyticsDashboard' },
-        { label: 'Messages',    icon: MessageSquare, path: 'Messages' },
-        { label: 'Automations', icon: Zap,           path: 'ManageAutomations' },
-        { label: 'AI Assistant',icon: Sparkles,      path: 'AIAssistantPage' },
+    const navItems = isAdmin ? [
+        { name: 'Overview', icon: LayoutDashboard, path: 'AdminOverview' },
+        { name: 'Users',    icon: Users,           path: 'UserManagement' },
+        { name: 'Push',     icon: Zap,             path: 'PushCenter' },
+        { name: 'Forms',    icon: ClipboardList,   path: 'Submissions' },
+    ] : [
+        { name: 'Home',   icon: Home,          path: 'UserDashboard' },
+        { name: 'Tasks',  icon: ClipboardList, path: 'MyTasks' },
+        { name: 'Msgs',   icon: MessageSquare, path: 'Messages' },
+        { name: 'Docs',   icon: FolderOpen,    path: 'Documents' },
     ];
 
     const adminItems = [
