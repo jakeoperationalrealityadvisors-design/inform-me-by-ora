@@ -68,10 +68,19 @@ export default function MobileNav() {
         { name: 'Docs',   icon: FolderOpen,    path: 'Documents' },
     ];
 
-    const adminItems = [
-        { label: 'Oversight',   icon: Eye,           path: 'OversightDashboard' },
-        { label: 'Users',       icon: Users,         path: 'UserManagement' },
-        { label: 'Billing',     icon: CreditCard,    path: 'AdminBilling' },
+    const adminItems = isAdmin ? [
+        { label: 'Overview',    icon: LayoutDashboard, path: 'AdminOverview' },
+        { label: 'Hop Codes',   icon: QrCode,          path: 'HopCodes' },
+        { label: 'Push Center', icon: Zap,             path: 'PushCenter' },
+        { label: 'Org Settings',icon: Building2,       path: 'OrganizationSettings' },
+        { label: 'Setup Wizard',icon: Sparkles,        path: 'SetupWizard' },
+        { label: 'Oversight',   icon: Eye,             path: 'OversightDashboard' },
+        { label: 'Users',       icon: Users,           path: 'UserManagement' },
+        { label: 'Billing',     icon: CreditCard,      path: 'AdminBilling' },
+    ] : [
+        { label: 'Reports',     icon: BarChart3,     path: 'Reports' },
+        { label: 'Scanner',     icon: Scan,          path: 'Scanner' },
+        { label: 'Settings',    icon: Settings,      path: 'Settings' },
     ];
 
     return (
