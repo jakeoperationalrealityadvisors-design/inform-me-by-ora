@@ -45,6 +45,7 @@ Deno.serve(async (req) => {
 
         const planKey = sub?.plan_key || 'trial';
         const status = sub?.status || 'trial';
+        // past_due and canceled = no paid access; trial users always have trial access
         const isActive = status === 'active' || status === 'trialing' || planKey === 'trial';
         const featureLevel = PLAN_FEATURE_LEVEL[isActive ? planKey : 'trial'];
 

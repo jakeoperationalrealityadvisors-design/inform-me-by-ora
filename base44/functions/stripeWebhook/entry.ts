@@ -215,6 +215,9 @@ Deno.serve(async (req) => {
                         plan_key: 'trial',
                         plan_name: 'Free Trial',
                         cancel_at_period_end: false,
+                        stripe_subscription_id: null,
+                        stripe_price_id: null,
+                        is_launch_tier: false,
                     });
                 }
 
