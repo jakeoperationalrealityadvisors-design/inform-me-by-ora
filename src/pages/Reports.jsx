@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import SubscriptionGate from '@/components/billing/SubscriptionGate';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
@@ -337,8 +338,10 @@ function ReportsContent() {
 
 export default function Reports() {
     return (
-        <RoleGuard requiredPermission="can_view_reports">
-            <ReportsContent />
-        </RoleGuard>
+        <SubscriptionGate feature="analytics">
+            <RoleGuard requiredPermission="can_view_reports">
+                <ReportsContent />
+            </RoleGuard>
+        </SubscriptionGate>
     );
 }

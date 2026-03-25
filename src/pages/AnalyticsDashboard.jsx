@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SubscriptionGate from '@/components/billing/SubscriptionGate';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
@@ -313,8 +314,10 @@ function AnalyticsDashboardContent() {
 
 export default function AnalyticsDashboard() {
     return (
-        <RoleGuard allowedRoles={['admin', 'manager']} requiredPermission="can_view_reports">
-            <AnalyticsDashboardContent />
-        </RoleGuard>
+        <SubscriptionGate feature="analytics">
+            <RoleGuard allowedRoles={['admin', 'manager']} requiredPermission="can_view_reports">
+                <AnalyticsDashboardContent />
+            </RoleGuard>
+        </SubscriptionGate>
     );
 }

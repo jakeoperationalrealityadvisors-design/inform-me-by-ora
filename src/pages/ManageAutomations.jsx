@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SubscriptionGate from '@/components/billing/SubscriptionGate';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
@@ -260,8 +261,10 @@ function ManageAutomationsContent() {
 
 export default function ManageAutomations() {
     return (
-        <RoleGuard requiredPermission="can_view_automations">
-            <ManageAutomationsContent />
-        </RoleGuard>
+        <SubscriptionGate feature="automation">
+            <RoleGuard requiredPermission="can_view_automations">
+                <ManageAutomationsContent />
+            </RoleGuard>
+        </SubscriptionGate>
     );
 }
