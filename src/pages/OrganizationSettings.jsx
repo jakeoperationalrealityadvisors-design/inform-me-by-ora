@@ -28,9 +28,9 @@ export default function OrganizationSettings() {
         queryFn: () => base44.auth.me()
     });
     
-    const { data: organization } = useQuery({
+    const { data: organization, isLoading: orgLoading } = useQuery({
         queryKey: ['organization', user?.organization_id],
-        queryFn: () => base44.entities.Organization.filter({ id: user.organization_id }).then(r => r[0]),
+        queryFn: () => base44.entities.Organization.filter({ id: user.organization_id }).then(r => r[0] ?? null),
         enabled: !!user?.organization_id
     });
     
@@ -112,10 +112,27 @@ export default function OrganizationSettings() {
         }
     });
     
-    if (!organization) {
+    if (!user || orgLoading) {
         return (
             <div className="min-h-screen bg-[#0a0e17] flex items-center justify-center">
-                <p className="text-white">Loading organization...</p>
+                <p className="text-white">Loading...</p>
+            </div>
+        );
+    }
+
+    if (!user?.organization_id || organization === null) {
+        return (
+            <div className="min-h-screen bg-[#0a0e17] flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <Building2 className="w-12 h-12 text-blue-400 mx-auto" />
+                    <p className="text-white text-lg font-semibold">No Organization Found</p>
+                    <p className="text-blue-400 text-sm">You are not currently part of an organization.<br/>Contact your admin or sign up to create one.</p>
+                    <Link to="/Settings">
+                        <Button variant="outline" className="border-blue-900/30 text-blue-300">
+                            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Settings
+                        </Button>
+                    </Link>
+                </div>
             </div>
         );
     }
