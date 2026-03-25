@@ -1,4 +1,6 @@
 import React from 'react';
+import { UIProfileProvider } from './components/ui-profile/UIProfileContext';
+import UIProfileStyles from './components/ui-profile/UIProfileStyles';
 import { base44 } from '@/api/base44Client';
 import { LanguageProvider } from './components/language/LanguageContext';
 import { ThemeProvider } from './components/theme/ThemeContext';
@@ -60,11 +62,13 @@ export default function Layout({ children, currentPageName }) {
         <SecurityProvider>
             <ThemeProvider>
                 <LanguageProvider>
-                    <ConnectionManager>
+                    <UIProfileProvider>
+                        <ConnectionManager>
                         <WebSocketProvider>
                         <OfflineIndicator />
                         <InstallPWA />
                         <SyncIndicator />
+                        <UIProfileStyles />
                         <div className="fixed top-4 right-4 z-50 hidden sm:block">
                             <UserProfile />
                         </div>
