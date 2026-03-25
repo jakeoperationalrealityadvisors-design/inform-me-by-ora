@@ -118,7 +118,7 @@ export default function AdminBilling() {
                         <Card key={label} className="bg-[#0f1419] border-blue-900/20">
                             <CardContent className="p-4">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <Icon className={`w-4 h-4 ${color}`} />
+                                    <SumIcon className={`w-4 h-4 ${color}`} />
                                     <span className="text-blue-400 text-xs">{label}</span>
                                 </div>
                                 <p className="text-2xl font-bold text-white">{value}</p>
