@@ -114,6 +114,7 @@ import OversightDashboard from './pages/OversightDashboard';
 import SetupWizard from './pages/SetupWizard';
 import HelpFAQ from './pages/HelpFAQ';
 import AppAudit from './pages/AppAudit';
+import ConnectivityTool from './pages/ConnectivityTool';
 import __Layout from './Layout.jsx';
 
 
@@ -185,6 +186,7 @@ export const PAGES = {
     "SetupWizard": SetupWizard,
     "HelpFAQ": HelpFAQ,
     "AppAudit": AppAudit,
+    "ConnectivityTool": ConnectivityTool,
 }
 
 export const pagesConfig = {
