@@ -59,7 +59,23 @@ export default function MobileNav() {
         { name: 'Docs',   icon: FolderOpen,     path: 'Documents' },
     ];
 
-    const [sidebarExpanded, setSidebarExpanded] = useState(true);
+    const [sidebarExpanded, setSidebarExpanded] = useState(() => {
+        return localStorage.getItem('sidebarExpanded') !== 'false';
+    });
+
+    const toggleSidebar = () => {
+        setSidebarExpanded(v => {
+            const next = !v;
+            localStorage.setItem('sidebarExpanded', String(next));
+            document.documentElement.style.setProperty('--sidebar-w', next ? '224px' : '64px');
+            return next;
+        });
+    };
+
+    // Set CSS var on mount
+    React.useEffect(() => {
+        document.documentElement.style.setProperty('--sidebar-w', sidebarExpanded ? '224px' : '64px');
+    }, []);
 
     const sidebarItems = [
         { label: 'Home',        icon: Home,          path: 'Home' },
@@ -223,7 +239,7 @@ export default function MobileNav() {
                         {sidebarExpanded && <span>Settings</span>}
                     </Link>
                     <button
-                        onClick={() => setSidebarExpanded(v => !v)}
+                        onClick={toggleSidebar}
                         className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-white/25 hover:text-white/60 hover:bg-white/5 transition-colors"
                     >
                         <ChevronRight size={18} className={`shrink-0 transition-transform ${sidebarExpanded ? 'rotate-180' : ''}`} />
