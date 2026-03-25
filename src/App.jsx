@@ -59,6 +59,7 @@ const AuthenticatedApp = () => {
           }
         />
       ))}
+      <Route path="/PushForm" element={<LayoutWrapper currentPageName="PushForm"><PushForm /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
