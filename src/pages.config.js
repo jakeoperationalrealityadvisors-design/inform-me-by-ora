@@ -111,6 +111,9 @@ import ViewChecklistSubmission from './pages/ViewChecklistSubmission';
 import ViewDocument from './pages/ViewDocument';
 import ViewFormSubmission from './pages/ViewFormSubmission';
 import OversightDashboard from './pages/OversightDashboard';
+import SetupWizard from './pages/SetupWizard';
+import HelpFAQ from './pages/HelpFAQ';
+import AppAudit from './pages/AppAudit';
 import __Layout from './Layout.jsx';
 
 
@@ -179,6 +182,9 @@ export const PAGES = {
     "ViewDocument": ViewDocument,
     "ViewFormSubmission": ViewFormSubmission,
     "OversightDashboard": OversightDashboard,
+    "SetupWizard": SetupWizard,
+    "HelpFAQ": HelpFAQ,
+    "AppAudit": AppAudit,
 }
 
 export const pagesConfig = {

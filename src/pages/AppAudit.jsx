@@ -5,7 +5,7 @@ import { createPageUrl } from '@/utils';
 import {
     CheckCircle2, XCircle, Loader2, AlertCircle, Play, ArrowLeft,
     Database, Link2, Shield, Zap, FileText, CheckSquare, ListTodo,
-    FolderOpen, Users, BarChart3, RefreshCw, ExternalLink
+    FolderOpen, Users, BarChart3, RefreshCw, ExternalLink, Circle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
