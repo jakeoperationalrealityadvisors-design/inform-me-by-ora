@@ -7,6 +7,11 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import PushForm from './pages/PushForm';
 import AdminBilling from './pages/AdminBilling';
+import AdminOverview from './pages/AdminOverview';
+import UserDashboard from './pages/UserDashboard';
+import PushCenter from './pages/PushCenter';
+import HopCodes from './pages/HopCodes';
+import HopCodeJoin from './pages/HopCodeJoin';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -62,6 +67,11 @@ const AuthenticatedApp = () => {
       ))}
       <Route path="/PushForm" element={<LayoutWrapper currentPageName="PushForm"><PushForm /></LayoutWrapper>} />
       <Route path="/AdminBilling" element={<LayoutWrapper currentPageName="AdminBilling"><AdminBilling /></LayoutWrapper>} />
+      <Route path="/AdminOverview" element={<LayoutWrapper currentPageName="AdminOverview"><AdminOverview /></LayoutWrapper>} />
+      <Route path="/UserDashboard" element={<LayoutWrapper currentPageName="UserDashboard"><UserDashboard /></LayoutWrapper>} />
+      <Route path="/PushCenter" element={<LayoutWrapper currentPageName="PushCenter"><PushCenter /></LayoutWrapper>} />
+      <Route path="/HopCodes" element={<LayoutWrapper currentPageName="HopCodes"><HopCodes /></LayoutWrapper>} />
+      <Route path="/HopCodeJoin" element={<HopCodeJoin />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
