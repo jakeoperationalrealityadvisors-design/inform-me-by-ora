@@ -109,12 +109,12 @@ export default function AdminBilling() {
                 {/* Summary Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
                     {[
-                        { label: 'Active Paid', value: activeCount, icon: CheckCircle, color: 'text-green-400' },
-                        { label: 'Past Due', value: pastDueCount, icon: AlertCircle, color: 'text-red-400' },
-                        { label: 'Canceled', value: canceledCount, icon: XCircle, color: 'text-slate-400' },
-                        { label: 'Launch Tier Users', value: launchTierCount, icon: Rocket, color: 'text-green-400' },
-                        { label: 'Est. MRR', value: `$${MRR}`, icon: TrendingUp, color: 'text-orange-400' },
-                    ].map(({ label, value, icon: Icon, color }) => (
+                        { label: 'Active Paid', value: activeCount, SumIcon: CheckCircle, color: 'text-green-400' },
+                        { label: 'Past Due', value: pastDueCount, SumIcon: AlertCircle, color: 'text-red-400' },
+                        { label: 'Canceled', value: canceledCount, SumIcon: XCircle, color: 'text-slate-400' },
+                        { label: 'Launch Tier Users', value: launchTierCount, SumIcon: Rocket, color: 'text-green-400' },
+                        { label: 'Est. MRR', value: `$${MRR}`, SumIcon: TrendingUp, color: 'text-orange-400' },
+                    ].map(({ label, value, SumIcon, color }) => (
                         <Card key={label} className="bg-[#0f1419] border-blue-900/20">
                             <CardContent className="p-4">
                                 <div className="flex items-center gap-2 mb-1">
