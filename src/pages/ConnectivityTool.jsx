@@ -334,8 +334,8 @@ export default function ConnectivityTool() {
                             <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
                                 <div className="border-t border-white/5 p-4 space-y-4 text-sm text-white/50">
                                     {[
-                                        ['App shows offline but I have signal', 'Try refreshing the page. The offline detector uses the browser's network API — sometimes it lags. If signal is weak, the ping test may timeout.'],
-                                        ['Sync fails after reconnecting', 'Tap "Sync Now" manually. If that fails, check your account session hasn't expired. Try logging out and back in.'],
+                                        ['App shows offline but I have signal', "Try refreshing the page. The offline detector uses the browser's network API — sometimes it lags. If signal is weak, the ping test may timeout."],
+                                        ['Sync fails after reconnecting', "Tap 'Sync Now' manually. If that fails, check your account session hasn't expired. Try logging out and back in."],
                                         ['Data I submitted isn\'t showing up', 'Check the queue count above. If items are stuck in queue, force sync. If the queue is empty and data still missing, contact support.'],
                                         ['App is very slow on field network', 'Enable Offline Mode in Settings to pre-cache forms and checklists. This reduces live requests to near zero.'],
                                         ['Push notifications not arriving', 'Go to Settings → Notifications. Ensure permissions are granted in your browser/device settings, then tap "Send Test Notification".'],
