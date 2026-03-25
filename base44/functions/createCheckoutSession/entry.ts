@@ -1,10 +1,24 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 import Stripe from 'npm:stripe@14.21.0';
 
-const PLAN_PRICES = {
-    basic:      { amount: 2900,  name: 'Basic Plan',        interval: 'month', forms: 50,   users: 25  },
-    professional: { amount: 7900, name: 'Professional Plan', interval: 'month', forms: -1,   users: 100 },
-    enterprise: { amount: 19900, name: 'Enterprise Plan',   interval: 'month', forms: -1,   users: -1  },
+// Server-side price ID map — resolved from secrets
+function getPriceId(planKey) {
+    const map = {
+        launch_1:   Deno.env.get('STRIPE_PRICE_LAUNCH_1'),
+        launch_10:  Deno.env.get('STRIPE_PRICE_LAUNCH_10'),
+        basic:      Deno.env.get('STRIPE_PRICE_BASIC'),
+        pro:        Deno.env.get('STRIPE_PRICE_PRO'),
+        enterprise: Deno.env.get('STRIPE_PRICE_ENTERPRISE'),
+    };
+    return map[planKey] || null;
+}
+
+const PLAN_META = {
+    launch_1:   { name: 'Launch Access',    isLaunchTier: true,  cap: 50 },
+    launch_10:  { name: 'Founding Access',  isLaunchTier: true,  cap: 50 },
+    basic:      { name: 'Basic',            isLaunchTier: false, cap: null },
+    pro:        { name: 'Professional',     isLaunchTier: false, cap: null },
+    enterprise: { name: 'Enterprise',       isLaunchTier: false, cap: null },
 };
 
 Deno.serve(async (req) => {
@@ -13,58 +27,62 @@ Deno.serve(async (req) => {
         const user = await base44.auth.me();
         if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-        const { planId, successUrl, cancelUrl } = await req.json();
+        const { planKey, successUrl, cancelUrl } = await req.json();
+        const plan = PLAN_META[planKey];
+        if (!plan) return Response.json({ error: 'Invalid plan key' }, { status: 400 });
 
-        if (!PLAN_PRICES[planId]) {
-            return Response.json({ error: 'Invalid plan' }, { status: 400 });
+        const priceId = getPriceId(planKey);
+        if (!priceId) return Response.json({ error: `Price ID not configured for plan: ${planKey}` }, { status: 500 });
+
+        // Enforce launch tier caps
+        if (plan.isLaunchTier) {
+            const existing = await base44.asServiceRole.entities.UserSubscription.filter({
+                plan_key: planKey,
+                status: 'active',
+            });
+            if (existing.length >= plan.cap) {
+                return Response.json({
+                    error: `Sorry, all ${plan.cap} ${plan.name} spots have been taken.`,
+                    capReached: true,
+                }, { status: 409 });
+            }
         }
 
         const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
-        const plan = PLAN_PRICES[planId];
 
         // Find or create Stripe customer
-        const existingCustomers = await stripe.customers.list({ email: user.email, limit: 1 });
-        let customer;
-        if (existingCustomers.data.length > 0) {
-            customer = existingCustomers.data[0];
-        } else {
-            customer = await stripe.customers.create({
+        const existing = await stripe.customers.list({ email: user.email, limit: 1 });
+        let customer = existing.data.length > 0
+            ? existing.data[0]
+            : await stripe.customers.create({
                 email: user.email,
                 name: user.full_name,
-                metadata: { user_id: user.id }
+                metadata: { user_id: user.id, app: 'InformMe' },
             });
-        }
+
+        const appUrl = req.headers.get('origin') || 'https://app.base44.com';
 
         const session = await stripe.checkout.sessions.create({
             customer: customer.id,
             mode: 'subscription',
             payment_method_types: ['card'],
-            line_items: [{
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: plan.name,
-                        description: `InformMe ${plan.name} — ${plan.forms === -1 ? 'Unlimited' : plan.forms} forms, ${plan.users === -1 ? 'Unlimited' : plan.users} users`,
-                    },
-                    unit_amount: plan.amount,
-                    recurring: { interval: plan.interval },
-                },
-                quantity: 1,
-            }],
+            line_items: [{ price: priceId, quantity: 1 }],
             metadata: {
                 user_id: user.id,
                 user_email: user.email,
-                plan_id: planId,
+                plan_key: planKey,
+                app: 'InformMe',
             },
             subscription_data: {
                 metadata: {
                     user_id: user.id,
                     user_email: user.email,
-                    plan_id: planId,
-                }
+                    plan_key: planKey,
+                    app: 'InformMe',
+                },
             },
-            success_url: successUrl || 'https://app.base44.com/CustomerPortal?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url: cancelUrl || 'https://app.base44.com/Pricing',
+            success_url: successUrl || `${appUrl}/CustomerPortal?success=true`,
+            cancel_url: cancelUrl || `${appUrl}/Pricing`,
         });
 
         return Response.json({ url: session.url, sessionId: session.id });

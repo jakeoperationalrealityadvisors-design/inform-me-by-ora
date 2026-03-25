@@ -1,11 +1,36 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
-import Stripe from 'npm:stripe@14.21.0';
 
-const PLAN_LIMITS = {
-    trial:        { forms: 5,  users: 3,   reports: 10,  automation: false, analytics: false, ai: false },
-    basic:        { forms: 50, users: 25,  reports: -1,  automation: false, analytics: true,  ai: false },
-    professional: { forms: -1, users: 100, reports: -1,  automation: true,  analytics: true,  ai: true  },
-    enterprise:   { forms: -1, users: -1,  reports: -1,  automation: true,  analytics: true,  ai: true  },
+const FEATURE_ACCESS = {
+    trial: {
+        maxForms: 5, maxUsers: 3, maxReports: 10,
+        automation: false, analytics: false, ai: false,
+        advancedRoles: false, apiAccess: false,
+    },
+    basic: {
+        maxForms: 50, maxUsers: 25, maxReports: -1,
+        automation: false, analytics: true, ai: false,
+        advancedRoles: false, apiAccess: false,
+    },
+    pro: {
+        maxForms: -1, maxUsers: 100, maxReports: -1,
+        automation: true, analytics: true, ai: true,
+        advancedRoles: true, apiAccess: false,
+    },
+    enterprise: {
+        maxForms: -1, maxUsers: -1, maxReports: -1,
+        automation: true, analytics: true, ai: true,
+        advancedRoles: true, apiAccess: true,
+    },
+};
+
+// Launch tiers map to pro feature level
+const PLAN_FEATURE_LEVEL = {
+    trial:      'trial',
+    launch_1:   'pro',
+    launch_10:  'pro',
+    basic:      'basic',
+    pro:        'pro',
+    enterprise: 'enterprise',
 };
 
 Deno.serve(async (req) => {
@@ -14,41 +39,31 @@ Deno.serve(async (req) => {
         const user = await base44.auth.me();
         if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-        let plan = user.subscription_plan || 'trial';
-        let status = user.subscription_status || 'trial';
-        let periodEnd = user.subscription_current_period_end || null;
+        // UserSubscription is source of truth
+        const subs = await base44.entities.UserSubscription.filter({ user_email: user.email });
+        const sub = subs?.[0];
 
-        // If user has a Stripe subscription ID, verify with Stripe for source of truth
-        if (user.stripe_subscription_id) {
-            try {
-                const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
-                const subscription = await stripe.subscriptions.retrieve(user.stripe_subscription_id);
-                status = subscription.status;
-
-                if (status !== 'active' && status !== 'trialing') {
-                    plan = 'trial';
-                }
-
-                periodEnd = subscription.current_period_end;
-            } catch (stripeErr) {
-                console.warn('Stripe verification failed, using cached data:', stripeErr.message);
-            }
-        }
-
-        const isActive = status === 'active' || status === 'trialing' || plan === 'trial';
-        const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.trial;
+        const planKey = sub?.plan_key || 'trial';
+        const status = sub?.status || 'trial';
+        const isActive = status === 'active' || status === 'trialing' || planKey === 'trial';
+        const featureLevel = PLAN_FEATURE_LEVEL[isActive ? planKey : 'trial'];
 
         return Response.json({
-            plan,
+            planKey,
+            planName: sub?.plan_name || 'Free Trial',
             status,
             isActive,
-            periodEnd,
-            limits,
-            isTrial: plan === 'trial',
-            isPaid: plan !== 'trial' && isActive,
+            isTrial: planKey === 'trial',
+            isPaid: planKey !== 'trial' && isActive,
+            isLaunchTier: sub?.is_launch_tier || false,
+            currentPeriodEnd: sub?.current_period_end || null,
+            cancelAtPeriodEnd: sub?.cancel_at_period_end || false,
+            billingInterval: sub?.billing_interval || null,
+            featureLevel,
+            limits: FEATURE_ACCESS[featureLevel] || FEATURE_ACCESS.trial,
         });
     } catch (error) {
-        console.error('Check subscription error:', error);
+        console.error('checkSubscription error:', error);
         return Response.json({ error: error.message }, { status: 500 });
     }
 });

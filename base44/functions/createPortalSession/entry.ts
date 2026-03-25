@@ -10,8 +10,11 @@ Deno.serve(async (req) => {
         const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
         const { returnUrl } = await req.json().catch(() => ({}));
 
-        // Find Stripe customer
-        let customerId = user.stripe_customer_id;
+        // Get customer ID from UserSubscription record first
+        const subs = await base44.entities.UserSubscription.filter({ user_email: user.email });
+        let customerId = subs?.[0]?.stripe_customer_id;
+
+        // Fallback: search Stripe directly
         if (!customerId) {
             const customers = await stripe.customers.list({ email: user.email, limit: 1 });
             if (customers.data.length === 0) {
@@ -20,9 +23,10 @@ Deno.serve(async (req) => {
             customerId = customers.data[0].id;
         }
 
+        const appUrl = req.headers.get('origin') || 'https://app.base44.com';
         const session = await stripe.billingPortal.sessions.create({
             customer: customerId,
-            return_url: returnUrl || 'https://app.base44.com/CustomerPortal',
+            return_url: returnUrl || `${appUrl}/CustomerPortal`,
         });
 
         return Response.json({ url: session.url });
