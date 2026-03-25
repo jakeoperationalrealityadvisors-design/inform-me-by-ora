@@ -69,7 +69,7 @@ export default function Layout({ children, currentPageName }) {
                         <InstallPWA />
                         <SyncIndicator />
                         <UIProfileStyles />
-                        <div className="fixed top-4 right-4 z-50 hidden sm:block">
+                        <div className="fixed top-4 right-4 z-50 hidden sm:block" style={{ display: 'none' }}>
                             <UserProfile />
                         </div>
                         <div className="ora-theme" data-senior-mode={seniorMode}>
@@ -173,10 +173,7 @@ export default function Layout({ children, currentPageName }) {
                         }
                     `}</style>
                         <ErrorBoundary>
-                            <div>
-                                {children}
-                            </div>
-                        </ErrorBoundary>
+                            <div className="sidebar-content">
                         <MobileNav />
                         <CookieConsent />
                     </div>
