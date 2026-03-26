@@ -191,6 +191,9 @@ export const PAGES = {
 
 export const pagesConfig = {
     mainPage: "RoleRedirect",
-    Pages: { ...PAGES, RoleRedirect },
+    Pages: {
+        ...PAGES,
+        RoleRedirect,
+    },
     Layout: __Layout,
 };

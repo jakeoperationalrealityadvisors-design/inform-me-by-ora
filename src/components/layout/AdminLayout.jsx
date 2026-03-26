@@ -81,12 +81,11 @@ export default function AdminLayout({ children, currentPageName, user }) {
     return (
         <div className="min-h-screen flex bg-slate-900">
             {/* Desktop Sidebar */}
-            <aside className={`hidden sm:flex flex-col flex-shrink-0 bg-slate-800 border-r border-slate-700 transition-all duration-200 ${collapsed ? 'w-16' : 'w-56'}`}>
+            <aside className={`hidden sm:flex flex-col flex-shrink-0 bg-slate-800 border-r border-slate-700 transition-all duration-200 relative ${collapsed ? 'w-16' : 'w-56'}`}>
                 <SidebarContent />
                 <button
                     onClick={() => setCollapsed(!collapsed)}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 translate-x-full bg-slate-700 hover:bg-slate-600 text-slate-300 p-1 rounded-r-lg transition-colors"
-                    style={{ left: collapsed ? '3.5rem' : '13.5rem' }}
+                    className="hidden sm:flex absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-700 hover:bg-slate-600 text-slate-300 items-center justify-center rounded-full border border-slate-600 transition-colors z-10"
                 >
                     {collapsed ? <ChevronRight className="w-3 h-3" /> : <ChevronLeft className="w-3 h-3" />}
                 </button>
