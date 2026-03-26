@@ -58,16 +58,19 @@ export function useSyncManager() {
         }
     };
 
-    // Auto-sync when coming online
+    // Auto-sync when coming online or triggered by service worker
     useEffect(() => {
         const handleOnline = () => {
-            if (pendingItems > 0) {
-                syncNow();
-            }
+            if (pendingItems > 0) syncNow();
         };
+        const handleSwSync = () => syncNow();
 
         window.addEventListener('online', handleOnline);
-        return () => window.removeEventListener('online', handleOnline);
+        window.addEventListener('sw-trigger-sync', handleSwSync);
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('sw-trigger-sync', handleSwSync);
+        };
     }, [pendingItems]);
 
     return { syncing, pendingItems, syncNow };
