@@ -83,6 +83,41 @@ export default function MobileNav() {
         { label: 'Settings',    icon: Settings,      path: 'Settings' },
     ];
 
+    const sidebarItems = isAdmin ? [
+        { label: 'Overview',    icon: LayoutDashboard, path: 'AdminOverview' },
+        { label: 'Push Center', icon: Zap,             path: 'PushCenter' },
+        { label: 'Submissions', icon: ClipboardList,   path: 'Submissions' },
+        { label: 'Tasks',       icon: ListTodo,        path: 'MyTasks' },
+        { label: 'Documents',   icon: FolderOpen,      path: 'Documents' },
+        { label: 'Reports',     icon: BarChart3,       path: 'Reports' },
+        { label: 'Messages',    icon: MessageSquare,   path: 'Messages' },
+        { label: 'AI Assistant',icon: Sparkles,        path: 'AIAssistantPage' },
+    ] : [
+        { label: 'Home',        icon: Home,          path: 'UserDashboard' },
+        { label: 'My Tasks',    icon: ListTodo,      path: 'MyTasks' },
+        { label: 'Submissions', icon: ClipboardList, path: 'Submissions' },
+        { label: 'Documents',   icon: FolderOpen,    path: 'Documents' },
+        { label: 'Reports',     icon: BarChart3,     path: 'Reports' },
+        { label: 'Messages',    icon: MessageSquare, path: 'Messages' },
+    ];
+
+    const [sidebarExpanded, setSidebarExpanded] = useState(() => {
+        return localStorage.getItem('sidebarExpanded') !== 'false';
+    });
+
+    const toggleSidebar = () => {
+        setSidebarExpanded(v => {
+            const next = !v;
+            localStorage.setItem('sidebarExpanded', String(next));
+            document.documentElement.style.setProperty('--sidebar-w', next ? '224px' : '64px');
+            return next;
+        });
+    };
+
+    useEffect(() => {
+        document.documentElement.style.setProperty('--sidebar-w', sidebarExpanded ? '224px' : '64px');
+    }, []);
+
     return (
         <>
             {/* ── MOBILE BOTTOM NAV ── */}
