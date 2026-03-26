@@ -236,15 +236,12 @@ export default function Pricing() {
                 cancelUrl: `${window.location.origin}/Pricing`,
             });
             if (res.data?.error) throw new Error(res.data.error);
+            if (!res.data?.url) throw new Error('No checkout URL returned');
             return res.data;
         },
         onSuccess: (data) => {
-            if (data?.url) {
-                window.location.href = data.url;
-            } else {
-                toast.error('No checkout URL returned from Stripe');
-                setLoadingPlan(null);
-            }
+            window.open(data.url, '_blank') || (window.location.href = data.url);
+            setLoadingPlan(null);
         },
         onError: (error) => {
             toast.error(error.message || 'Checkout failed');

@@ -36,11 +36,20 @@ const PLAN_FEATURE_LEVEL = {
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
-        if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        let user = null;
+        try { user = await base44.auth.me(); } catch (_) {}
 
-        // UserSubscription is source of truth
-        const subs = await base44.entities.UserSubscription.filter({ user_email: user.email });
+        if (!user) {
+            // Return trial-level access for unauthenticated/guest users
+            return Response.json({
+                planKey: 'trial', planName: 'Free Trial', status: 'trial',
+                isActive: true, isTrial: true, isPaid: false, isLaunchTier: false,
+                currentPeriodEnd: null, cancelAtPeriodEnd: false, billingInterval: null,
+                featureLevel: 'trial', limits: FEATURE_ACCESS.trial,
+            });
+        }
+
+        const subs = await base44.asServiceRole.entities.UserSubscription.filter({ user_email: user.email });
         const sub = subs?.[0];
 
         const planKey = sub?.plan_key || 'trial';
