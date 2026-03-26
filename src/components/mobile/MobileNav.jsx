@@ -90,6 +90,7 @@ export default function MobileNav() {
         { label: 'Tasks',       icon: ListTodo,        path: 'MyTasks' },
         { label: 'Documents',   icon: FolderOpen,      path: 'Documents' },
         { label: 'Reports',     icon: BarChart3,       path: 'Reports' },
+        { label: 'Analytics',   icon: TrendingUp,      path: 'AnalyticsDashboard' },
         { label: 'Messages',    icon: MessageSquare,   path: 'Messages' },
         { label: 'AI Assistant',icon: Sparkles,        path: 'AIAssistantPage' },
     ] : [

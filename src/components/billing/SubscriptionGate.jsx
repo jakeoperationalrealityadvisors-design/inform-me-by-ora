@@ -7,6 +7,8 @@
  */
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import { Lock, Zap, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -33,6 +35,7 @@ const FEATURE_DESCRIPTIONS = {
 
 export default function SubscriptionGate({ feature = 'paid', children }) {
     const { isLoading, isActive, isTrial, limits, planKey } = useSubscription();
+    const { data: user } = useQuery({ queryKey: ['current-user'], queryFn: () => base44.auth.me().catch(() => null) });
 
     if (isLoading) {
         return (
@@ -44,6 +47,7 @@ export default function SubscriptionGate({ feature = 'paid', children }) {
 
     // Determine if this feature is accessible
     const hasAccess = (() => {
+        if (user?.role === 'admin') return true; // admins always get access
         if (!isActive) return false;
         if (feature === 'paid') return !isTrial;
         return limits?.[feature] === true;
