@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import QRCode from 'qrcode';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { QrCode, Plus, Copy, Trash2, ToggleLeft, ToggleRight, Users } from 'lucide-react';
@@ -14,6 +15,7 @@ import { toast } from 'sonner';
 export default function HopCodes() {
   const qc = useQueryClient();
   const [showDialog, setShowDialog] = useState(false);
+  const [qrCode, setQrCode] = useState(null); // { code, dataUrl }
   const [form, setForm] = useState({ label: '', type: 'general', expires_at: '', max_uses: '' });
 
   const { data: user } = useQuery({ queryKey: ['current-user'], queryFn: () => base44.auth.me() });
@@ -38,6 +40,12 @@ export default function HopCodes() {
   });
 
   const copy = (code) => { navigator.clipboard.writeText(code); toast.success('Copied!'); };
+
+  const showQR = async (code) => {
+    const joinUrl = `${window.location.origin}/HopCodeJoin?code=${code}`;
+    const dataUrl = await QRCode.toDataURL(joinUrl, { width: 280, margin: 2, color: { dark: '#ffffff', light: '#0d1320' } });
+    setQrCode({ code, dataUrl, joinUrl });
+  };
 
   // Count members who joined via each code
   const usageMap = {};
@@ -99,6 +107,9 @@ export default function HopCodes() {
                   <Button size="sm" variant="outline" onClick={() => copy(h.code)} className="flex-1 border-blue-900/30 text-blue-300 h-8 text-xs">
                     <Copy className="w-3 h-3 mr-1" /> Copy
                   </Button>
+                  <Button size="sm" variant="outline" onClick={() => showQR(h.code)} className="border-orange-900/30 text-orange-400 h-8 w-8 p-0" title="Show QR Code">
+                    <QrCode className="w-3 h-3" />
+                  </Button>
                   <Button size="sm" variant="outline" onClick={() => toggleMutation.mutate({ id: h.id, is_active: h.is_active })} className="border-blue-900/30 text-slate-400 h-8 w-8 p-0">
                     {h.is_active ? <ToggleRight className="w-4 h-4 text-green-400" /> : <ToggleLeft className="w-4 h-4" />}
                   </Button>
@@ -111,6 +122,35 @@ export default function HopCodes() {
           ))}
         </div>
       )}
+
+      {/* QR Code Modal */}
+      <Dialog open={!!qrCode} onOpenChange={() => setQrCode(null)}>
+        <DialogContent className="bg-[#0d1320] border-blue-900/20 max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-white text-center">Scan to Join</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-4 py-2">
+            {qrCode && (
+              <>
+                <div className="rounded-xl overflow-hidden border-2 border-orange-500/30">
+                  <img src={qrCode.dataUrl} alt="QR Code" className="w-64 h-64" />
+                </div>
+                <div className="text-center space-y-1">
+                  <p className="text-4xl font-mono font-bold text-orange-400">{qrCode.code}</p>
+                  <p className="text-xs text-slate-400">Users scan this to fast-track into the app</p>
+                </div>
+                <Button
+                  onClick={() => { copy(qrCode.joinUrl); }}
+                  variant="outline"
+                  className="w-full border-blue-900/30 text-blue-300 text-xs"
+                >
+                  <Copy className="w-3 h-3 mr-2" /> Copy Join Link
+                </Button>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="bg-[#0d1320] border-blue-900/20">
