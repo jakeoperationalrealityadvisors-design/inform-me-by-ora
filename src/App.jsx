@@ -5,19 +5,14 @@ import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
-import RoleRedirect from './pages/RoleRedirect';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminUsers from './pages/AdminUsers';
-import AdminTasks from './pages/AdminTasks';
-import AdminMessages from './pages/AdminMessages';
-import AdminReports from './pages/AdminReports';
-import AdminSettings from './pages/AdminSettings';
-import UserHome from './pages/UserHome';
-import UserTasks from './pages/UserTasks';
-import UserScan from './pages/UserScan';
-import UserMessages from './pages/UserMessages';
-import UserProfile from './pages/UserProfile';
-import CreateChecklistAI from './pages/CreateChecklistAI';
+import PushForm from './pages/PushForm';
+import AdminBilling from './pages/AdminBilling';
+import AdminOverview from './pages/AdminOverview';
+import UserDashboard from './pages/UserDashboard';
+import PushCenter from './pages/PushCenter';
+import HopCodes from './pages/HopCodes';
+import HopCodeJoin from './pages/HopCodeJoin';
+import BillingSuccess from './pages/BillingSuccess';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -71,18 +66,14 @@ const AuthenticatedApp = () => {
           }
         />
       ))}
-      <Route path="/AdminDashboard" element={<LayoutWrapper currentPageName="AdminDashboard"><AdminDashboard /></LayoutWrapper>} />
-      <Route path="/AdminUsers" element={<LayoutWrapper currentPageName="AdminUsers"><AdminUsers /></LayoutWrapper>} />
-      <Route path="/AdminTasks" element={<LayoutWrapper currentPageName="AdminTasks"><AdminTasks /></LayoutWrapper>} />
-      <Route path="/AdminMessages" element={<LayoutWrapper currentPageName="AdminMessages"><AdminMessages /></LayoutWrapper>} />
-      <Route path="/AdminReports" element={<LayoutWrapper currentPageName="AdminReports"><AdminReports /></LayoutWrapper>} />
-      <Route path="/AdminSettings" element={<LayoutWrapper currentPageName="AdminSettings"><AdminSettings /></LayoutWrapper>} />
-      <Route path="/UserHome" element={<LayoutWrapper currentPageName="UserHome"><UserHome /></LayoutWrapper>} />
-      <Route path="/UserTasks" element={<LayoutWrapper currentPageName="UserTasks"><UserTasks /></LayoutWrapper>} />
-      <Route path="/UserScan" element={<LayoutWrapper currentPageName="UserScan"><UserScan /></LayoutWrapper>} />
-      <Route path="/UserMessages" element={<LayoutWrapper currentPageName="UserMessages"><UserMessages /></LayoutWrapper>} />
-      <Route path="/UserProfile" element={<LayoutWrapper currentPageName="UserProfile"><UserProfile /></LayoutWrapper>} />
-      <Route path="/CreateChecklistAI" element={<LayoutWrapper currentPageName="CreateChecklistAI"><CreateChecklistAI /></LayoutWrapper>} />
+      <Route path="/PushForm" element={<LayoutWrapper currentPageName="PushForm"><PushForm /></LayoutWrapper>} />
+      <Route path="/AdminBilling" element={<LayoutWrapper currentPageName="AdminBilling"><AdminBilling /></LayoutWrapper>} />
+      <Route path="/AdminOverview" element={<LayoutWrapper currentPageName="AdminOverview"><AdminOverview /></LayoutWrapper>} />
+      <Route path="/UserDashboard" element={<LayoutWrapper currentPageName="UserDashboard"><UserDashboard /></LayoutWrapper>} />
+      <Route path="/PushCenter" element={<LayoutWrapper currentPageName="PushCenter"><PushCenter /></LayoutWrapper>} />
+      <Route path="/HopCodes" element={<LayoutWrapper currentPageName="HopCodes"><HopCodes /></LayoutWrapper>} />
+      <Route path="/HopCodeJoin" element={<HopCodeJoin />} />
+      <Route path="/BillingSuccess" element={<BillingSuccess />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

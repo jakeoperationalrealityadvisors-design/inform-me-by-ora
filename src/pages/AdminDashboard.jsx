@@ -1,151 +1,393 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Users, ClipboardList, CheckCircle, AlertTriangle, TrendingUp, Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import { ArrowLeft, Users, Building2, FileText, CheckSquare, ClipboardList, AlertCircle, TrendingUp, Activity, Zap, Shield, CreditCard } from 'lucide-react';
+import AdminBillingPanel from '@/components/billing/AdminBillingPanel';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import RoleGuard from '@/components/auth/RoleGuard';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export default function AdminDashboard() {
-    const [tasks, setTasks] = useState([]);
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+const COLORS = ['#FF8C00', '#1E40AF', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
-    useEffect(() => {
-        Promise.all([
-            base44.entities.Task.list('-created_date', 50),
-            base44.entities.User.list()
-        ]).then(([t, u]) => {
-            setTasks(t);
-            setUsers(u);
-            setLoading(false);
-        }).catch(() => setLoading(false));
-    }, []);
+function AdminDashboardContent() {
+    const { data: users = [] } = useQuery({
+        queryKey: ['all-users'],
+        queryFn: () => base44.asServiceRole.entities.User.list()
+    });
 
-    const today = new Date().toISOString().split('T')[0];
-    const todayTasks = tasks.filter(t => t.due_date === today);
-    const completedToday = todayTasks.filter(t => t.status === 'completed');
-    const issues = tasks.filter(t => t.priority === 'urgent' && t.status !== 'completed');
-    const activeUsers = users.filter(u => u.role !== 'admin');
+    const { data: organizations = [] } = useQuery({
+        queryKey: ['all-orgs'],
+        queryFn: () => base44.entities.Organization.list()
+    });
 
-    const kpis = [
-        { label: 'Active Users', value: activeUsers.length, icon: Users, color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
-        { label: 'Tasks Today', value: todayTasks.length, icon: ClipboardList, color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
-        { label: 'Completed Today', value: completedToday.length, icon: CheckCircle, color: 'text-green-400', bg: 'bg-green-500/10 border-green-500/20' },
-        { label: 'Urgent Issues', value: issues.length, icon: AlertTriangle, color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20' },
-    ];
+    const { data: forms = [] } = useQuery({
+        queryKey: ['all-forms'],
+        queryFn: () => base44.entities.FormTemplate.list()
+    });
 
-    const recentTasks = tasks.slice(0, 8);
+    const { data: checklists = [] } = useQuery({
+        queryKey: ['all-checklists'],
+        queryFn: () => base44.entities.ChecklistTemplate.list()
+    });
 
-    const statusColor = { todo: 'bg-slate-600 text-slate-300', in_progress: 'bg-blue-500/20 text-blue-300', completed: 'bg-green-500/20 text-green-300', cancelled: 'bg-red-500/20 text-red-300' };
+    const { data: formSubmissions = [] } = useQuery({
+        queryKey: ['all-form-submissions'],
+        queryFn: () => base44.entities.FormSubmission.list('-created_date', 100)
+    });
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="w-8 h-8 border-4 border-slate-600 border-t-orange-500 rounded-full animate-spin" />
-            </div>
-        );
+    const { data: checklistSubmissions = [] } = useQuery({
+        queryKey: ['all-checklist-submissions'],
+        queryFn: () => base44.entities.ChecklistSubmission.list('-created_date', 100)
+    });
+
+    const { data: errors = [] } = useQuery({
+        queryKey: ['recent-errors'],
+        queryFn: () => base44.entities.ErrorLog.filter({ resolved: false }, '-created_date', 10)
+    });
+
+    const { data: activities = [] } = useQuery({
+        queryKey: ['recent-activities'],
+        queryFn: () => base44.entities.ActivityLog.list('-created_date', 20)
+    });
+
+    const { data: automations = [] } = useQuery({
+        queryKey: ['all-automations'],
+        queryFn: () => base44.entities.AutomationRule.list()
+    });
+
+    // Calculate metrics
+    const totalSubmissions = formSubmissions.length + checklistSubmissions.length;
+    const activeOrgs = organizations.filter(o => o.status === 'active').length;
+    const verifiedUsers = users.filter(u => u.email_verified).length;
+    const unverifiedUsers = users.length - verifiedUsers;
+    const activeAutomations = automations.filter(a => a.enabled).length;
+
+    // Submissions by day (last 7 days)
+    const submissionsByDay = [];
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        
+        const daySubmissions = [...formSubmissions, ...checklistSubmissions].filter(s => {
+            const submissionDate = new Date(s.created_date);
+            return submissionDate.toDateString() === date.toDateString();
+        });
+
+        submissionsByDay.push({
+            date: dateStr,
+            submissions: daySubmissions.length
+        });
     }
 
+    // Organizations by plan
+    const orgsByPlan = organizations.reduce((acc, org) => {
+        const plan = org.plan_type || 'trial';
+        acc[plan] = (acc[plan] || 0) + 1;
+        return acc;
+    }, {});
+
+    const planData = Object.entries(orgsByPlan).map(([name, value]) => ({
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        value
+    }));
+
+    // User verification status
+    const userVerificationData = [
+        { name: 'Verified', value: verifiedUsers },
+        { name: 'Unverified', value: unverifiedUsers }
+    ];
+
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-                <p className="text-slate-400 text-sm mt-1">Welcome back — here's what's happening today.</p>
-            </div>
+        <div className="min-h-screen bg-[#0a0e17] py-8 px-4">
+            <div className="max-w-7xl mx-auto">
+                <Link to={createPageUrl('Settings')}>
+                    <Button variant="ghost" className="mb-6 text-blue-400">
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back to Settings
+                    </Button>
+                </Link>
 
-            {/* KPI Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {kpis.map(({ label, value, icon: Icon, color, bg }) => (
-                    <div key={label} className={`border rounded-xl p-4 ${bg}`}>
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-slate-400 text-xs mb-1">{label}</p>
-                                <p className={`text-3xl font-bold ${color}`}>{value}</p>
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-white mb-2">Admin Dashboard</h1>
+                    <p className="text-blue-400">System overview and management</p>
+                </div>
+
+                {/* Key Metrics */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <Card className="bg-[#0f1419] border-blue-900/30">
+                        <CardContent className="pt-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-blue-400 mb-1">Total Users</p>
+                                    <p className="text-3xl font-bold text-white">{users.length}</p>
+                                </div>
+                                <Users className="w-10 h-10 text-blue-400 opacity-50" />
                             </div>
-                            <Icon className={`w-5 h-5 ${color} mt-1`} />
-                        </div>
-                    </div>
-                ))}
-            </div>
+                        </CardContent>
+                    </Card>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Recent Tasks */}
-                <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-white font-semibold">Recent Tasks</h2>
-                        <Link to="/AdminTasks" className="text-orange-400 text-xs hover:text-orange-300 flex items-center gap-1">
-                            View all <ArrowRight className="w-3 h-3" />
-                        </Link>
-                    </div>
-                    {recentTasks.length === 0 ? (
-                        <div className="text-center py-8">
-                            <ClipboardList className="w-10 h-10 text-slate-600 mx-auto mb-2" />
-                            <p className="text-slate-500 text-sm">No tasks yet</p>
-                            <Link to="/AdminTasks" className="text-orange-400 text-sm hover:underline mt-1 inline-block">Create a task →</Link>
+                    <Card className="bg-[#0f1419] border-blue-900/30">
+                        <CardContent className="pt-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-blue-400 mb-1">Organizations</p>
+                                    <p className="text-3xl font-bold text-white">{organizations.length}</p>
+                                    <p className="text-xs text-green-400">{activeOrgs} active</p>
+                                </div>
+                                <Building2 className="w-10 h-10 text-[#FF8C00] opacity-50" />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="bg-[#0f1419] border-blue-900/30">
+                        <CardContent className="pt-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-blue-400 mb-1">Templates</p>
+                                    <p className="text-3xl font-bold text-white">{forms.length + checklists.length}</p>
+                                    <p className="text-xs text-blue-400">{forms.length} forms, {checklists.length} checklists</p>
+                                </div>
+                                <FileText className="w-10 h-10 text-green-400 opacity-50" />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="bg-[#0f1419] border-blue-900/30">
+                        <CardContent className="pt-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-blue-400 mb-1">Submissions</p>
+                                    <p className="text-3xl font-bold text-white">{totalSubmissions}</p>
+                                    <p className="text-xs text-blue-400">Last 100 records</p>
+                                </div>
+                                <ClipboardList className="w-10 h-10 text-purple-400 opacity-50" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Charts Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    {/* Submissions Trend */}
+                    <Card className="bg-[#0f1419] border-blue-900/30">
+                        <CardHeader>
+                            <CardTitle className="text-white">Submissions (Last 7 Days)</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ResponsiveContainer width="100%" height={250}>
+                                <LineChart data={submissionsByDay}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#1e40af33" />
+                                    <XAxis dataKey="date" stroke="#60a5fa" />
+                                    <YAxis stroke="#60a5fa" />
+                                    <Tooltip 
+                                        contentStyle={{ backgroundColor: '#0f1419', border: '1px solid #1e40af' }}
+                                        labelStyle={{ color: '#60a5fa' }}
+                                    />
+                                    <Line type="monotone" dataKey="submissions" stroke="#FF8C00" strokeWidth={2} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+
+                    {/* Organizations by Plan */}
+                    <Card className="bg-[#0f1419] border-blue-900/30">
+                        <CardHeader>
+                            <CardTitle className="text-white">Organizations by Plan</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ResponsiveContainer width="100%" height={250}>
+                                <PieChart>
+                                    <Pie
+                                        data={planData}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                        outerRadius={80}
+                                        fill="#8884d8"
+                                        dataKey="value"
+                                    >
+                                        {planData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip 
+                                        contentStyle={{ backgroundColor: '#0f1419', border: '1px solid #1e40af' }}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Status Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    {/* Unresolved Errors */}
+                    <Card className="bg-[#0f1419] border-red-900/30">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <AlertCircle className="w-5 h-5 text-red-400" />
+                                Unresolved Errors
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-red-400 mb-2">{errors.length}</div>
+                            <Link to={createPageUrl('SystemHealth')}>
+                                <Button variant="outline" size="sm" className="border-red-900/30 text-red-300">
+                                    View Details
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+
+                    {/* Active Automations */}
+                    <Card className="bg-[#0f1419] border-blue-900/30">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <Zap className="w-5 h-5 text-[#FF8C00]" />
+                                Active Automations
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-[#FF8C00] mb-2">{activeAutomations}/{automations.length}</div>
+                            <Link to={createPageUrl('ManageAutomations')}>
+                                <Button variant="outline" size="sm" className="border-blue-900/30 text-blue-300">
+                                    Manage Rules
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+
+                    {/* Unverified Users */}
+                    <Card className="bg-[#0f1419] border-yellow-900/30">
+                        <CardHeader>
+                            <CardTitle className="text-white flex items-center gap-2">
+                                <Shield className="w-5 h-5 text-yellow-400" />
+                                Unverified Users
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-yellow-400 mb-2">{unverifiedUsers}</div>
+                            <Link to={createPageUrl('UserManagement')}>
+                                <Button variant="outline" size="sm" className="border-yellow-900/30 text-yellow-300">
+                                    View Users
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Recent Activity */}
+                <Card className="bg-[#0f1419] border-blue-900/30 mb-8">
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <CardTitle className="text-white">Recent Activity</CardTitle>
+                            <Link to={createPageUrl('ActivityLog')}>
+                                <Button variant="ghost" size="sm" className="text-blue-400">
+                                    View All
+                                </Button>
+                            </Link>
                         </div>
-                    ) : (
-                        <div className="space-y-2">
-                            {recentTasks.map(task => (
-                                <div key={task.id} className="flex items-center justify-between py-2 border-b border-slate-700 last:border-0">
-                                    <div className="min-w-0">
-                                        <p className="text-white text-sm font-medium truncate">{task.title}</p>
-                                        <p className="text-slate-500 text-xs">{task.assigned_to_name || 'Unassigned'}</p>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-3">
+                            {activities.slice(0, 10).map((activity) => (
+                                <div key={activity.id} className="flex items-start gap-3 p-3 bg-[#0a0e17] rounded-lg border border-blue-900/30">
+                                    <Activity className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                                    <div className="flex-1">
+                                        <p className="text-white text-sm">{activity.description}</p>
+                                        <p className="text-xs text-blue-400 mt-1">
+                                            {activity.user_name} • {new Date(activity.created_date).toLocaleString()}
+                                        </p>
                                     </div>
-                                    <span className={`text-xs px-2 py-0.5 rounded-full ml-2 flex-shrink-0 ${statusColor[task.status] || 'bg-slate-600 text-slate-300'}`}>
-                                        {task.status?.replace('_', ' ') || 'todo'}
-                                    </span>
+                                    <Badge variant="outline" className="text-xs">
+                                        {activity.action_type.replace(/_/g, ' ')}
+                                    </Badge>
                                 </div>
                             ))}
                         </div>
-                    )}
+                    </CardContent>
+                </Card>
+
+                {/* Billing Panel */}
+                <div className="mb-8">
+                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <CreditCard className="w-5 h-5 text-[#FF8C00]" /> Billing Overview
+                    </h2>
+                    <AdminBillingPanel />
                 </div>
 
-                {/* Active Users */}
-                <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-white font-semibold">Team Members</h2>
-                        <Link to="/AdminUsers" className="text-orange-400 text-xs hover:text-orange-300 flex items-center gap-1">
-                            Manage <ArrowRight className="w-3 h-3" />
+                {/* Quick Actions */}
+                <Card className="bg-[#0f1419] border-blue-900/30">
+                    <CardHeader>
+                        <CardTitle className="text-white">Quick Actions</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <Link to={createPageUrl('UserManagement')}>
+                            <Button variant="outline" className="w-full border-blue-900/30">
+                                <Users className="w-4 h-4 mr-2" />
+                                Users
+                            </Button>
                         </Link>
-                    </div>
-                    {activeUsers.length === 0 ? (
-                        <div className="text-center py-8">
-                            <Users className="w-10 h-10 text-slate-600 mx-auto mb-2" />
-                            <p className="text-slate-500 text-sm">No users yet</p>
-                            <Link to="/AdminUsers" className="text-orange-400 text-sm hover:underline mt-1 inline-block">Add users →</Link>
-                        </div>
-                    ) : (
-                        <div className="space-y-2">
-                            {activeUsers.slice(0, 8).map(u => (
-                                <div key={u.id} className="flex items-center gap-3 py-2 border-b border-slate-700 last:border-0">
-                                    <div className="w-8 h-8 rounded-full bg-orange-500/20 border border-orange-500/30 flex items-center justify-center flex-shrink-0">
-                                        <span className="text-orange-400 font-bold text-xs">{(u.full_name || u.email || 'U')[0].toUpperCase()}</span>
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <p className="text-white text-sm font-medium truncate">{u.full_name || u.email}</p>
-                                        <p className="text-slate-500 text-xs">{u.email}</p>
-                                    </div>
-                                    <span className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0" />
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {[
-                    { label: 'New Task', path: '/AdminTasks', icon: ClipboardList },
-                    { label: 'Add User', path: '/AdminUsers', icon: Users },
-                    { label: 'Messages', path: '/AdminMessages', icon: TrendingUp },
-                    { label: 'Reports', path: '/AdminReports', icon: Clock },
-                ].map(({ label, path, icon: Icon }) => (
-                    <Link key={label} to={path}
-                        className="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl p-4 flex flex-col items-center gap-2 transition-colors group">
-                        <Icon className="w-6 h-6 text-orange-400 group-hover:text-orange-300" />
-                        <span className="text-slate-300 text-xs font-medium">{label}</span>
-                    </Link>
-                ))}
+                        <Link to={createPageUrl('RoleManagement')}>
+                            <Button variant="outline" className="w-full border-blue-900/30">
+                                <Shield className="w-4 h-4 mr-2" />
+                                Roles
+                            </Button>
+                        </Link>
+                        <Link to={createPageUrl('ManageAutomations')}>
+                            <Button variant="outline" className="w-full border-blue-900/30">
+                                <Zap className="w-4 h-4 mr-2" />
+                                Automations
+                            </Button>
+                        </Link>
+                        <Link to={createPageUrl('SystemHealth')}>
+                            <Button variant="outline" className="w-full border-blue-900/30">
+                                <Activity className="w-4 h-4 mr-2" />
+                                System Health
+                            </Button>
+                        </Link>
+                        <Link to={createPageUrl('ActivityLog')}>
+                            <Button variant="outline" className="w-full border-blue-900/30">
+                                <Activity className="w-4 h-4 mr-2" />
+                                Activity Log
+                            </Button>
+                        </Link>
+                        <Link to={createPageUrl('Reports')}>
+                            <Button variant="outline" className="w-full border-blue-900/30">
+                                <TrendingUp className="w-4 h-4 mr-2" />
+                                Reports
+                            </Button>
+                        </Link>
+                        <Link to={createPageUrl('BillingTest')}>
+                            <Button variant="outline" className="w-full border-blue-900/30">
+                                <TrendingUp className="w-4 h-4 mr-2" />
+                                Billing Tests
+                            </Button>
+                        </Link>
+                        <Link to={createPageUrl('LoadTesting')}>
+                            <Button variant="outline" className="w-full border-blue-900/30">
+                                <TrendingUp className="w-4 h-4 mr-2" />
+                                Load Tests
+                            </Button>
+                        </Link>
+                    </CardContent>
+                </Card>
             </div>
         </div>
+    );
+}
+
+export default function AdminDashboard() {
+    return (
+        <RoleGuard allowedRoles={['admin']}>
+            <AdminDashboardContent />
+        </RoleGuard>
     );
 }

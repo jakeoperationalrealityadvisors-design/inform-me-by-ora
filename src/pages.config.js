@@ -77,8 +77,6 @@ import FillChecklist from './pages/FillChecklist';
 import FillForm from './pages/FillForm';
 import Home from './pages/Home';
 import HopCode from './pages/HopCode';
-import HopCodes from './pages/HopCodes';
-import ChecklistLibrary from './pages/ChecklistLibrary';
 import Integrations from './pages/Integrations';
 import KnowledgeBase from './pages/KnowledgeBase';
 import LoadTesting from './pages/LoadTesting';
@@ -118,7 +116,7 @@ import HelpFAQ from './pages/HelpFAQ';
 import AppAudit from './pages/AppAudit';
 import ConnectivityTool from './pages/ConnectivityTool';
 import __Layout from './Layout.jsx';
-import RoleRedirect from './pages/RoleRedirect';
+
 
 export const PAGES = {
     "AIAssistantPage": AIAssistantPage,
@@ -151,8 +149,6 @@ export const PAGES = {
     "FillForm": FillForm,
     "Home": Home,
     "HopCode": HopCode,
-    "HopCodes": HopCodes,
-    "ChecklistLibrary": ChecklistLibrary,
     "Integrations": Integrations,
     "KnowledgeBase": KnowledgeBase,
     "LoadTesting": LoadTesting,
@@ -194,10 +190,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "RoleRedirect",
-    Pages: {
-        ...PAGES,
-        RoleRedirect,
-    },
+    mainPage: "AIAssistantPage",
+    Pages: PAGES,
     Layout: __Layout,
 };

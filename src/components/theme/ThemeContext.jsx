@@ -9,11 +9,9 @@ function getSystemTheme() {
 function applyTheme(resolved) {
     document.documentElement.setAttribute('data-theme', resolved);
     if (resolved === 'dark') {
-        document.documentElement.classList.add('dark');
         document.body.classList.add('dark-mode');
         document.body.classList.remove('light-mode');
     } else {
-        document.documentElement.classList.remove('dark');
         document.body.classList.add('light-mode');
         document.body.classList.remove('dark-mode');
     }

@@ -1,35 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from './AdminLayout';
 import UserLayout from './UserLayout';
 
-export default function RoleRouter({ children, currentPageName }) {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+export default function RoleRouter({ children }) {
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['current-user'],
+    queryFn: () => base44.auth.me(),
+    staleTime: 60000,
+    retry: false
+  });
 
-    useEffect(() => {
-        base44.auth.me().then(u => {
-            setUser(u);
-            setLoading(false);
-        }).catch(() => setLoading(false));
-    }, []);
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 bg-[#070b14] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-blue-900 border-t-orange-500 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
-    if (loading) {
-        return (
-            <div className="fixed inset-0 flex items-center justify-center bg-slate-900">
-                <div className="flex flex-col items-center gap-3">
-                    <div className="w-10 h-10 border-4 border-slate-600 border-t-orange-500 rounded-full animate-spin" />
-                    <span className="text-slate-400 text-sm">Loading...</span>
-                </div>
-            </div>
-        );
-    }
+  const isAdmin = user?.role === 'admin';
 
-    const isAdmin = user?.role === 'admin';
+  if (isAdmin) {
+    return <AdminLayout>{children}</AdminLayout>;
+  }
 
-    if (isAdmin) {
-        return <AdminLayout currentPageName={currentPageName} user={user}>{children}</AdminLayout>;
-    }
-
-    return <UserLayout currentPageName={currentPageName} user={user}>{children}</UserLayout>;
+  return <UserLayout>{children}</UserLayout>;
 }
