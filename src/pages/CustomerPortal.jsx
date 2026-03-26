@@ -73,13 +73,23 @@ export default function CustomerPortal() {
 
     if (!user.organization_id || !organization) {
         return (
-            <div className="min-h-screen bg-[#0a0e17] flex items-center justify-center">
-                <div className="text-center space-y-3">
-                    <p className="text-white text-lg font-medium">No Organization Found</p>
-                    <p className="text-white/50 text-sm">You are not linked to an organization yet.</p>
-                    <Link to={createPageUrl('Settings')}>
-                        <Button variant="outline" className="mt-2 border-white/20 text-white/70">Back to Settings</Button>
-                    </Link>
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center">
+                <div className="bg-[#0f1419] border border-orange-500/30 rounded-xl p-8 max-w-md w-full mx-4 text-center space-y-5">
+                    <div className="w-14 h-14 bg-orange-500/10 rounded-full flex items-center justify-center mx-auto">
+                        <CreditCard className="w-7 h-7 text-orange-500" />
+                    </div>
+                    <div>
+                        <h2 className="text-white text-xl font-bold">Organization Setup Required</h2>
+                        <p className="text-white/50 text-sm mt-2">You must complete organization setup before accessing the portal.</p>
+                    </div>
+                    <div className="flex gap-3 justify-center">
+                        <Link to={createPageUrl('SetupWizard')}>
+                            <Button className="bg-orange-500 hover:bg-orange-600 text-black font-semibold">Complete Setup</Button>
+                        </Link>
+                        <Link to={createPageUrl('Home')}>
+                            <Button variant="outline" className="border-white/20 text-white/70 hover:bg-white/5">Cancel</Button>
+                        </Link>
+                    </div>
                 </div>
             </div>
         );
