@@ -415,7 +415,7 @@ export default function Settings() {
                 </Card>
 
 
-                {/* App Tour */
+                {/* App Tour */}
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>
                         <CardTitle className="text-white flex items-center gap-2">
