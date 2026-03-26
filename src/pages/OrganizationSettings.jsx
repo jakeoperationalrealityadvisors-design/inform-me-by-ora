@@ -18,11 +18,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export default function OrganizationSettings() {
     const queryClient = useQueryClient();
     const [copied, setCopied] = useState(false);
-    const [showInviteDialog, setShowInviteDialog] = useState(false);
-    const [newUserEmail, setNewUserEmail] = useState('');
-    const [newUserName, setNewUserName] = useState('');
-    const [newUserRole, setNewUserRole] = useState('member');
-    
+    const [editName, setEditName] = useState('');
+    const [editSettings, setEditSettings] = useState(null);
+
     const { data: user } = useQuery({
         queryKey: ['current-user'],
         queryFn: () => base44.auth.me()
@@ -31,7 +29,13 @@ export default function OrganizationSettings() {
     const { data: organization, isLoading: orgLoading } = useQuery({
         queryKey: ['organization', user?.organization_id],
         queryFn: () => base44.entities.Organization.filter({ id: user.organization_id }).then(r => r[0] ?? null),
-        enabled: !!user?.organization_id
+        enabled: !!user?.organization_id,
+        onSuccess: (org) => {
+            if (org) {
+                setEditName(org.name || '');
+                setEditSettings(org.settings || {});
+            }
+        }
     });
     
     const { data: members = [] } = useQuery({
@@ -67,13 +71,30 @@ export default function OrganizationSettings() {
         toast.success('Hop code copied to clipboard');
     };
     
+    // Sync local state when org loads
+    React.useEffect(() => {
+        if (organization) {
+            setEditName(organization.name || '');
+            setEditSettings(organization.settings || {});
+        }
+    }, [organization?.id]);
+
     const updateOrgMutation = useMutation({
         mutationFn: (data) => base44.entities.Organization.update(organization.id, data),
         onSuccess: () => {
             queryClient.invalidateQueries(['organization']);
-            toast.success('Organization updated');
-        }
+            toast.success('Settings saved!');
+        },
+        onError: () => toast.error('Failed to save settings')
     });
+
+    const handleSave = () => {
+        updateOrgMutation.mutate({ name: editName, settings: editSettings });
+    };
+
+    const toggleSetting = (key) => {
+        setEditSettings(prev => ({ ...prev, [key]: !prev?.[key] }));
+    };
     
     const removeMemberMutation = useMutation({
         mutationFn: async (userId) => {
@@ -196,7 +217,16 @@ export default function OrganizationSettings() {
                         </div>
                         
                         <div>
-                            <Label className="text-blue-300">Invite Code</Label>
+                            <Label className="text-blue-300">Organization Name</Label>
+                            <Input
+                                value={editName}
+                                onChange={e => setEditName(e.target.value)}
+                                className="mt-1 bg-[#0a0e17] text-white border-blue-900/30"
+                            />
+                        </div>
+
+                        <div>
+                             <Label className="text-blue-300">Invite Code</Label>
                             <div className="flex gap-2 mt-1">
                                 <Input
                                     value={organization.invite_code}
@@ -211,8 +241,39 @@ export default function OrganizationSettings() {
                                 Share this code with team members to join your network
                             </p>
                         </div>
-                    </CardContent>
-                </Card>
+
+                        {/* Feature Toggles */}
+                        {editSettings && (
+                            <div className="space-y-3 pt-2">
+                                <Label className="text-blue-300">Feature Settings</Label>
+                                {[
+                                    { key: 'scanner_enabled', label: 'Scanner' },
+                                    { key: 'messaging_enabled', label: 'Messaging' },
+                                    { key: 'reports_enabled', label: 'Reports' },
+                                    { key: 'checklists_enabled', label: 'Checklists' },
+                                    { key: 'allow_hopcode_access', label: 'Hop Code Access' },
+                                    { key: 'analytics_enabled', label: 'Analytics' },
+                                ].map(({ key, label }) => (
+                                    <div key={key} className="flex items-center justify-between">
+                                        <span className="text-white text-sm">{label}</span>
+                                        <Switch
+                                            checked={editSettings[key] ?? false}
+                                            onCheckedChange={() => toggleSetting(key)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <Button
+                            onClick={handleSave}
+                            disabled={updateOrgMutation.isPending}
+                            className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]"
+                        >
+                            {updateOrgMutation.isPending ? 'Saving...' : 'Save Settings'}
+                        </Button>
+                        </CardContent>
+                        </Card>
                 
                 {/* Hop Code for Contractors */}
                 {isOwner && (
