@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import SubscriptionGate from '@/components/billing/SubscriptionGate';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Sparkles, Send, Loader2, Trash2, Bot, User } from 'lucide-react';
+import { ArrowLeft, Sparkles, Send, Loader2, Trash2, Bot, User, FileText, CheckSquare, ExternalLink } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 const SYSTEM_PROMPT = `You are ORA, an intelligent AI assistant for InformMe — a field operations platform for managing forms, checklists, tasks, and documents.
@@ -15,10 +15,43 @@ You help users:
 - Answer questions about their field operations
 - Troubleshoot issues in the platform
 
-Be concise, practical, and field-team-friendly. Use plain language.`;
+When a user asks you to CREATE a form or checklist, respond ONLY with a JSON block in this exact format (no other text):
+
+For forms:
+{"__action":"create_form","title":"...","description":"...","fields":[{"id":"f1","label":"...","type":"text","required":true}]}
+
+For checklists:
+{"__action":"create_checklist","title":"...","description":"...","items":[{"id":"i1","text":"...","required":true}]}
+
+Field types allowed: text, number, select, date, textarea, checkbox.
+Include 3-10 fields/items relevant to the request.
+Otherwise, respond normally in plain language. Be concise, practical, and field-team-friendly.`;
+
+function ActionBubble({ action }) {
+    return (
+        <div className="flex gap-3 justify-start">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#FF8C00] to-[#1E40AF] flex items-center justify-center shrink-0 mt-0.5">
+                <Bot className="w-4 h-4 text-white" />
+            </div>
+            <div className="bg-[#0f1419] border border-green-700/40 rounded-2xl rounded-bl-sm px-4 py-3 space-y-2">
+                <div className="flex items-center gap-2 text-green-400 text-sm font-medium">
+                    {action.type === 'form' ? <FileText className="w-4 h-4" /> : <CheckSquare className="w-4 h-4" />}
+                    {action.type === 'form' ? 'Form' : 'Checklist'} created: <span className="text-white">{action.title}</span>
+                </div>
+                <a
+                    href={`/${action.type === 'form' ? 'EditForm' : 'EditChecklist'}?id=${action.id}`}
+                    className="inline-flex items-center gap-1.5 text-xs bg-green-700/30 hover:bg-green-700/50 text-green-300 px-3 py-1.5 rounded-lg transition-colors"
+                >
+                    <ExternalLink className="w-3 h-3" /> Open & Edit
+                </a>
+            </div>
+        </div>
+    );
+}
 
 function ChatBubble({ msg }) {
     const isUser = msg.role === 'user';
+    if (msg.__action) return <ActionBubble action={msg.__action} />;
     return (
         <div className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
             {!isUser && (
@@ -80,16 +113,42 @@ function AIChat() {
         setMessages(newMessages);
         setLoading(true);
 
-        // Build conversation context for LLM
         const conversationHistory = newMessages
-            .map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
+            .map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.__action ? '[created ' + m.__action.type + ']' : m.content}`)
             .join('\n\n');
 
         const response = await base44.integrations.Core.InvokeLLM({
             prompt: `${SYSTEM_PROMPT}\n\n--- CONVERSATION ---\n${conversationHistory}\n\nAssistant:`,
         });
 
-        setMessages(prev => [...prev, { role: 'assistant', content: response || 'Sorry, I couldn\'t respond right now.' }]);
+        // Try to parse as a create action
+        let parsed = null;
+        try {
+            const jsonMatch = (response || '').match(/\{[\s\S]*\}/);
+            if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
+        } catch (e) { /* not JSON */ }
+
+        if (parsed?.__action === 'create_form') {
+            const items = (parsed.fields || []).map(f => ({ id: f.id, text: f.label, required: !!f.required }));
+            const created = await base44.entities.FormTemplate.create({
+                title: parsed.title,
+                description: parsed.description || '',
+                fields: parsed.fields || [],
+                status: 'active'
+            });
+            setMessages(prev => [...prev, { role: 'assistant', content: '', __action: { type: 'form', title: parsed.title, id: created.id } }]);
+        } else if (parsed?.__action === 'create_checklist') {
+            const created = await base44.entities.ChecklistTemplate.create({
+                title: parsed.title,
+                description: parsed.description || '',
+                items: parsed.items || [],
+                status: 'active'
+            });
+            setMessages(prev => [...prev, { role: 'assistant', content: '', __action: { type: 'checklist', title: parsed.title, id: created.id } }]);
+        } else {
+            setMessages(prev => [...prev, { role: 'assistant', content: response || 'Sorry, I couldn\'t respond right now.' }]);
+        }
+
         setLoading(false);
         inputRef.current?.focus();
     };

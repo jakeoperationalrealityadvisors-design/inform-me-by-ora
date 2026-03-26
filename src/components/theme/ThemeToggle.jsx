@@ -9,7 +9,7 @@ const icons = { auto: Monitor, light: Sun, dark: Moon };
 
 export default function ThemeToggle({ showLabel = false }) {
     const { theme, cycleTheme } = useTheme();
-    const Icon = icons[theme];
+    const Icon = icons[theme] || Sun;
 
     return (
         <TooltipProvider>
@@ -30,25 +30,5 @@ export default function ThemeToggle({ showLabel = false }) {
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
-    );
-} from "@/components/ui/button";
-import { useTheme } from './ThemeContext';
-
-export default function ThemeToggle() {
-    const { theme, toggleTheme } = useTheme();
-
-    return (
-        <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={toggleTheme}
-            className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
-        >
-            {theme === 'dark' ? (
-                <Sun className="w-5 h-5 text-orange-500" />
-            ) : (
-                <Moon className="w-5 h-5 text-slate-700" />
-            )}
-        </Button>
     );
 }
