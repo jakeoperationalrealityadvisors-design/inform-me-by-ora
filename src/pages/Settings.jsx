@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Bell, Wifi, WifiOff, Save, Trash2, Zap, Activity, Shield, Building2, Book, TrendingUp, Sparkles, Smartphone, Lightbulb, HelpCircle, Rocket, ClipboardCheck, Signal } from 'lucide-react';
+import { ArrowLeft, Bell, Wifi, WifiOff, Trash2, Zap, Activity, Shield, Building2, Book, Sparkles, Lightbulb, HelpCircle, Rocket, Signal } from 'lucide-react';
 import ExperienceLevelPicker from '@/components/settings/ExperienceLevelPicker';
 import AppPermissions from '@/components/settings/AppPermissions';
 import { TourTrigger } from '@/components/tutorial/OnboardingTour';
@@ -414,27 +414,8 @@ export default function Settings() {
                     </CardContent>
                 </Card>
 
-                {/* Mobile Readiness */}
-                <Card className="bg-[#0f1419] border-[#FF8C00]/20">
-                    <CardHeader>
-                        <CardTitle className="text-white flex items-center gap-2">
-                            <Smartphone className="w-5 h-5 text-[#FF8C00]" />
-                            Publish to Android
-                        </CardTitle>
-                        <CardDescription className="text-blue-400">
-                            Step-by-step guide for Android / Google Play publishing
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Link to={createPageUrl('MobileReadiness')}>
-                            <Button className="w-full bg-gradient-to-r from-[#FF8C00] to-[#1E40AF]">
-                                Open Mobile Readiness Guide
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
 
-                {/* App Tour */}
+                {/* App Tour */
                 <Card className="bg-[#0f1419] border-blue-900/20">
                     <CardHeader>
                         <CardTitle className="text-white flex items-center gap-2">
@@ -492,71 +473,7 @@ export default function Settings() {
                     </Card>
                 )}
 
-                {/* Billing Tests - Admin Only */}
-                {isAdmin && (
-                    <Card className="bg-[#0f1419] border-blue-900/20">
-                        <CardHeader>
-                            <CardTitle className="text-white flex items-center gap-2">
-                                <TrendingUp className="w-5 h-5 text-green-400" />
-                                Billing Tests
-                            </CardTitle>
-                            <CardDescription className="text-blue-400">
-                                Test Stripe integration flow
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Link to={createPageUrl('BillingTest')}>
-                                <Button variant="outline" className="w-full border-green-900/30 text-green-300 hover:bg-green-950/50">
-                                    Run Billing Tests
-                                </Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
-                )}
 
-                {/* Production Checklist - Admin Only */}
-                {isAdmin && (
-                    <Card className="bg-[#0f1419] border-blue-900/20">
-                        <CardHeader>
-                            <CardTitle className="text-white flex items-center gap-2">
-                                <Activity className="w-5 h-5 text-[#FF8C00]" />
-                                Production Checklist
-                            </CardTitle>
-                            <CardDescription className="text-blue-400">
-                                Track readiness for production launch
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Link to={createPageUrl('ProductionChecklist')}>
-                                <Button variant="outline" className="w-full border-[#FF8C00]/30 text-[#FF8C00] hover:bg-[#FF8C00]/10">
-                                    View Checklist
-                                </Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
-                )}
-
-                {/* Load Testing - Admin Only */}
-                {isAdmin && (
-                    <Card className="bg-[#0f1419] border-blue-900/20">
-                        <CardHeader>
-                            <CardTitle className="text-white flex items-center gap-2">
-                                <TrendingUp className="w-5 h-5 text-purple-400" />
-                                Load Testing
-                            </CardTitle>
-                            <CardDescription className="text-blue-400">
-                                Simulate concurrent users and test performance
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Link to={createPageUrl('LoadTesting')}>
-                                <Button variant="outline" className="w-full border-purple-900/30 text-purple-300 hover:bg-purple-950/50">
-                                    Run Load Tests
-                                </Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
-                )}
 
                 {/* Setup Wizard */}
                 <Card className="bg-[#0f1419] border-[#FF8C00]/20">
@@ -598,27 +515,6 @@ export default function Settings() {
                     </CardContent>
                 </Card>
 
-                {/* App Audit */}
-                {isAdmin && (
-                    <Card className="bg-[#0f1419] border-emerald-900/20">
-                        <CardHeader>
-                            <CardTitle className="text-white flex items-center gap-2">
-                                <ClipboardCheck className="w-5 h-5 text-emerald-400" />
-                                Pre-Launch App Audit
-                            </CardTitle>
-                            <CardDescription className="text-blue-400">
-                                Full end-to-end smoke test — auth, entities, AI, routes
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Link to={createPageUrl('AppAudit')}>
-                                <Button variant="outline" className="w-full border-emerald-900/30 text-emerald-300 hover:bg-emerald-950/50">
-                                    Run App Audit
-                                </Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
-                )}
             </div>
         </div>
     );
