@@ -12,6 +12,7 @@ import UserDashboard from './pages/UserDashboard';
 import PushCenter from './pages/PushCenter';
 import HopCodes from './pages/HopCodes';
 import HopCodeJoin from './pages/HopCodeJoin';
+import BillingSuccess from './pages/BillingSuccess';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -72,6 +73,7 @@ const AuthenticatedApp = () => {
       <Route path="/PushCenter" element={<LayoutWrapper currentPageName="PushCenter"><PushCenter /></LayoutWrapper>} />
       <Route path="/HopCodes" element={<LayoutWrapper currentPageName="HopCodes"><HopCodes /></LayoutWrapper>} />
       <Route path="/HopCodeJoin" element={<HopCodeJoin />} />
+      <Route path="/BillingSuccess" element={<BillingSuccess />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
