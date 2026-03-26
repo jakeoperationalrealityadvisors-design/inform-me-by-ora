@@ -2,24 +2,90 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
     LayoutDashboard, Users, ClipboardList, MessageSquare,
-    BarChart3, Settings, ChevronLeft, ChevronRight, LogOut, Menu, X
+    BarChart3, Settings, ChevronLeft, ChevronRight, LogOut, Menu,
+    FileText, CheckSquare, FolderOpen, Calendar, QrCode, Cpu,
+    Bot, Activity, ShieldCheck, HelpCircle, Library, Wand2,
+    Search, GitBranch, Eye, ScanLine, ChevronDown
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import ThemeToggle from '../theme/ThemeToggle';
 
-const NAV = [
-    { label: 'Dashboard', icon: LayoutDashboard, path: '/' },
-    { label: 'Users', icon: Users, path: '/AdminUsers' },
-    { label: 'Tasks', icon: ClipboardList, path: '/AdminTasks' },
-    { label: 'Messages', icon: MessageSquare, path: '/AdminMessages' },
-    { label: 'Reports', icon: BarChart3, path: '/AdminReports' },
-    { label: 'Settings', icon: Settings, path: '/AdminSettings' },
+const NAV_GROUPS = [
+    {
+        label: 'Main',
+        items: [
+            { label: 'Dashboard', icon: LayoutDashboard, path: '/' },
+            { label: 'Users', icon: Users, path: '/AdminUsers' },
+            { label: 'Tasks', icon: ClipboardList, path: '/AdminTasks' },
+            { label: 'Messages', icon: MessageSquare, path: '/AdminMessages' },
+            { label: 'Reports', icon: BarChart3, path: '/AdminReports' },
+        ]
+    },
+    {
+        label: 'Forms & Checklists',
+        items: [
+            { label: 'Forms', icon: FileText, path: '/CreateForm' },
+            { label: 'Submissions', icon: ClipboardList, path: '/Submissions' },
+            { label: 'Checklists', icon: CheckSquare, path: '/CreateChecklistAI' },
+            { label: 'Checklist Library', icon: Library, path: '/ChecklistLibrary' },
+            { label: 'Fill Checklist', icon: CheckSquare, path: '/FillChecklist' },
+            { label: 'Fill Form', icon: FileText, path: '/FillForm' },
+        ]
+    },
+    {
+        label: 'Documents',
+        items: [
+            { label: 'Documents', icon: FolderOpen, path: '/Documents' },
+            { label: 'Manage Folders', icon: FolderOpen, path: '/ManageFolders' },
+            { label: 'Doc Search', icon: Search, path: '/DocumentSearch' },
+            { label: 'Upload Doc', icon: FolderOpen, path: '/UploadDocument' },
+        ]
+    },
+    {
+        label: 'Operations',
+        items: [
+            { label: 'Calendar', icon: Calendar, path: '/Calendar' },
+            { label: 'Hop Codes', icon: QrCode, path: '/HopCodes' },
+            { label: 'Scanner', icon: ScanLine, path: '/Scanner' },
+            { label: 'Daily Tasks', icon: ClipboardList, path: '/DailyTasks' },
+            { label: 'My Tasks', icon: ClipboardList, path: '/MyTasks' },
+        ]
+    },
+    {
+        label: 'Automation & AI',
+        items: [
+            { label: 'Automations', icon: GitBranch, path: '/ManageAutomations' },
+            { label: 'AI Assistant', icon: Bot, path: '/AIAssistantPage' },
+            { label: 'AI Workflow', icon: Wand2, path: '/AIWorkflowBuilder' },
+        ]
+    },
+    {
+        label: 'Analytics',
+        items: [
+            { label: 'Analytics', icon: BarChart3, path: '/AnalyticsDashboard' },
+            { label: 'Oversight', icon: Eye, path: '/OversightDashboard' },
+            { label: 'Activity Log', icon: Activity, path: '/ActivityLog' },
+            { label: 'System Health', icon: Cpu, path: '/SystemHealth' },
+        ]
+    },
+    {
+        label: 'System',
+        items: [
+            { label: 'Role Mgmt', icon: ShieldCheck, path: '/RoleManagement' },
+            { label: 'Support', icon: HelpCircle, path: '/Support' },
+            { label: 'Help & FAQ', icon: HelpCircle, path: '/HelpFAQ' },
+            { label: 'Settings', icon: Settings, path: '/AdminSettings' },
+        ]
+    },
 ];
 
 export default function AdminLayout({ children, currentPageName, user }) {
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [openGroups, setOpenGroups] = useState({ Main: true, 'Forms & Checklists': true });
     const location = useLocation();
+
+    const toggleGroup = (label) => setOpenGroups(prev => ({ ...prev, [label]: !prev[label] }));
 
     const handleLogout = () => base44.auth.logout('/');
 
@@ -39,25 +105,43 @@ export default function AdminLayout({ children, currentPageName, user }) {
             </div>
 
             {/* Nav */}
-            <nav className="flex-1 py-4 space-y-1 px-2 overflow-y-auto">
-                {NAV.map(({ label, icon: Icon, path }) => {
-                    const active = location.pathname === path;
-                    return (
-                        <Link
-                            key={path}
-                            to={path}
-                            onClick={() => setMobileOpen(false)}
-                            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group ${
-                                active
-                                    ? 'bg-orange-500 text-white'
-                                    : 'text-slate-400 hover:bg-slate-700 hover:text-white'
-                            }`}
-                        >
-                            <Icon className="w-5 h-5 flex-shrink-0" />
-                            {!collapsed && <span className="text-sm font-medium">{label}</span>}
-                        </Link>
-                    );
-                })}
+            <nav className="flex-1 py-2 px-2 overflow-y-auto">
+                {NAV_GROUPS.map(({ label: groupLabel, items }) => (
+                    <div key={groupLabel} className="mb-1">
+                        {!collapsed && (
+                            <button
+                                onClick={() => toggleGroup(groupLabel)}
+                                className="w-full flex items-center justify-between px-2 py-1.5 text-slate-500 hover:text-slate-300 transition-colors"
+                            >
+                                <span className="text-[10px] font-semibold uppercase tracking-wider">{groupLabel}</span>
+                                <ChevronDown className={`w-3 h-3 transition-transform ${openGroups[groupLabel] ? 'rotate-180' : ''}`} />
+                            </button>
+                        )}
+                        {(collapsed || openGroups[groupLabel]) && (
+                            <div className="space-y-0.5">
+                                {items.map(({ label, icon: Icon, path }) => {
+                                    const active = location.pathname === path;
+                                    return (
+                                        <Link
+                                            key={path}
+                                            to={path}
+                                            onClick={() => setMobileOpen(false)}
+                                            title={collapsed ? label : undefined}
+                                            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
+                                                active
+                                                    ? 'bg-orange-500 text-white'
+                                                    : 'text-slate-400 hover:bg-slate-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <Icon className="w-4 h-4 flex-shrink-0" />
+                                            {!collapsed && <span className="text-xs font-medium">{label}</span>}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                ))}
             </nav>
 
             {/* Footer */}
