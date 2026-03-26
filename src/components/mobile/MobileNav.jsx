@@ -74,10 +74,7 @@ export default function MobileNav() {
         { label: 'Push Center', icon: Zap,             path: 'PushCenter' },
         { label: 'Org Settings',icon: Building2,       path: 'OrganizationSettings' },
         { label: 'Setup Wizard',icon: Sparkles,        path: 'SetupWizard' },
-        { label: 'Oversight',   icon: Eye,             path: 'OversightDashboard' },
         { label: 'Users',       icon: Users,           path: 'UserManagement' },
-        { label: 'Billing',     icon: CreditCard,      path: 'AdminBilling' },
-        { label: 'Org Settings', icon: Building2,       path: 'OrganizationSettings' },
     ] : [
         { label: 'Reports',     icon: BarChart3,     path: 'Reports' },
         { label: 'Scanner',     icon: Scan,          path: 'Scanner' },
