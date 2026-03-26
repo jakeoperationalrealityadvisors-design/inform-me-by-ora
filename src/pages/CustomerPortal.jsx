@@ -62,11 +62,25 @@ export default function CustomerPortal() {
     });
     
     const isOwner = user?.team_role === 'owner';
-    
-    if (!organization) {
+
+    if (!user) {
         return (
             <div className="min-h-screen bg-[#0a0e17] flex items-center justify-center">
-                <p className="text-white">Loading portal...</p>
+                <div className="w-8 h-8 border-4 border-white/20 border-t-orange-500 rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    if (!user.organization_id || !organization) {
+        return (
+            <div className="min-h-screen bg-[#0a0e17] flex items-center justify-center">
+                <div className="text-center space-y-3">
+                    <p className="text-white text-lg font-medium">No Organization Found</p>
+                    <p className="text-white/50 text-sm">You are not linked to an organization yet.</p>
+                    <Link to={createPageUrl('Settings')}>
+                        <Button variant="outline" className="mt-2 border-white/20 text-white/70">Back to Settings</Button>
+                    </Link>
+                </div>
             </div>
         );
     }
