@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Settings, Building, Bell, LogOut, Save } from 'lucide-react';
+import { Settings, Building, Bell, LogOut, Save, PlayCircle } from 'lucide-react';
+import { resetWalkthrough } from '../components/onboarding/UserFlowWalkthrough';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ThemeToggle from '../components/theme/ThemeToggle';
@@ -27,6 +28,7 @@ export default function AdminSettings() {
     };
 
     const logout = () => base44.auth.logout('/');
+    const replayTour = () => { resetWalkthrough(); window.location.reload(); };
 
     return (
         <div className="space-y-6 max-w-2xl">
@@ -84,6 +86,15 @@ export default function AdminSettings() {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            {/* Onboarding Tour */}
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
+                <h2 className="text-white font-semibold mb-3 flex items-center gap-2"><PlayCircle className="w-4 h-4 text-orange-400" /> Onboarding Tour</h2>
+                <p className="text-slate-400 text-xs mb-3">Re-run the platform walkthrough to revisit key features.</p>
+                <Button onClick={replayTour} variant="outline" className="border-violet-500/40 text-violet-400 hover:bg-violet-500/10 gap-2">
+                    <PlayCircle className="w-4 h-4" /> Replay Walkthrough
+                </Button>
             </div>
 
             {/* Account */}
