@@ -116,7 +116,7 @@ import HelpFAQ from './pages/HelpFAQ';
 import AppAudit from './pages/AppAudit';
 import ConnectivityTool from './pages/ConnectivityTool';
 import __Layout from './Layout.jsx';
-
+import RoleRedirect from './pages/RoleRedirect';
 
 export const PAGES = {
     "AIAssistantPage": AIAssistantPage,
@@ -190,7 +190,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "AIAssistantPage",
-    Pages: PAGES,
+    mainPage: "RoleRedirect",
+    Pages: { ...PAGES, RoleRedirect },
     Layout: __Layout,
 };
