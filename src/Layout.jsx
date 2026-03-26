@@ -114,8 +114,8 @@ export default function Layout({ children, currentPageName }) {
                             --ora-blue: #1E90FF;
                             --ora-blue-light: #4DA6FF;
                             --ora-blue-dark: #0066CC;
-
-                            --background: 0 0% 97%;
+                            
+                            --background: 0 0% 100%;
                             --foreground: 222 47% 11%;
                             --card: 0 0% 100%;
                             --card-foreground: 222 47% 11%;
@@ -123,16 +123,16 @@ export default function Layout({ children, currentPageName }) {
                             --popover-foreground: 222 47% 11%;
                             --primary: 27 100% 50%;
                             --primary-foreground: 0 0% 100%;
-                            --secondary: 210 20% 92%;
+                            --secondary: 210 20% 96%;
                             --secondary-foreground: 222 47% 11%;
-                            --muted: 210 20% 93%;
+                            --muted: 210 20% 96%;
                             --muted-foreground: 215 16% 47%;
                             --accent: 27 100% 50%;
                             --accent-foreground: 0 0% 100%;
                             --destructive: 0 84% 60%;
                             --destructive-foreground: 0 0% 100%;
-                            --border: 214 32% 88%;
-                            --input: 214 32% 88%;
+                            --border: 214 32% 91%;
+                            --input: 214 32% 91%;
                             --ring: 27 100% 50%;
                             --radius: 0.5rem;
                         }
