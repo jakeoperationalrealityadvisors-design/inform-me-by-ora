@@ -77,6 +77,7 @@ import FillChecklist from './pages/FillChecklist';
 import FillForm from './pages/FillForm';
 import Home from './pages/Home';
 import HopCode from './pages/HopCode';
+import HopCodes from './pages/HopCodes';
 import Integrations from './pages/Integrations';
 import KnowledgeBase from './pages/KnowledgeBase';
 import LoadTesting from './pages/LoadTesting';
@@ -149,6 +150,7 @@ export const PAGES = {
     "FillForm": FillForm,
     "Home": Home,
     "HopCode": HopCode,
+    "HopCodes": HopCodes,
     "Integrations": Integrations,
     "KnowledgeBase": KnowledgeBase,
     "LoadTesting": LoadTesting,
