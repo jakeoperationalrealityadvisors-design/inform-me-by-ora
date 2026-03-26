@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import ThemeToggle from '../theme/ThemeToggle';
 import { createPageUrl } from '@/utils';
 import { Home, ClipboardList, ListTodo, FolderOpen, MoreHorizontal, BarChart3, Settings, Scan, MessageSquare, TrendingUp, Users, Zap, Shield, ChevronRight, Eye, Sparkles, CreditCard, LayoutDashboard, QrCode, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -246,8 +247,11 @@ export default function MobileNav() {
                     </div>
                 </nav>
 
-                {/* Bottom: settings + collapse toggle */}
+                {/* Bottom: theme toggle + settings + collapse */}
                 <div className="p-2 border-t border-white/5 space-y-0.5">
+                    <div className={`flex items-center ${sidebarExpanded ? 'gap-2 px-3 py-2' : 'justify-center py-2'}`}>
+                        <ThemeToggle showLabel={sidebarExpanded} />
+                    </div>
                     <Link
                         to={createPageUrl('Settings')}
                         title={!sidebarExpanded ? 'Settings' : undefined}
