@@ -17,6 +17,7 @@ import UserTasks from './pages/UserTasks';
 import UserScan from './pages/UserScan';
 import UserMessages from './pages/UserMessages';
 import UserProfile from './pages/UserProfile';
+import CreateChecklistAI from './pages/CreateChecklistAI';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
@@ -81,6 +82,7 @@ const AuthenticatedApp = () => {
       <Route path="/UserScan" element={<LayoutWrapper currentPageName="UserScan"><UserScan /></LayoutWrapper>} />
       <Route path="/UserMessages" element={<LayoutWrapper currentPageName="UserMessages"><UserMessages /></LayoutWrapper>} />
       <Route path="/UserProfile" element={<LayoutWrapper currentPageName="UserProfile"><UserProfile /></LayoutWrapper>} />
+      <Route path="/CreateChecklistAI" element={<LayoutWrapper currentPageName="CreateChecklistAI"><CreateChecklistAI /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
